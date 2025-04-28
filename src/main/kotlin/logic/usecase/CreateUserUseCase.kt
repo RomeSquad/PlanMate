@@ -1,4 +1,4 @@
 package org.example.logic.usecase
 
-class GetAllUsersUseCase {
+class CreateUserUseCase {
 }
