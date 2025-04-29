@@ -216,11 +216,13 @@ class CsvParserImplTest {
     }
 
     @Test
-    fun `writeCsv throws IOException for directory conflict`() {
-        val newCsvFile = createCsvFile(File(tempDir, "new_folder/test.csv"))
+    fun `writeCsv throws IOException when directory path conflicts with existing file`() {
+        val conflictingFile = File(tempDir, "new_folder").apply { createNewFile() }
+        val csvFile = createCsvFile(File(conflictingFile, "test.csv"))
         val (header, records) = getSampleData()
+
         assertThrows<IOException> {
-            csvParser.writeCsv(newCsvFile, listOf(records[0]), header)
+            csvParser.writeCsv(csvFile, listOf(records[0]), header)
         }
     }
 
