@@ -52,7 +52,7 @@ tasks.jacocoTestReport {
         files(
             classDirectories.files.map {
                 fileTree(it) {
-                    exclude("**/entity/**", "**/di/**","**/utils/**")
+                    exclude("**/entity/**", "**/di/**")
 
                 }
             }
@@ -74,7 +74,7 @@ tasks.jacocoTestCoverageVerification {
     classDirectories.setFrom(
         files(
             fileTree("build/classes/kotlin/main") {
-                exclude("**/entity/**", "**/di/**","**/utils/**")
+                exclude("**/entity/**", "**/di/**")
             }
         )
     )
