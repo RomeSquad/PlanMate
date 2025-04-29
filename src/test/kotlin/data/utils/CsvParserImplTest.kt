@@ -167,6 +167,31 @@ class CsvParserImplTest {
         val result = csvParser.readCsv(nullCharsetFile, hasHeader = true, delimiter = ',', skipEmptyLines = true)
         assertEquals(listOf("Alice", "25", "123 Main St"), result[0])
     }
+
+    @Test
+    fun `readCsv treats first line as data when no header is specified`() {
+        val (header, records) = getSampleData()
+        csvFile.file.writeText(generateCsvContent(header = null, records = listOf(header, records[0])))
+        val result = csvParser.readCsv(csvFile, hasHeader = false, delimiter = ',', skipEmptyLines = true)
+        assertEquals(listOf("Name", "Age", "Address"), result[0])
+    }
+
+    @Test
+    fun `readCsv preserves empty lines as empty lists when skipEmptyLines is false`() {
+        val (header, records) = getSampleData()
+        csvFile.file.writeText(generateCsvContent(header, records, withEmptyLines = true))
+        val result = csvParser.readCsv(csvFile, hasHeader = true, delimiter = ',', skipEmptyLines = false)
+        assertEquals(emptyList<String>(), result[1])
+    }
+
+    @Test
+    fun `readCsv throws IOException when file is a directory`() {
+        val directory = File(tempDir, "unreadable_dir").apply { mkdir() }
+        val csvFile = createCsvFile(directory)
+        assertThrows<IOException> {
+            csvParser.readCsv(csvFile, hasHeader = true, delimiter = ',', skipEmptyLines = true)
+        }
+    }
     //endregion
 
     //region Write Tests
@@ -220,7 +245,6 @@ class CsvParserImplTest {
         val conflictingFile = File(tempDir, "new_folder").apply { createNewFile() }
         val csvFile = createCsvFile(File(conflictingFile, "test.csv"))
         val (header, records) = getSampleData()
-
         assertThrows<IOException> {
             csvParser.writeCsv(csvFile, listOf(records[0]), header)
         }
@@ -326,6 +350,42 @@ class CsvParserImplTest {
             csvParser.writeCsv(csvFile, listOf(records[0]), header)
         }
         file.setWritable(true)
+    }
+
+    @Test
+    fun `writeCsv appends data to existing file without header`() {
+        val (header, records) = getSampleData()
+        csvParser.writeCsv(csvFile, listOf(records[0]), header, append = false)
+        csvParser.writeCsv(csvFile, listOf(records[1]), null, append = true)
+        assertEquals("Bob,30,456 Oak Ave", csvFile.file.readLines()[2])
+    }
+
+    @Test
+    fun `writeCsv with empty data and no header creates empty file`() {
+        csvParser.writeCsv(csvFile, emptyList(), null)
+        assertTrue(csvFile.file.readLines().isEmpty())
+    }
+
+    @Test
+    fun `writeCsv handles root-level file with no parent directory`() {
+        val rootFile = File(tempDir, "root.csv")
+        val csvFile = createCsvFile(rootFile)
+        val (header, records) = getSampleData()
+        csvParser.writeCsv(csvFile, listOf(records[0]), header)
+        assertTrue(csvFile.file.exists())
+    }
+
+    @Test
+    fun `writeCsv throws IOException when subdirectory creation conflicts with existing file`() {
+        val existingFile = File(tempDir, "conflict/subdir").apply {
+            parentFile.mkdir()
+            createNewFile()
+        }
+        val csvFile = createCsvFile(File(existingFile.parentFile, "subdir/test.csv"))
+        val (header, records) = getSampleData()
+        assertThrows<IOException> {
+            csvParser.writeCsv(csvFile, listOf(records[0]), header)
+        }
     }
     //endregion
 }
