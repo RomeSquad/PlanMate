@@ -1,5 +1,7 @@
 package org.example.logic.repository
 
+import org.example.logic.entity.Task
+
 interface TaskRepository {
     fun editTask(
         taskId: String,
@@ -7,4 +9,5 @@ interface TaskRepository {
         description: String,
         updatedAt: Long
     )
+    fun createTask(task: Task)
 }
