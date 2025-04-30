@@ -1,4 +1,7 @@
 package org.example.logic.entity
 
-class Project {
-}
+data class Project (
+    val id: String,
+    val name: String,
+    val description: String
+)
