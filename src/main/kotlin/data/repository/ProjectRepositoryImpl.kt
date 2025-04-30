@@ -11,9 +11,10 @@ class ProjectRepositoryImpl(
    fun insertProject(project: Project) {
 
     }
-
-     fun editProject(project: Project) {
-
+    fun editProject(project: Project) {
+        if (project.id.isNotEmpty()) {
+            projectDataSource.editProject(project)
+        }
     }
 
      fun deleteProject(id: String) {
