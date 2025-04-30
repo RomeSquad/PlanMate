@@ -1,4 +1,7 @@
 package org.example.logic.entity
 
-class State {
-}
+data class State(
+    val projectId: String,
+    val taskId: String,
+    val name: String
+)
