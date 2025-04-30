@@ -7,4 +7,5 @@ import org.example.logic.entity.Project
 interface ProjectRepository {
     fun insertProject(projectRequest: CreateProjectRequest): Result<CreateProjectResponse>
     fun getAllProjects(): Result<List<Project>>
+    fun editProject(project: Project)
 }

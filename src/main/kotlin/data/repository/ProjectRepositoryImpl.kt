@@ -1,19 +1,16 @@
 package org.example.data.repository
 
 import org.example.data.datasource.project.ProjectDataSource
+import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.CreateProjectRequest
 import org.example.logic.entity.CreateProjectResponse
 import org.example.logic.entity.Project
 import org.example.logic.entity.toProject
-import org.example.logic.entity.Project
 import org.example.logic.repository.ProjectRepository
 
 class ProjectRepositoryImpl(
     private val projectDataSource: ProjectDataSource
 ) : ProjectRepository {
-
-
-
 
     private var projects = mutableListOf<Project>()
 
@@ -32,27 +29,37 @@ class ProjectRepositoryImpl(
         return projectDataSource.getAllProjects()
     }
     private fun getLatestProjectId() = projects.lastOrNull()?.id ?: 0
-}
-    fun editProject(project: Project) {
-        if (project.id.isEmpty()) return
 
-        val existingProject = projectDataSource.getProjectById(project.id)
+    override fun editProject(project: Project) {
 
-        if (existingProject == null) return
 
+        var existingProject = projectDataSource.getProjectById(project.id) ?: return
+
+        val oldChangeHistory = existingProject.changeHistory.toMutableList()
+        val newHistory = ChangeHistory(
+        /*TODO*/
+        )
+
+        val newProject = existingProject.copy(
+            changeHistory = oldChangeHistory+newHistory,
+            name = project.name,
+            description = project.description
+        )
+        projects = projects.map {
+            if(it.id == project.id) {
+                newProject
+            }else{
+                it
+            }
+        }.toMutableList()
         if (existingProject.name == project.name &&
             existingProject.description == project.description
         ) return
 
         projectDataSource.editProject(project)
     }
-
-
-     fun deleteProject(id: String) {
-
-    }
-
-     fun getProjectById(id: String): Project? {
-        return null
-    }
 }
+
+// project ->name , id , desc
+//.copy (name = newName)
+// project -> newName , id , desc
