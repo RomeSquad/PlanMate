@@ -1,76 +1,92 @@
 package org.example.data.utils
 
+import data.utils.CustomFile
+import org.example.logic.entity.ChangeHistory
+import org.example.logic.entity.Project
+import org.example.logic.entity.State
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 class ParserImpl : Parser {
 
-    private fun splitAndFilterLine(line: String, delimiter: Char): List<String> {
-        return line.split(delimiter)
-            .map(String::trim)
-            .filter(String::isNotEmpty)
+    override fun parseCsv(content: String): List<List<String>> {
+        if (content.isEmpty()) return emptyList()
+
+        val formatedContent = reformatMultiLineCells(content)
+
+        return formatedContent.lines()
+            .filter(String::isNotBlank)
+            .map (::parseCsvLine)
     }
 
-    private fun validateInput(content: String, delimiter: Char?) {
-        if (delimiter == null) {
-            throw IllegalArgumentException("Delimiter cannot be null")
-        }
-        if (content.isNotEmpty() && !content.contains(delimiter)) {
-            throw IllegalArgumentException("Invalid delimiter '$delimiter': not found in content")
-        }
-    }
+    private fun reformatMultiLineCells(content: String): String {
+        val result = StringBuilder()
+        var insideQuotes = false
 
-    private fun parseLines(
-        lines: List<String>,
-        delimiter: Char,
-        skipEmptyLines: Boolean,
-        hasHeader: Boolean
-    ): Pair<List<String>, List<List<String>>> {
-        val header = mutableListOf<String>()
-        val data = mutableListOf<List<String>>()
-
-        lines.forEachIndexed { index, line ->
-            if (skipEmptyLines && line.trim().isEmpty()) {
-                return@forEachIndexed
-            }
-
-            val columns = splitAndFilterLine(line, delimiter)
-            if (skipEmptyLines && columns.isEmpty()) {
-                return@forEachIndexed
-            }
-
-            if (hasHeader && index == 0) {
-                header.addAll(columns)
-            } else {
-                data.add(columns)
+        for (char in content) {
+            when (char) {
+                '"' -> {
+                    insideQuotes = !insideQuotes
+                    result.append(char)
+                }
+                '\n' -> {
+                    if (insideQuotes) result.append(" ") else result.append('\n')
+                }
+                else -> result.append(char)
             }
         }
 
-        return Pair(header, data)
+        return result.toString()
     }
 
-    override fun parse(
-        content: String,
-        hasHeader: Boolean,
-        delimiter: Char?,
-        skipEmptyLines: Boolean
-    ): List<List<String>> {
-        if (content.isEmpty()) {
-            return emptyList()
+    private fun parseCsvLine(line: String): List<String> {
+        val fields = mutableListOf<String>()
+        val currentField = StringBuilder()
+        var insideQuotes = false
+
+        for (char in line) {
+            when {
+                char == '"' -> {
+                    insideQuotes = !insideQuotes
+                    currentField.append(char)
+                }
+
+                char == ',' && !insideQuotes -> {
+                    fields.add(currentField.toString())
+                    currentField.clear()
+                }
+
+                else -> currentField.append(char)
+            }
         }
-        validateInput(content, delimiter)
-        val lines = content.lines()
-        val (_, data) = parseLines(lines, delimiter!!, skipEmptyLines, hasHeader)
-        return data
+
+        if (currentField.isNotEmpty()) {
+            fields.add(currentField.toString())
+        }
+
+        return fields
     }
 
-    override fun parseWithHeader(
-        content: String,
-        delimiter: Char?,
-        skipEmptyLines: Boolean
-    ): Pair<List<String>, List<List<String>>> {
-        if (content.isEmpty()) {
-            return Pair(emptyList(), emptyList())
-        }
-        validateInput(content, delimiter)
-        val lines = content.lines()
-        return parseLines(lines, delimiter!!, skipEmptyLines, hasHeader = true)
+
+    override fun parseStringList(list: String): List<String> {
+        val listTrim = list.trim()
+            .removePrefix("\"[")
+            .removeSuffix("]\"")
+
+        if (listTrim.isEmpty()) return emptyList()
+
+        return listTrim.split(',')
+            .map { it.trim().removeSurrounding("\'","\'").removeSurrounding("\"") }
     }
+
 }
+
+
+
+
+
+
+
+
