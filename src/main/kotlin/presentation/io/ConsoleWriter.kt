@@ -12,7 +12,7 @@ class ConsoleWriter : UiDisplayer {
 
     override fun displayMessage(message: String) = println(message)
 
-    override fun displayError(message: String) = println("Error: $message")
+    override fun displayError(message: String?) = println("Error: ${message ?: "Unknown error"}")
 
     override fun displayPrompt(prompt: String) {
         val yellow = "\u001B[33m"

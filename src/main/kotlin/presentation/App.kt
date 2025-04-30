@@ -3,7 +3,7 @@ package presentation
 import presentation.io.InputReader
 import presentation.io.UiDisplayer
 
-class App (
+class App(
     private val uiDisplayer: UiDisplayer,
     private val inputReader: InputReader,
     private val menu: Menu
@@ -19,9 +19,9 @@ class App (
         try {
             displayMenuAndExecuteAction()
         } catch (e: IllegalArgumentException) {
-            uiDisplayer.displayError(e.message ?: "Invalid input provided")
+            uiDisplayer.displayError("Invalid input provided")
         } catch (e: Exception) {
-            uiDisplayer.displayError(e.message ?: "An unexpected error occurred")
+            uiDisplayer.displayError(e.message)
         }
     }
 
