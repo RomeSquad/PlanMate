@@ -8,6 +8,7 @@ import org.example.logic.entity.CreateProjectRequest
 import org.example.logic.entity.CreateProjectResponse
 import io.mockk.*
 import org.example.logic.entity.Project
+import org.example.logic.entity.State
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 
@@ -33,7 +34,7 @@ class ProjectRepositoryImplTest{
     @Test
     fun `when insert valid project request then return valid project response`() {
         val projectRequest = testProjectRequest
-        every { projectDataSource.insertProject(projectRequest) } returns (testProjectResponse)
+        every { projectDataSource.insertProject(projectRequest) } returns (Result.success(testProjectResponse))
         val projectResponse = projectRepository.insertProject(projectRequest)
         assertEquals(projectResponse.id, testProjectResponse.id)
     }
@@ -87,8 +88,8 @@ class ProjectRepositoryImplTest{
     }
     @Test
     fun `edit project should update and return updated project`() {
-        val existing = Project(id = "1", name = "Old", description = "Old desc")
-        val updated = Project(id = "1", name = "Updated", description = "Updated desc")
+        val existing = Project(id = 1, name = "Old", description = "Old desc", changeHistory = listOf(), state = State())
+        val updated = Project(id = 2, name = "Updated", description = "Updated desc")
 
         every { projectDataSource.getProjectById("1") } returns existing andThen updated
         every { projectDataSource.editProject(updated) } just Runs
