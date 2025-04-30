@@ -1,3 +1,11 @@
 package org.example.logic.entity
 
-class ChangeHistory{}
+import java.util.Date
+
+data class ChangeHistory(
+    val projectID: String,
+    val taskID: String,
+    val authorID: String,
+    val changeDate: Date,
+    val changeDescription: String
+)
