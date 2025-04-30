@@ -11,11 +11,21 @@ class ProjectRepositoryImpl(
    fun insertProject(project: Project) {
 
     }
+
+
     fun editProject(project: Project) {
-        if (project.id.isNotEmpty()) {
-            projectDataSource.editProject(project)
-        }
+        if (project.id.isBlank()) return
+
+        // Check if project exists
+        val existing = projectDataSource.getProjectById(project.id) ?: return
+
+        // If the data didn't change, don't update
+        if (existing.name == project.name && existing.description == project.description) return
+
+        // Update if different
+        projectDataSource.editProject(project)
     }
+
 
      fun deleteProject(id: String) {
 
