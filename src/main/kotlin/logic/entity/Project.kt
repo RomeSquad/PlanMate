@@ -1,5 +1,7 @@
 package org.example.logic.entity
 
+import java.util.Date
+
 data class Project(
     val id: Int,
     val name: String,
@@ -26,10 +28,15 @@ fun CreateProjectRequest.toProject(lastId: Int) =
         description = description,
         changeHistory = listOf(
             ChangeHistory(
-                /*TODO*/
+                projectID = (lastId + 1).toString(),
+                taskID = "",
+                authorID = userId.toString(),
+                changeDate = Date(),
+                changeDescription = "Project created by $userName"
             )
         ),
         state = State(
-            /*TODO*/
+            projectId = (lastId + 1).toString(),
+            name = "InProgress"
         )
     )
