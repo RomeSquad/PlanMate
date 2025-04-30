@@ -1,14 +1,16 @@
-package org.example.data.repository
+package org.example.logic.usecase
 
 import org.example.logic.repository.TaskRepository
 
-class TaskRepositoryImpl : TaskRepository {
-    override fun editTask(
+class EditTaskUseCase (
+    private val taskRepository: TaskRepository
+) {
+    fun editTask(
         taskId: String,
         title: String,
         description: String,
         updatedAt: Long
     ) {
-        TODO("Not yet implemented")
+
     }
 }
