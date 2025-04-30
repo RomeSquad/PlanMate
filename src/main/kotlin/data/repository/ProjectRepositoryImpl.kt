@@ -14,15 +14,16 @@ class ProjectRepositoryImpl(
 
 
     fun editProject(project: Project) {
-        if (project.id.isBlank()) return
+        if (project.id.isEmpty()) return
 
-        // Check if project exists
-        val existing = projectDataSource.getProjectById(project.id) ?: return
+        val existingProject = projectDataSource.getProjectById(project.id)
 
-        // If the data didn't change, don't update
-        if (existing.name == project.name && existing.description == project.description) return
+        if (existingProject == null) return
 
-        // Update if different
+        if (existingProject.name == project.name &&
+            existingProject.description == project.description
+        ) return
+
         projectDataSource.editProject(project)
     }
 
