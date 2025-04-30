@@ -1,15 +1,17 @@
 package org.example.data.utils
 
-interface CsvParser {
+import data.utils.CustomFile
+
+interface IFileExtensionChecker {
     fun readCsv(
-        csvFile: CsvFile,
+        csvFile: CustomFile,
         hasHeader: Boolean = true,
         delimiter: Char? = ',',
         skipEmptyLines: Boolean = true
     ): List<List<String>>
 
     fun writeCsv(
-        csvFile: CsvFile,
+        csvFile: CustomFile,
         data: List<List<String>>?,
         header: List<String>? = null,
         append: Boolean = false
