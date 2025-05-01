@@ -1,83 +1,101 @@
 package org.example.data.utils
 
 class ParserImpl : Parser {
-
     override fun parseCsv(content: String): List<List<String>> {
         if (content.isEmpty()) return emptyList()
 
-        val formatedContent = reformatMultiLineCells(content)
-
-        return formatedContent.lines()
+        val cleanedContent = content.trim().removeSurrounding("""""", """""")
+        val lines = splitLines(cleanedContent)
+        return lines
             .filter(String::isNotBlank)
-            .map (::parseCsvLine)
+            .map(::parseCsvLine)
     }
 
-    private fun reformatMultiLineCells(content: String): String {
-        val result = StringBuilder()
-        var insideQuotes = false
+    override fun parseStringList(list: String): List<String> {
+        val trimmedList = list.trim()
+        if (trimmedList.isEmpty()) return emptyList()
 
-        for (char in content) {
-            when (char) {
-                '"' -> {
-                    insideQuotes = !insideQuotes
-                    result.append(char)
-                }
-                '\n' -> {
-                    if (insideQuotes) result.append(" ") else result.append('\n')
-                }
-                else -> result.append(char)
-            }
-        }
-
-        return result.toString()
+        val cleanedList = trimmedList.removePrefix("[").removeSuffix("]")
+        return cleanedList.split(',')
+            .map { it.trim().removeSurrounding("\"") }
+            .filter { it.isNotEmpty() }
     }
 
-    private fun parseCsvLine(line: String): List<String> {
-        val fields = mutableListOf<String>()
-        val currentField = StringBuilder()
+    private fun splitLines(content: String): List<String> {
+        val lines = mutableListOf<String>()
+        val currentLine = StringBuilder()
         var insideQuotes = false
 
-        for (char in line) {
+        for (i in content.indices) {
+            val char = content[i]
             when {
                 char == '"' -> {
                     insideQuotes = !insideQuotes
+                    currentLine.append(char)
+                }
+                char == '\n' && !insideQuotes -> {
+                    if (currentLine.isNotEmpty()) {
+                        lines.add(currentLine.toString())
+                        currentLine.clear()
+                    }
+                }
+                else -> currentLine.append(char)
+            }
+        }
+
+        if (currentLine.isNotEmpty()) {
+            lines.add(currentLine.toString())
+        }
+
+        return lines
+    }
+
+    private fun parseCsvLine(line: String): List<String> {
+        if (line.isEmpty()) return emptyList()
+
+        val columns = mutableListOf<String>()
+        val currentField = StringBuilder()
+        var insideQuotes = false
+        var insideBrackets = 0
+
+        for (char in line) {
+            when {
+                char == '[' -> {
+                    insideBrackets++
                     currentField.append(char)
                 }
-
-                char == ',' && !insideQuotes -> {
-                    fields.add(currentField.toString())
+                char == ']' -> {
+                    insideBrackets--
+                    currentField.append(char)
+                }
+                char == '"' && insideBrackets == 0 -> {
+                    insideQuotes = !insideQuotes
+                    currentField.append(char)
+                }
+                char == ',' && !insideQuotes && insideBrackets == 0 -> {
+                    val field = currentField.toString().trim()
+                    val cleanedField = if (field.startsWith("\"") && field.endsWith("\"")) {
+                        field.removeSurrounding("\"")
+                    } else {
+                        field
+                    }
+                    columns.add(cleanedField)
                     currentField.clear()
                 }
-
                 else -> currentField.append(char)
             }
         }
 
-        if (currentField.isNotEmpty()) {
-            fields.add(currentField.toString())
+        val field = currentField.toString().trim()
+        if (field.isNotEmpty()) {
+            val cleanedField = if (field.startsWith("\"") && field.endsWith("\"")) {
+                field.removeSurrounding("\"")
+            } else {
+                field
+            }
+            columns.add(cleanedField)
         }
 
-        return fields
+        return columns
     }
-
-
-    override fun parseStringList(list: String): List<String> {
-        val listTrim = list.trim()
-            .removePrefix("\"[")
-            .removeSuffix("]\"")
-
-        if (listTrim.isEmpty()) return emptyList()
-
-        return listTrim.split(',')
-            .map { it.trim().removeSurrounding("\'","\'").removeSurrounding("\"") }
-    }
-
 }
-
-
-
-
-
-
-
-
