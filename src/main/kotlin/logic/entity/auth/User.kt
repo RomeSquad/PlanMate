@@ -6,7 +6,7 @@ interface User {
     val username: String
     val password: String
     val userRole: UserRole
-        get() = UserRole.ADMIN
+
 }
 
 enum class UserRole {

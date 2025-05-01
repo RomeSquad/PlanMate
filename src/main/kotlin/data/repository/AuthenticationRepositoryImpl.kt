@@ -11,12 +11,23 @@ class AuthenticationRepositoryImpl(
 ) : AuthenticationRepository {
     override fun registerUser(username: String, password: String, userRole: UserRole): Result<User> {
         val hashedPassword = hashPassword(password)
+
+        // Check if the user already exists
+        // Check if the username is not empty fun
+        // Check if the password is not empty fun
+        // Check if the password valid
         return authDataSource.insertUser(username, hashedPassword, userRole)
     }
 
     override fun loginUser(username: String, password: String): Result<User> {
         val hashedPassword = hashPassword(password)
         val userResult = authDataSource.getUserByUsername(username)
+
+
+        // Check if the username is not empty fun
+        // Check if the password is not empty fun
+
+
         return userResult.mapCatching { user ->
             if (user.password == hashedPassword) {
                 user
