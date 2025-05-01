@@ -2,7 +2,7 @@ package logic.entity
 
 import org.example.logic.entity.State
 import org.example.logic.entity.Task
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 class TaskTest{
     @Test
