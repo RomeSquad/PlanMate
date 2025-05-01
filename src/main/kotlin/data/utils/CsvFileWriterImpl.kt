@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets
 
 class CsvFileWriterImpl(
     private val validator: FileValidator = FileValidator()
-) : CvsFileWriter {
+) : CsvFileWriter {
     override fun writeCsv(
         csvFile: CustomFile,
         data: List<List<String>>?,

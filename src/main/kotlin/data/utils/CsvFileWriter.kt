@@ -2,7 +2,7 @@ package org.example.data.utils
 
 import data.utils.CustomFile
 
-interface CvsFileWriter {
+interface CsvFileWriter {
     fun writeCsv(
         csvFile: CustomFile,
         data: List<List<String>>?,
