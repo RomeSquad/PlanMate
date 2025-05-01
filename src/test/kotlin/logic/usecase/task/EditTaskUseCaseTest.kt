@@ -1,7 +1,8 @@
-package logic.usecase
+package logic.usecase.task
 
 import io.mockk.every
 import io.mockk.mockk
+import logic.usecase.createTask
 import org.example.data.datasource.task.TaskDataSource
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.EditTaskUseCase
@@ -24,12 +25,13 @@ class EditTaskUseCaseTest {
 
     @Test
     fun `should throw exception when edit task but title is empty`() {
-        val task = createTask(id = "A1",
+        val task = createTask(
+            id = "A1",
             title = "",
             description = "description",
             projectId = "P1",
         )
-        every { taskDataSource.getTaskByIdFromFile(task.id) } returns task
+        every { taskDataSource.getTaskByIdFromFile(task.id) } returns Result.success(task)
 
         assertThrows<IllegalArgumentException> {
             editTaskUseCase.editTask(
@@ -44,12 +46,12 @@ class EditTaskUseCaseTest {
     @Test
     fun `should throw exception when edit task but description is empty`() {
         val task = createTask(
-                id = "A1",
-                title = "title",
-                description = "",
-                projectId = "P1",
+            id = "A1",
+            title = "title",
+            description = "",
+            projectId = "P1",
         )
-        every { taskDataSource.getTaskByIdFromFile(task.id) } returns task
+        every { taskDataSource.getTaskByIdFromFile(task.id) } returns Result.success(task)
 
         assertThrows<IllegalArgumentException> {
             editTaskUseCase.editTask(
@@ -69,7 +71,7 @@ class EditTaskUseCaseTest {
             description = "description",
             projectId = "P1",
         )
-        every { taskDataSource.getTaskByIdFromFile("") } returns task
+        every { taskDataSource.getTaskByIdFromFile("") } returns Result.failure(Exception("Task not found"))
 
         assertThrows<IllegalArgumentException> {
             editTaskUseCase.editTask(

@@ -1,26 +1,22 @@
-package logic.usecase
+package logic.usecase.task
 
-import io.mockk.every
 import io.mockk.mockk
-import org.example.data.datasource.task.TaskDataSource
+import logic.usecase.createTask
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.CreateTaskUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class CreateTaskUseCaseTest {
 
-    private lateinit var taskDataSource: TaskDataSource
     private lateinit var taskRepository: TaskRepository
     private lateinit var createTaskUseCase: CreateTaskUseCase
 
     @BeforeEach
     fun setup() {
         taskRepository = mockk()
-        taskDataSource = mockk()
         createTaskUseCase = CreateTaskUseCase(taskRepository)
     }
 
@@ -30,7 +26,6 @@ class CreateTaskUseCaseTest {
             title = "",
             description = "description"
         )
-        every { taskDataSource.getTask() } returns task
 
         assertThrows<IllegalArgumentException> {
             createTaskUseCase.createTask(task)
@@ -43,7 +38,6 @@ class CreateTaskUseCaseTest {
             title = "title",
             description = ""
         )
-        every { taskDataSource.getTask() } returns task
 
         assertThrows<IllegalArgumentException> {
             createTaskUseCase.createTask(task)
@@ -57,7 +51,6 @@ class CreateTaskUseCaseTest {
             description = "description",
             projectId = ""
         )
-        every { taskDataSource.getTask() } returns task
 
         assertThrows<IllegalArgumentException> {
             createTaskUseCase.createTask(task)
@@ -71,20 +64,7 @@ class CreateTaskUseCaseTest {
             title = "title",
             description = "description",
         )
-        every { taskDataSource.getTask() } returns task
 
         assertNull(task.id)
-    }
-
-    @Test
-    fun `should throw exception when create task but error in database`() {
-        val task = createTask(title = "title", description = "description")
-        every { taskDataSource.getTask() } throws RuntimeException("Error while writing data!")
-
-        try {
-            createTaskUseCase.createTask(task)
-        } catch (exception: RuntimeException) {
-            assertEquals("Error while writing data!", exception.message)
-        }
     }
 }

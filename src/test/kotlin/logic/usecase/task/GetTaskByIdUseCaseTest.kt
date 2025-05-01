@@ -21,14 +21,13 @@ class GetTaskByIdUseCaseTest {
     @BeforeEach
     fun setup() {
         taskRepository = mockk()
-        taskDataSource = mockk()
         getTaskByIdUseCase = GetTaskByIdUseCase(taskRepository)
     }
 
     @Test
     fun `should return task when existing it`() {
         val task = createTask("19","title", "description")
-        every { taskDataSource.getTaskByIdFromFile(task.id) } returns task
+        every { taskRepository.getTaskById(task.id) } returns Result.success(task)
 
         val result = getTaskByIdUseCase.getTaskById(taskId = task.id)
 
