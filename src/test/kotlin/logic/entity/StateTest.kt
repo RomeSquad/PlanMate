@@ -7,7 +7,7 @@ import kotlin.test.Test
 class StateTest {
 
     @Test
-    fun `should return task i n formatted string`() {
+    fun `should return State i n formatted string`() {
         //Given
         val state = State(
             projectId = "12T",
