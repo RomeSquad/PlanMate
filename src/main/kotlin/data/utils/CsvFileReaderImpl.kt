@@ -9,16 +9,10 @@ class CsvFileReaderImpl(
 ) : CsvFileReader {
     override fun readCsv(
         csvFile: CustomFile,
-        hasHeader: Boolean,
-        delimiter: Char?,
-        skipEmptyLines: Boolean
     ): List<List<String>> {
         validator.validateFile(csvFile, isReadOperation = true)
-        return parser.parse(
+        return parser.parseCsv(
             csvFile.file.readText(csvFile.charset ?: StandardCharsets.UTF_8),
-            hasHeader,
-            delimiter ?: ',',
-            skipEmptyLines
         )
     }
 }
