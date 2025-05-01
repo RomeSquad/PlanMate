@@ -8,3 +8,8 @@ data class Mate(
     override val userRole: UserRole = UserRole.MATE,
 
     ) : User
+{
+    override fun toString(): String {
+        return super.toString()
+    }
+}
