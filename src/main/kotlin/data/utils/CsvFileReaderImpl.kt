@@ -1,5 +1,6 @@
 package org.example.data.utils
 
+import data.utils.ParserImpl
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader

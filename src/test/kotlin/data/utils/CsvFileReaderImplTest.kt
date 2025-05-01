@@ -3,7 +3,6 @@ package data.utils
 import org.example.data.utils.CsvFileReaderImpl
 import org.example.data.utils.FileValidator
 import org.example.data.utils.Parser
-import org.example.data.utils.ParserImpl
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir

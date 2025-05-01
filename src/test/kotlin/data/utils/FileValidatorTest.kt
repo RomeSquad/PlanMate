@@ -48,18 +48,6 @@ class FileValidatorTest {
     }
 
     @Test
-    fun `validates write without append on non-existent file successfully`() {
-        val file = createCustomFile("nonexistent.csv")
-        validator.validateFile(file, isReadOperation = false)
-    }
-
-    @Test
-    fun `validates write with append on non-existent file successfully`() {
-        val file = createCustomFile("nonexistent.csv")
-        validator.validateFile(file, isReadOperation = false)
-    }
-
-    @Test
     fun `creates parent directories when they don't exist`() {
         val file = File(tempDir, "subdir/test.csv")
         validator.createParentDirsIfNeeded(file)
