@@ -4,7 +4,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.example.data.datasource.task.TaskDataSource
 import org.example.logic.repository.TaskRepository
-import org.example.logic.usecase.CreateTaskUseCase
+import org.example.logic.usecase.task.CreateTaskUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
