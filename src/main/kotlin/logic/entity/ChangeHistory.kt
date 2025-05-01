@@ -8,4 +8,8 @@ data class ChangeHistory(
     val authorID: String,
     val changeDate: Date,
     val changeDescription: String
-)
+){
+    override fun toString(): String {
+        return super.toString()
+    }
+}
