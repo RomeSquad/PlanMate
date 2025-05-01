@@ -9,4 +9,8 @@ data class Task(
     val createdBy: String,
     val createdAt: Long,
     var updatedAt: Long
-)
+){
+    override fun toString(): String {
+        return super.toString()
+    }
+}
