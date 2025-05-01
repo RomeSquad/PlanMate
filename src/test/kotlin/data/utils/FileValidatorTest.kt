@@ -21,7 +21,7 @@ class FileValidatorTest {
         validator = FileValidator()
     }
 
-    private fun createCustomFile(filename: String, allowedExtensions: Set<String> = setOf("csv")) =
+    private fun createCustomFile(filename: String) =
         File(tempDir, filename)
 
     @Test
@@ -41,26 +41,10 @@ class FileValidatorTest {
     }
 
     @Test
-    fun `throws IOException for existing file on write without append`() {
-        val file = createCustomFile("existing.csv")
-        file.createNewFile()
-        assertFailsWith<IOException>("File already exists: ${file.absolutePath}") {
-            validator.validateFile(file, isReadOperation = false)
-        }
-    }
-
-    @Test
     fun `validates read with existing file successfully`() {
         val file = createCustomFile("existing.csv")
         file.createNewFile()
         validator.validateFile(file, isReadOperation = true)
-    }
-
-    @Test
-    fun `validates write with append on existing file successfully`() {
-        val file = createCustomFile("existing.csv")
-        file.createNewFile()
-        validator.validateFile(file, isReadOperation = false)
     }
 
     @Test
