@@ -1,7 +1,6 @@
 package org.example.data.repository
 
 import org.example.data.datasource.project.ProjectDataSource
-import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.CreateProjectRequest
 import org.example.logic.entity.CreateProjectResponse
 import org.example.logic.entity.Project
@@ -31,7 +30,3 @@ class ProjectRepositoryImpl(
     private fun getLatestProjectId() = projects.lastOrNull()?.id ?: 0
 
 }
-
-// project ->name , id , desc
-//.copy (name = newName)
-// project -> newName , id , desc

@@ -8,7 +8,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.example.data.datasource.project.CsvProjectDataSource
 import org.example.data.utils.CsvFileReader
-import org.example.data.utils.CvsFileWriter
+import org.example.data.utils.CsvFileWriter
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
 import org.example.logic.entity.State
@@ -21,7 +21,7 @@ import java.util.Locale
 class CsvProjectDataSourceTest{
     private lateinit var projectDataSource: CsvProjectDataSource
     private lateinit var csvFileReader: CsvFileReader
-    private lateinit var csvFileWriter: CvsFileWriter
+    private lateinit var csvFileWriter: CsvFileWriter
     private val projectsFile = CustomFile("project3.csv")
     private val dateFormat = java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
 
