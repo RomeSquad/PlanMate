@@ -21,8 +21,8 @@ class FileValidatorTest {
         validator = FileValidator()
     }
 
-    private fun createCustomFile(filename: String, allowedExtensions: Set<String> = setOf("csv")): CustomFile =
-        CustomFile(File(tempDir, filename).absolutePath, allowedExtensions = allowedExtensions)
+    private fun createCustomFile(filename: String, allowedExtensions: Set<String> = setOf("csv")) =
+        File(tempDir, filename)
 
     @Test
     fun `throws IllegalArgumentException for invalid extension`() {
@@ -35,7 +35,7 @@ class FileValidatorTest {
     @Test
     fun `throws IOException for non-existent file on read`() {
         val file = createCustomFile("nonexistent.csv")
-        assertFailsWith<IOException>("File not found: ${file.file.absolutePath}") {
+        assertFailsWith<IOException>("File not found: ${file.absolutePath}") {
             validator.validateFile(file, isReadOperation = true)
         }
     }
@@ -43,36 +43,36 @@ class FileValidatorTest {
     @Test
     fun `throws IOException for existing file on write without append`() {
         val file = createCustomFile("existing.csv")
-        file.file.createNewFile()
-        assertFailsWith<IOException>("File already exists: ${file.file.absolutePath}") {
-            validator.validateFile(file, isReadOperation = false, append = false)
+        file.createNewFile()
+        assertFailsWith<IOException>("File already exists: ${file.absolutePath}") {
+            validator.validateFile(file, isReadOperation = false)
         }
     }
 
     @Test
     fun `validates read with existing file successfully`() {
         val file = createCustomFile("existing.csv")
-        file.file.createNewFile()
+        file.createNewFile()
         validator.validateFile(file, isReadOperation = true)
     }
 
     @Test
     fun `validates write with append on existing file successfully`() {
         val file = createCustomFile("existing.csv")
-        file.file.createNewFile()
-        validator.validateFile(file, isReadOperation = false, append = true)
+        file.createNewFile()
+        validator.validateFile(file, isReadOperation = false)
     }
 
     @Test
     fun `validates write without append on non-existent file successfully`() {
         val file = createCustomFile("nonexistent.csv")
-        validator.validateFile(file, isReadOperation = false, append = false)
+        validator.validateFile(file, isReadOperation = false)
     }
 
     @Test
     fun `validates write with append on non-existent file successfully`() {
         val file = createCustomFile("nonexistent.csv")
-        validator.validateFile(file, isReadOperation = false, append = true)
+        validator.validateFile(file, isReadOperation = false)
     }
 
     @Test
