@@ -11,4 +11,5 @@ interface TaskRepository {
         description: String,
         updatedAt: Long
     )
+    fun deleteTask(projectId: String, taskId: String)
 }
