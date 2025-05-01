@@ -1,9 +1,12 @@
 package org.example.data.repository
 
+import org.example.data.datasource.task.TaskDataSource
 import org.example.logic.entity.Task
 import org.example.logic.repository.TaskRepository
 
-class TaskRepositoryImpl : TaskRepository {
+class TaskRepositoryImpl(
+    private val taskDataSource: TaskDataSource,
+) : TaskRepository {
     override fun createTask(task: Task) {
         TODO("Not yet implemented")
     }
@@ -15,5 +18,9 @@ class TaskRepositoryImpl : TaskRepository {
         updatedAt: Long
     ) {
         TODO("Not yet implemented")
+    }
+
+    override fun deleteTask(projectId: String, taskId: String) {
+        taskDataSource.deleteTask(projectId, taskId)
     }
 }
