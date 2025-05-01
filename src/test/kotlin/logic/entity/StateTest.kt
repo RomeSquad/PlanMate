@@ -13,13 +13,22 @@ class StateTest {
             projectId = "12T",
             name = "In Progress"
         )
+
+        val expected = formatState(
+            projectId = "12T",
+            stateName = "In Progress"
+        )
         //when
-        val expected = """
-         Project ID: 12T | State: In Progress     
-        """.trimIndent()
+
+        val displayed =state.toString()
 
         //then
-        assertEquals(state, expected)
+        assertEquals(displayed, expected)
+
+    }
+    // helper
+    fun formatState(projectId: String, stateName: String): String {
+        return String.format("%-20s | %-20s", "Project ID: $projectId", "State: $stateName")
     }
 
 }
