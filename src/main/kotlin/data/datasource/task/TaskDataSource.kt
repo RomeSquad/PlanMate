@@ -5,4 +5,5 @@ import org.example.logic.entity.Task
 interface TaskDataSource {
     fun getTaskByIdFromFile(taskId: String): Task
     fun getTask(): Task
+    fun deleteTask(projectId: String, taskId: String)
 }
