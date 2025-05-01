@@ -1,6 +1,7 @@
 package data.utils
 
 import org.example.data.utils.Parser
+import org.example.data.utils.ParserImpl
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
