@@ -10,6 +10,13 @@ data class ChangeHistory(
     val changeDescription: String
 ){
     override fun toString(): String {
-        return super.toString()
+        return String.format(
+            "%-12s | %-10s | %-10s | %-20s | %-30s",
+            "ProjectID: $projectID",
+            "TaskID: $taskID",
+            "AuthorID: $authorID",
+            "Date: $changeDate",
+            "Change: $changeDescription"
+        )
     }
 }
