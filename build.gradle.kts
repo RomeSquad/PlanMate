@@ -19,7 +19,7 @@ dependencies {
     implementation("io.insert-koin:koin-core:4.0.2")
 
     // JUnit for Testing
-    testImplementation ("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
 
     testImplementation("io.mockk:mockk:1.14.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
@@ -52,7 +52,7 @@ tasks.jacocoTestReport {
         files(
             classDirectories.files.map {
                 fileTree(it) {
-                    exclude("**/entity/**", "**/di/**","**/exceptions/**")
+                    exclude("**/entity/**", "**/di/**", "**/exceptions/**", "**/formatter/**")
 
                 }
             }
@@ -74,7 +74,7 @@ tasks.jacocoTestCoverageVerification {
     classDirectories.setFrom(
         files(
             fileTree("build/classes/kotlin/main") {
-                exclude("**/entity/**", "**/di/**","**/exceptions/**")
+                exclude("**/entity/**", "**/di/**", "**/exceptions/**")
             }
         )
     )
