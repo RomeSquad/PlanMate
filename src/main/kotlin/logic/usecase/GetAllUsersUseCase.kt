@@ -1,4 +1,7 @@
 package org.example.logic.usecase
 
-class GetAllUsersUseCase {
+import org.example.logic.repository.StateRepository
+
+class GetAllUsersUseCase (val stateRepository: StateRepository){
+
 }
