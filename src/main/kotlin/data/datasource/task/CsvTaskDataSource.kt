@@ -42,6 +42,17 @@ class CsvTaskDataSource (
     }
 
     override fun deleteTask(projectId: String, taskId: String) {
+        val result = getAllTasks()
+        if (result.isFailure) throw result.exceptionOrNull()!!
 
+        val allTasks = result.getOrThrow().toMutableList()
+        val removed = allTasks.removeIf { it.projectId == projectId && it.id == taskId }
+
+        if (!removed) {
+            throw NoSuchElementException("Task with id $taskId in project $projectId not found")
+        }
+
+        val writeResult = setAllTasks(allTasks)
+        if (writeResult.isFailure) throw writeResult.exceptionOrNull()!!
     }
 }
