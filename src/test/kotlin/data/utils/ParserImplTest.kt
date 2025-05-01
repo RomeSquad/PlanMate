@@ -4,7 +4,6 @@ import org.example.data.utils.Parser
 import org.example.data.utils.ParserImpl
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -19,7 +18,7 @@ class ParserImplTest {
 
 
     @Test
-    fun `parse handles empty content bypassing delimiter check`() {
+    fun `parse handles empty content by passing delimiter check`() {
         val result = parser.parseCsv("")
         assertTrue(result.isEmpty())
     }
@@ -31,9 +30,4 @@ class ParserImplTest {
         val result = parser.parseCsv(content)
         assertEquals(listOf(listOf("header1", "header2"), listOf("data1", "data2")), result)
     }
-
-
-
-
-
 }
