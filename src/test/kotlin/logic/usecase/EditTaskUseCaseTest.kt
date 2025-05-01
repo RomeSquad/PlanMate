@@ -3,8 +3,6 @@ package logic.usecase
 import io.mockk.every
 import io.mockk.mockk
 import org.example.data.datasource.task.TaskDataSource
-import org.example.logic.entity.State
-import org.example.logic.entity.Task
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.EditTaskUseCase
 import org.junit.jupiter.api.BeforeEach
@@ -26,15 +24,10 @@ class EditTaskUseCaseTest {
 
     @Test
     fun `should throw exception when edit task but title is empty`() {
-        val task = Task (
-            id = "A1",
+        val task = createTask(id = "A1",
             title = "",
             description = "description",
-            state = State(),
             projectId = "P1",
-            createdBy = "",
-            createdAt = 0,
-            updatedAt = 0
         )
         every { taskDataSource.getTaskById(task.id) } returns task
 
@@ -50,15 +43,11 @@ class EditTaskUseCaseTest {
 
     @Test
     fun `should throw exception when edit task but description is empty`() {
-        val task = Task (
-            id = "A1",
-            title = "title",
-            description = "",
-            state = State(),
-            projectId = "P1",
-            createdBy = "",
-            createdAt = 0,
-            updatedAt = 0
+        val task = createTask(
+                id = "A1",
+                title = "title",
+                description = "",
+                projectId = "P1",
         )
         every { taskDataSource.getTaskById(task.id) } returns task
 
@@ -74,15 +63,11 @@ class EditTaskUseCaseTest {
 
     @Test
     fun `should throw exception when task not found by id`() {
-        val task = Task (
+        val task = createTask(
             id = "A1",
             title = "",
             description = "description",
-            state = State(),
             projectId = "P1",
-            createdBy = "",
-            createdAt = 0,
-            updatedAt = 0
         )
         every { taskDataSource.getTaskById("") } returns task
 
