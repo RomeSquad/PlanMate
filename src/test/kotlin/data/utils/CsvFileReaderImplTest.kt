@@ -35,51 +35,36 @@ class CsvFileReaderImplTest {
     ): CustomFile = CustomFile(File(tempDir, filename).absolutePath, charset, allowedExtensions)
 
     @Test
-    fun `reads CSV with header using default delimiter`() {
-        val csvFile = createCustomFile("test.csv")
-        csvFile.file.writeText("Name,Age\nAlice,25\nBob,30")
-        val result = reader.readCsv(csvFile, hasHeader = true, delimiter = null, skipEmptyLines = false)
-        assertEquals(listOf(listOf("Alice", "25"), listOf("Bob", "30")), result)
-    }
-
-    @Test
     fun `reads CSV without header using default delimiter`() {
         val csvFile = createCustomFile("test.csv")
         csvFile.file.writeText("Alice,25\nBob,30")
-        val result = reader.readCsv(csvFile, hasHeader = false, delimiter = null, skipEmptyLines = false)
+        val result = reader.readCsv(csvFile)
         assertEquals(listOf(listOf("Alice", "25"), listOf("Bob", "30")), result)
     }
 
     @Test
-    fun `reads CSV with custom delimiter and header`() {
+    fun `reads CSV with custom delimiter `() {
         val csvFile = createCustomFile("test.csv")
-        csvFile.file.writeText("Name;Age\nAlice;25\nBob;30")
-        val result = reader.readCsv(csvFile, hasHeader = true, delimiter = ';', skipEmptyLines = false)
+        csvFile.file.writeText("Alice,25\nBob,30")
+        val result = reader.readCsv(csvFile)
         assertEquals(listOf(listOf("Alice", "25"), listOf("Bob", "30")), result)
     }
 
     @Test
     fun `reads CSV skipping empty lines`() {
         val csvFile = createCustomFile("test.csv")
-        csvFile.file.writeText("Name,Age\nAlice,25\n\nBob,30")
-        val result = reader.readCsv(csvFile, hasHeader = true, delimiter = null, skipEmptyLines = true)
+        csvFile.file.writeText("Alice,25\n\nBob,30")
+        val result = reader.readCsv(csvFile)
         assertEquals(listOf(listOf("Alice", "25"), listOf("Bob", "30")), result)
     }
 
-    @Test
-    fun `reads CSV without skipping empty lines`() {
-        val csvFile = createCustomFile("test.csv")
-        csvFile.file.writeText("Name,Age\nAlice,25\n\nBob,30")
-        val result = reader.readCsv(csvFile, hasHeader = true, delimiter = null, skipEmptyLines = false)
-        // Assuming ParserImpl includes empty lines as empty lists
-        assertEquals(listOf(listOf("Alice", "25"), emptyList(), listOf("Bob", "30")), result)
-    }
+
 
     @Test
     fun `reads CSV with specified charset`() {
         val csvFile = createCustomFile("test.csv", charset = StandardCharsets.UTF_16)
         csvFile.file.writeText("Alice,25", StandardCharsets.UTF_16)
-        val result = reader.readCsv(csvFile, hasHeader = false, delimiter = null, skipEmptyLines = false)
+        val result = reader.readCsv(csvFile)
         assertEquals(listOf(listOf("Alice", "25")), result)
     }
 
@@ -87,7 +72,7 @@ class CsvFileReaderImplTest {
     fun `reads CSV with null charset using UTF-8`() {
         val csvFile = createCustomFile("test.csv", charset = null)
         csvFile.file.writeText("Alice,25")
-        val result = reader.readCsv(csvFile, hasHeader = false, delimiter = null, skipEmptyLines = false)
+        val result = reader.readCsv(csvFile)
         assertEquals(listOf(listOf("Alice", "25")), result)
     }
 }

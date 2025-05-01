@@ -30,34 +30,6 @@ class ProjectRepositoryImpl(
     }
     private fun getLatestProjectId() = projects.lastOrNull()?.id ?: 0
 
-    override fun editProject(project: Project) {
-
-
-        var existingProject = projectDataSource.getProjectById(project.id) ?: return
-
-        val oldChangeHistory = existingProject.changeHistory.toMutableList()
-        val newHistory = ChangeHistory(
-        /*TODO*/
-        )
-
-        val newProject = existingProject.copy(
-            changeHistory = oldChangeHistory+newHistory,
-            name = project.name,
-            description = project.description
-        )
-        projects = projects.map {
-            if(it.id == project.id) {
-                newProject
-            }else{
-                it
-            }
-        }.toMutableList()
-        if (existingProject.name == project.name &&
-            existingProject.description == project.description
-        ) return
-
-        projectDataSource.editProject(project)
-    }
 }
 
 // project ->name , id , desc
