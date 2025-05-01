@@ -30,7 +30,7 @@ class CliFormatter : Formatter {
             output.append(messageLines.get(index).take(width))
             if (!omitRightSideBorder) output.appendLine(SIDE_BORDER)
         }
-        
+
         if (!omitBottomBorder) output.append(bottomBorder(width, sidePaddingSize, topBottomPaddingSize))
 
         return output.toString()
