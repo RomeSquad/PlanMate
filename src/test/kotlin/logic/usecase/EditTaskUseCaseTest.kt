@@ -4,7 +4,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.example.data.datasource.task.TaskDataSource
 import org.example.logic.repository.TaskRepository
-import org.example.logic.usecase.EditTaskUseCase
+import org.example.logic.usecase.task.EditTaskUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
@@ -29,7 +29,7 @@ class EditTaskUseCaseTest {
             description = "description",
             projectId = "P1",
         )
-        every { taskDataSource.getTaskById(task.id) } returns task
+        every { taskDataSource.getTaskByIdFromFile(task.id) } returns task
 
         assertThrows<IllegalArgumentException> {
             editTaskUseCase.editTask(
@@ -49,7 +49,7 @@ class EditTaskUseCaseTest {
                 description = "",
                 projectId = "P1",
         )
-        every { taskDataSource.getTaskById(task.id) } returns task
+        every { taskDataSource.getTaskByIdFromFile(task.id) } returns task
 
         assertThrows<IllegalArgumentException> {
             editTaskUseCase.editTask(
@@ -69,7 +69,7 @@ class EditTaskUseCaseTest {
             description = "description",
             projectId = "P1",
         )
-        every { taskDataSource.getTaskById("") } returns task
+        every { taskDataSource.getTaskByIdFromFile("") } returns task
 
         assertThrows<IllegalArgumentException> {
             editTaskUseCase.editTask(
