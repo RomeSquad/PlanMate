@@ -3,8 +3,13 @@ package org.example.data.utils
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
 import org.example.logic.entity.State
+import org.example.logic.entity.auth.User
+import org.example.logic.entity.auth.UserRole
 import java.util.*
 
+fun User.toCsvRow(): List<String> {
+    return listOf(userId.toString(), username, password, userRole.toString())
+}
 fun Project.toCsvRow(): List<String> {
     return listOf(id.toString(), name, description, "\"${changeHistory.map { it.toCsvCell() }}\"" ,"\"${state.toCsvCell()}\"")
 }
@@ -13,6 +18,17 @@ fun ChangeHistory.toCsvCell() = listOf(projectID, taskID, authorID, changeDescri
 fun State.toCsvCell() = listOf(projectId, name).toString()
 val dateFormat = java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
 
+
+
+
+fun List<String>.fromCsvRowToUser(): User {
+    return object : User {
+        override val userId: Int = this@fromCsvRowToUser[0].toInt()
+        override val username: String = this@fromCsvRowToUser[1]
+        override val password: String = this@fromCsvRowToUser[2]
+        override val userRole: UserRole = UserRole.valueOf(this@fromCsvRowToUser[3])
+    }
+}
 
 fun List<String>.fromCsvRowToProject(): Project {
     return Project(
