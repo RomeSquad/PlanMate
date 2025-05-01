@@ -1,14 +1,5 @@
 package org.example.data.utils
 
-import data.utils.CustomFile
-import org.example.logic.entity.ChangeHistory
-import org.example.logic.entity.Project
-import org.example.logic.entity.State
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-
 class ParserImpl : Parser {
 
     override fun parseCsv(content: String): List<List<String>> {
