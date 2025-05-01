@@ -11,4 +11,6 @@ interface TaskRepository {
         description: String,
         updatedAt: Long
     )
+
+    fun getTaskById (taskId: String): Task
 }

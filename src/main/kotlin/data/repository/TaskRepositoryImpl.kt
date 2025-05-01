@@ -16,4 +16,8 @@ class TaskRepositoryImpl : TaskRepository {
     ) {
         TODO("Not yet implemented")
     }
+
+    override fun getTaskById(taskId: String): Task {
+        TODO("Not yet implemented")
+    }
 }

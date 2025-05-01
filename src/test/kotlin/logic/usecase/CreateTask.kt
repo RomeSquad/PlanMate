@@ -13,7 +13,10 @@ fun createTask (
         id = id.toString(),
         title = title,
         description = description,
-        state = State(),
+        state = State(
+            projectId = projectId,
+            name = ""
+        ),
         projectId = projectId,
         createdBy = "",
         createdAt = System.currentTimeMillis(),
