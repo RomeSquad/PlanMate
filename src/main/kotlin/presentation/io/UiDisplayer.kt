@@ -1,6 +1,6 @@
 package presentation.io
 
-import presentation.MenuAction
+import org.example.presentation.menus.MenuAction
 
 interface UiDisplayer {
     fun displayMenu(options:List<MenuAction>)

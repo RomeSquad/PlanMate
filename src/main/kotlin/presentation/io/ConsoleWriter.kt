@@ -1,6 +1,6 @@
 package presentation.io
 
-import presentation.MenuAction
+import org.example.presentation.menus.MenuAction
 
 class ConsoleWriter : UiDisplayer {
     override fun displayMenu(options: List<MenuAction>) {

@@ -1,4 +1,4 @@
-package presentation
+package org.example.presentation.menus
 
 import presentation.io.InputReader
 import presentation.io.UiDisplayer

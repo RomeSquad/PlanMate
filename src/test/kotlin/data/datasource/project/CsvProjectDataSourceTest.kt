@@ -29,7 +29,7 @@ class CsvProjectDataSourceTest{
     fun setup(){
         csvFileReader = mockk()
         csvFileWriter = mockk()
-        projectDataSource = CsvProjectDataSource(csvFileReader, csvFileWriter)
+        projectDataSource = CsvProjectDataSource(csvFileReader, csvFileWriter , projectsFile)
     }
 
     @Test
