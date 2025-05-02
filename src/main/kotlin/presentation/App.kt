@@ -2,6 +2,7 @@ package presentation
 
 import org.example.presentation.menus.MainMenu
 import org.example.presentation.menus.Menu
+import org.koin.core.qualifier.named
 import org.koin.java.KoinJavaComponent.getKoin
 import presentation.io.InputReader
 import presentation.io.UiDisplayer
@@ -12,7 +13,7 @@ class App(
 
     ) {
 
-    private var menu: Menu = getKoin().get()
+    private var menu: Menu = MainMenu(getKoin().get((named("mainMenu"))), this)
 
     fun start() {
         do {
@@ -36,7 +37,7 @@ class App(
     }
 
     private fun displayMenuAndExecuteAction() {
-        uiDisplayer.displayMenu(menu.getActions())
+        uiDisplayer.displayMenu(menu.getActionsList())
         val input = inputReader.readIntOrNull() ?: throw IllegalArgumentException("Invalid input")
         val selectedAction = menu.getAction(input)
         selectedAction.execute(uiDisplayer, inputReader)
