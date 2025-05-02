@@ -24,6 +24,10 @@ class ProjectRepositoryImpl(
         }
     }
 
+    override fun getProjectById(id: Int): Result<Project> {
+        return projects.firstOrNull { it.id == id }?.let { Result.success(it) }?: Result.failure(Exception("Project not found"))
+    }
+
     override fun getAllProjects(): Result<List<Project>> {
         return projectDataSource.getAllProjects()
     }
