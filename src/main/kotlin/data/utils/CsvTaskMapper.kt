@@ -8,7 +8,7 @@ fun Task.toCsvRow(): List<String> {
         title,
         description,
         "\"${state.toCsvCell()}\"",
-        projectId,
+        projectId.toString(),
         createdBy,
         createdAt.toString(),
         updatedAt.toString()
@@ -21,7 +21,7 @@ fun List<String>.fromCsvRowToTask(): Task {
         title = this[1],
         description = this[2],
         state = this[3].parseState(),
-        projectId = this[4],
+        projectId = this[4].toInt(),
         createdBy = this[5],
         createdAt = this[6].toLong(),
         updatedAt = this[7].toLong()

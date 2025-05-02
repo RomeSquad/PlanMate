@@ -29,7 +29,7 @@ class EditTaskUseCaseTest {
             id = "A1",
             title = "",
             description = "description",
-            projectId = "P1",
+            projectId = 1,
         )
         every { taskDataSource.getTaskByIdFromFile(task.id) } returns Result.success(task)
 
@@ -49,7 +49,7 @@ class EditTaskUseCaseTest {
             id = "A1",
             title = "title",
             description = "",
-            projectId = "P1",
+            projectId = 1,
         )
         every { taskDataSource.getTaskByIdFromFile(task.id) } returns Result.success(task)
 
@@ -69,7 +69,7 @@ class EditTaskUseCaseTest {
             id = "A1",
             title = "",
             description = "description",
-            projectId = "P1",
+            projectId = 1,
         )
         every { taskDataSource.getTaskByIdFromFile("") } returns Result.failure(Exception("Task not found"))
 

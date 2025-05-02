@@ -3,7 +3,7 @@ package org.example.logic.repository
 import org.example.logic.entity.Task
 
 interface TaskRepository {
-    fun createTask(task: Task)
+    fun createTask(task: Task): Result<Unit>
 
     fun editTask(
         taskId: String,
@@ -11,7 +11,8 @@ interface TaskRepository {
         description: String,
         updatedAt: Long
     )
-    fun deleteTask(projectId: String, taskId: String)
+
+    fun deleteTask(projectId: Int, taskId: String)
 
     fun getTaskById (taskId: String): Result<Task>
 }

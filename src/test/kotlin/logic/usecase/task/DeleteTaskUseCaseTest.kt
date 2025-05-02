@@ -21,7 +21,7 @@ class DeleteTaskUseCaseTest {
 
     @Test
     fun `should delete task successfully`() {
-        val projectId = "A-1"
+        val projectId = 1
         val taskId = "T-1"
 
         every { taskRepository.deleteTask(projectId, taskId) } just Runs
@@ -34,7 +34,7 @@ class DeleteTaskUseCaseTest {
     @Test
     fun `should throw exception when projectId is blank`() {
         val exception = assertThrows<IllegalArgumentException> {
-            deleteTaskUseCase.deleteTask("", "T-1")
+            deleteTaskUseCase.deleteTask(0, "T-1")
         }
 
         assertEquals("projectId must not be blank", exception.message)
@@ -44,7 +44,7 @@ class DeleteTaskUseCaseTest {
     @Test
     fun `should throw exception when taskId is blank`() {
         val exception = assertThrows<IllegalArgumentException> {
-            deleteTaskUseCase.deleteTask("A-1", " ")
+            deleteTaskUseCase.deleteTask(1, " ")
         }
 
         assertEquals("taskId must not be blank", exception.message)
@@ -53,7 +53,7 @@ class DeleteTaskUseCaseTest {
 
     @Test
     fun `should propagate exception from repository`() {
-        val projectId = "A-1"
+        val projectId = 1
         val taskId = "T-404"
 
         every { taskRepository.deleteTask(projectId, taskId) } throws RuntimeException("Task not found")

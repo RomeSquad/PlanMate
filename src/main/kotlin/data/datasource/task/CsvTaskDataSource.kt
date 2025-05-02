@@ -41,7 +41,17 @@ class CsvTaskDataSource (
         return Result.success(Unit)
     }
 
-    override fun deleteTask(projectId: String, taskId: String) {
+    override fun createTask(task: Task): Result<Unit> {
+        return try {
+            val row = task.toCsvRow()
+            csvFileWriter.writeCsv(tasksFile, listOf(row))
+            Result.success(Unit)
+        } catch (exception: Exception) {
+            Result.failure(exception)
+        }
+    }
+
+    override fun deleteTask(projectId: Int, taskId: String) {
         val result = getAllTasks()
         if (result.isFailure) throw result.exceptionOrNull()!!
 

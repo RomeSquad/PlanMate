@@ -7,8 +7,8 @@ import org.example.logic.repository.TaskRepository
 class TaskRepositoryImpl(
     private val taskDataSource: TaskDataSource,
 ) : TaskRepository {
-    override fun createTask(task: Task) {
-        TODO("Not yet implemented")
+    override fun createTask(task: Task): Result<Unit> {
+        return taskDataSource.createTask(task)
     }
 
     override fun editTask(
@@ -24,7 +24,7 @@ class TaskRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override fun deleteTask(projectId: String, taskId: String) {
+    override fun deleteTask(projectId: Int, taskId: String) {
         taskDataSource.deleteTask(projectId, taskId)
     }
 }

@@ -109,7 +109,7 @@ class CsvTaskDataSourceTest {
                     "P1",
                     "To-Do"
                 ),
-                projectId = "P1",
+                projectId = 1,
                 createdBy = "U1",
                 createdAt = 5,
                 updatedAt = 8
@@ -122,7 +122,7 @@ class CsvTaskDataSourceTest {
                     "P2",
                     "In-Progress"
                 ),
-                projectId = "P2",
+                projectId = 2,
                 createdBy = "U2",
                 createdAt = 5,
                 updatedAt = 8
