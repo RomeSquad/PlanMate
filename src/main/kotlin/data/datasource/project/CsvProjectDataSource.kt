@@ -1,18 +1,18 @@
 package org.example.data.datasource.project
 
-import data.utils.CustomFile
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.data.utils.fromCsvRowToProject
 import org.example.data.utils.toCsvRow
 import org.example.logic.entity.Project
+import java.io.File
 
 class CsvProjectDataSource(
     private val csvFileReader: CsvFileReader,
     private val csvFileWriter: CsvFileWriter,
 ) : ProjectDataSource {
 
-    private val projectsFile = CustomFile("project3.csv")
+    private val projectsFile = File("project3.csv")
     override fun getAllProjects(): Result<List<Project>> {
         val data = csvFileReader.readCsv(projectsFile)
         println(data[0])
