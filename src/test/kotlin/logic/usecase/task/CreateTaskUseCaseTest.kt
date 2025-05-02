@@ -24,8 +24,8 @@ class CreateTaskUseCaseTest {
 
     @Test
     fun `should return success when valid all attributes`() {
-        val task = createTask(title = "title", description = "", projectId = 1)
-        every { taskRepository.createTask(task) }
+        val task = createTask(title = "title", description = "description", projectId = 1)
+        every { taskRepository.createTask(task) } returns Result.success(Unit)
 
         val result = createTaskUseCase.createTask(task)
 
@@ -47,7 +47,7 @@ class CreateTaskUseCaseTest {
             expected = expectedException,
             actual = result.exceptionOrNull()?.message
         )
-        verify { taskRepository.createTask(task) }
+        verify(exactly = 0) { taskRepository.createTask(any()) }
     }
 
     @Test
@@ -61,7 +61,7 @@ class CreateTaskUseCaseTest {
         val result = createTaskUseCase.createTask(task)
 
         assertEquals(expectedException, result.exceptionOrNull()?.message)
-        verify { taskRepository.createTask(task) }
+        verify(exactly = 0) { taskRepository.createTask(any()) }
     }
 
     @Test
@@ -76,7 +76,7 @@ class CreateTaskUseCaseTest {
         val result = createTaskUseCase.createTask(task)
 
         assertEquals(expectedException, result.exceptionOrNull()?.message)
-        verify { taskRepository.createTask(task) }
+        verify(exactly = 0) { taskRepository.createTask(any()) }
     }
 
 }

@@ -3,21 +3,21 @@ package org.example.logic.usecase.task
 import org.example.logic.entity.Task
 import org.example.logic.repository.TaskRepository
 
-class CreateTaskUseCase (
+class CreateTaskUseCase(
     private val taskRepository: TaskRepository
 ) {
     fun createTask(task: Task): Result<Unit> {
         return try {
             if (task.title.isEmpty()) {
-                failedException("Title must not be empty")
+                return failedException("Title must not be empty")
             }
 
             if (task.description.isEmpty()) {
-                failedException("Description must not be empty")
+                return failedException("Description must not be empty")
             }
 
             if (task.projectId == 0) {
-                failedException("Project ID cannot be zero")
+                return failedException("Project ID cannot be zero")
             }
 
             taskRepository.createTask(task)
