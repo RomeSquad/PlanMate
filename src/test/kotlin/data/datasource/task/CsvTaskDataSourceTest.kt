@@ -27,7 +27,7 @@ class CsvTaskDataSourceTest {
     fun setup() {
         csvFileReader = mockk()
         csvFileWriter = mockk()
-        csvTaskDataSource = CsvTaskDataSource(csvFileReader, csvFileWriter)
+        csvTaskDataSource = CsvTaskDataSource(csvFileReader, csvFileWriter, tasksFile)
     }
 
     @Test
@@ -81,7 +81,7 @@ class CsvTaskDataSourceTest {
                 "title1",
                 "description1",
                 "[P1, To-Do]",
-                "P1",
+                "1",
                 "U1",
                 "5",
                 "8"
@@ -91,7 +91,7 @@ class CsvTaskDataSourceTest {
                 "title2",
                 "description2",
                 "[P2, In-Progress]",
-                "P2",
+                "2",
                 "U2",
                 "5",
                 "8"
