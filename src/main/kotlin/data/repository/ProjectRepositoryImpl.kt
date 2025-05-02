@@ -11,11 +11,9 @@ class ProjectRepositoryImpl(
     private val projectDataSource: ProjectDataSource
 ) : ProjectRepository {
 
-    private var projects = mutableListOf<Project>()
+    private val projects by lazy { getAllProjects().getOrDefault(emptyList()).toMutableList()}
 
-    init {
-        projects += getAllProjects().getOrThrow()
-    }
+
 
     override fun insertProject(projectRequest: CreateProjectRequest): Result<CreateProjectResponse> {
         return projectRequest.toProject(getLatestProjectId()).run {
