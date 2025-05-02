@@ -8,5 +8,3 @@ interface StateDataSource {
     fun editState(stateId : String, newStateName: String)
     fun deleteState(id: String)
 }
-// stay
-// parsing
