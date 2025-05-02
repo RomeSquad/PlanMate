@@ -7,9 +7,7 @@ import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import java.util.*
 
-fun User.toCsvRow(): List<String> {
-    return listOf(userId.toString(), username, password, userRole.toString())
-}
+
 
 fun Project.toCsvRow(): List<String> {
     return listOf(
@@ -27,14 +25,7 @@ fun State.toCsvCell() = listOf(projectId, name).toString()
 val dateFormat = java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
 
 
-fun List<String>.fromCsvRowToUser(): User {
-    return User(
-        userId = this[0].toInt(),
-        username = this[1],
-        password = this[2],
-        userRole = UserRole.valueOf(this[3])
-    )
-}
+
 
 fun List<String>.fromCsvRowToProject(): Project {
     return Project(

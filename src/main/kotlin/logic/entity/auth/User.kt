@@ -6,9 +6,9 @@ data class User(
     override val username: String,
     override val password: String,
     override val userRole: UserRole,
-) : IUser
+) : UserProperties
 
-interface IUser {
+interface UserProperties {
     val userId: Int
     val username: String
     val password: String
