@@ -1,10 +1,9 @@
 package org.example.presentation.menus
 
-import org.koin.java.KoinJavaComponent.getKoin
 import presentation.App
 
 open class Menu(
-    open val actions: List<MenuAction>,
+    val actions: List<MenuAction>,
     val app: App
 ) {
 
@@ -13,7 +12,7 @@ open class Menu(
         return actions[index - 1]
     }
 
-    fun getActions(): List<MenuAction> = actions
+    fun getActionsList(): List<MenuAction> = actions
 
     /*
      *  You can use koin to get the menu you need. Example:
