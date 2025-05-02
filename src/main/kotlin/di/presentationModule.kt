@@ -1,11 +1,13 @@
 package org.example.di
 
+import org.example.presentation.action.InsertProjectMenuAction
 import org.example.presentation.menus.AdminMenu
 import org.example.presentation.menus.MainMenu
 import org.example.presentation.menus.MateMenu
 import org.koin.dsl.module
 import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
+import org.koin.core.qualifier.named
 import presentation.App
 import presentation.io.ConsoleInputReader
 import presentation.io.ConsoleWriter
@@ -20,31 +22,22 @@ val presentationModule = module {
 
     single { App(get(), get()) }
 
-    // region menu actions
-//    single<MenuAction>{ DeleteThisFileMenuAction(get()) }
-    // endregion
 
-    single<Menu> {
-        MainMenu(
-            listOf( // TODO: Add menu actions here
-            ), get()
+    single(named("mainMenu")) {
+        listOf<MenuAction>(
+            InsertProjectMenuAction(get())
         )
     }
 
-    single<Menu> {
-        MateMenu(
-            listOf( // TODO: Add menu actions here
-
-            ), get()
-        )
-    }
-    single<Menu> {
-        AdminMenu(
-            listOf( // TODO: Add menu actions here
-
-            ), get()
-        )
-    }
+//    single(named("mateMenu")) {
+//        listOf<MenuAction>(
+//        )
+//    }
+//
+//    single(named("adminMenu")) {
+//        listOf<MenuAction>(
+//        )
+//    }
 
 
 }
