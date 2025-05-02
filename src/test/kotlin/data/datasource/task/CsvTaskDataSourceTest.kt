@@ -1,6 +1,4 @@
 package data.datasource.task
-
-import data.utils.CustomFile
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -12,6 +10,7 @@ import org.example.data.utils.CsvFileWriter
 import org.example.logic.entity.State
 import org.example.logic.entity.Task
 import org.junit.jupiter.api.BeforeEach
+import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -21,13 +20,13 @@ class CsvTaskDataSourceTest {
     private lateinit var csvTaskDataSource: CsvTaskDataSource
     private lateinit var csvFileReader: CsvFileReader
     private lateinit var csvFileWriter: CsvFileWriter
-    private val tasksFile = CustomFile("tasks.csv")
+    private val tasksFile = File("tasks.csv")
 
     @BeforeEach
     fun setup() {
         csvFileReader = mockk()
         csvFileWriter = mockk()
-        csvTaskDataSource = CsvTaskDataSource(csvFileReader, csvFileWriter, tasksFile)
+        csvTaskDataSource = CsvTaskDataSource(csvFileReader, csvFileWriter)
     }
 
     @Test

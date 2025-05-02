@@ -1,19 +1,18 @@
 package org.example.data.datasource.task
 
-import data.utils.CustomFile
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.data.utils.fromCsvRowToTask
 import org.example.data.utils.toCsvRow
 import org.example.logic.entity.Task
+import java.io.File
 
 class CsvTaskDataSource (
     private val csvFileReader: CsvFileReader,
     private val csvFileWriter: CsvFileWriter,
-    private val tasksFile: CustomFile = CustomFile("tasks.csv")
 ): TaskDataSource {
 
-   // private val tasksFile = CustomFile("tasks.csv")
+    private val tasksFile = File("tasks.csv")
 
     override fun getTaskByIdFromFile(taskId: String): Result<Task> {
         return try {
