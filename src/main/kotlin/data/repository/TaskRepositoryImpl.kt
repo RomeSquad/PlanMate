@@ -38,6 +38,10 @@ class TaskRepositoryImpl(
         if (writeResult.isFailure) throw writeResult.exceptionOrNull()!!
     }
 
+    override fun getAllTasks(): Result<List<Task>> {
+        return taskDataSource.getAllTasks()
+    }
+
     override fun getTaskById(taskId: String): Result<Task> {
         return taskDataSource.getTaskByIdFromFile(taskId)
     }

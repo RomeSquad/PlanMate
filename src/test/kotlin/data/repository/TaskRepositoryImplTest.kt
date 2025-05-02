@@ -102,4 +102,19 @@ class TaskRepositoryImplTest {
 
         verify { taskDataSource.deleteTask(1, "task1") }
     }
+
+
+    @Test
+    fun `should return all tasks when calling getAllTasks`() {
+        val tasks = listOf(sampleTask, sampleTask.copy(id = "task2"))
+        every { taskDataSource.getAllTasks() } returns Result.success(tasks)
+
+        val result = taskRepository.getAllTasks()
+
+        assertTrue(result.isSuccess)
+        assertEquals(2, result.getOrNull()?.size)
+        assertEquals("task1", result.getOrNull()?.get(0)?.id)
+        assertEquals("task2", result.getOrNull()?.get(1)?.id)
+        verify { taskDataSource.getAllTasks() }
+    }
 }
