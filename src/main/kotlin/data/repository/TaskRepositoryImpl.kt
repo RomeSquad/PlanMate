@@ -17,11 +17,35 @@ class TaskRepositoryImpl(
         description: String,
         updatedAt: Long
     ) {
-        TODO("Not yet implemented")
+        val result = taskDataSource.getAllTasks()
+        if (result.isFailure) throw result.exceptionOrNull()!!
+
+        val tasks = result.getOrThrow().toMutableList()
+        val index = tasks.indexOfFirst { it.id == taskId }
+
+        if (index == -1) {
+            throw NoSuchElementException("Task with id $taskId not found")
+        }
+
+        val task = tasks[index]
+        tasks[index] = task.copy(
+            title = title,
+            description = description,
+            updatedAt = updatedAt
+        )
+
+        val writeResult = taskDataSource.setAllTasks(tasks)
+        if (writeResult.isFailure) throw writeResult.exceptionOrNull()!!
     }
 
     override fun getTaskById(taskId: String): Result<Task> {
-        TODO("Not yet implemented")
+        return taskDataSource.getTaskByIdFromFile(taskId)
+    }
+
+    override fun getTasksByProject(projectId: Int): List<Task> {
+        val result = taskDataSource.getAllTasks()
+        if (result.isFailure) throw result.exceptionOrNull()!!
+        return result.getOrThrow().filter { it.projectId == projectId }
     }
 
     override fun deleteTask(projectId: Int, taskId: String) {

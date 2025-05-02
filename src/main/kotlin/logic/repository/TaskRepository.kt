@@ -15,4 +15,6 @@ interface TaskRepository {
     fun deleteTask(projectId: Int, taskId: String)
 
     fun getTaskById (taskId: String): Result<Task>
+    fun getTasksByProject(projectId: Int): List<Task>
+
 }
