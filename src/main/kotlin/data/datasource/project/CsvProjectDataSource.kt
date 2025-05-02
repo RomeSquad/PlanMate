@@ -10,9 +10,9 @@ import java.io.File
 class CsvProjectDataSource(
     private val csvFileReader: CsvFileReader,
     private val csvFileWriter: CsvFileWriter,
+    private val projectsFile : File
 ) : ProjectDataSource {
 
-    private val projectsFile = File("project3.csv")
     override fun getAllProjects(): Result<List<Project>> {
         val data = csvFileReader.readCsv(projectsFile)
         println(data[0])
