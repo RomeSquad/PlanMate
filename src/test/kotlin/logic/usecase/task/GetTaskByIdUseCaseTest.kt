@@ -2,6 +2,7 @@ package logic.usecase.task
 
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import logic.usecase.createTask
 import org.example.data.datasource.task.TaskDataSource
 import org.example.logic.TaskNotFoundException
@@ -14,7 +15,6 @@ import org.junit.jupiter.api.assertThrows
 
 class GetTaskByIdUseCaseTest {
 
-    private lateinit var taskDataSource: TaskDataSource
     private lateinit var taskRepository: TaskRepository
     private lateinit var getTaskByIdUseCase: GetTaskByIdUseCase
 
@@ -31,26 +31,31 @@ class GetTaskByIdUseCaseTest {
 
         val result = getTaskByIdUseCase.getTaskById(taskId = task.id)
 
-        assertEquals(task, result)
+        assertTrue(result.isSuccess)
+        assertEquals(task, result.getOrNull())
+        verify { taskRepository.getTaskById(task.id) }
     }
 
     @Test
     fun `should throw TaskNotFoundException when not existing it`() {
         val taskId = "19"
-        every { taskDataSource.getTaskByIdFromFile(taskId = taskId) } throws TaskNotFoundException("task not found")
+        val exception = TaskNotFoundException("task not found")
+        every { taskRepository.getTaskById(taskId) } returns Result.failure(exception)
 
-        assertThrows<TaskNotFoundException> {
-            getTaskByIdUseCase.getTaskById(taskId)
-        }
+        val result = getTaskByIdUseCase.getTaskById(taskId)
+
+        assertTrue(result.isFailure)
+        assertEquals(exception, result.exceptionOrNull())
+        verify { taskRepository.getTaskById(taskId) }
     }
 
     @Test
-    fun `should throw TaskNotFoundException when id is empty`() {
-        val taskId = ""
-        every { taskDataSource.getTaskByIdFromFile(taskId) } throws TaskNotFoundException("task not found")
-
-        assertThrows<TaskNotFoundException> {
-            getTaskByIdUseCase.getTaskById(taskId)
+    fun `should throw IllegalArgumentException when id is blank`() {
+        val exception = assertThrows<IllegalArgumentException> {
+            getTaskByIdUseCase.getTaskById(" ")
         }
+
+        assertEquals("taskId must not be blank", exception.message)
     }
+
 }
