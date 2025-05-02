@@ -1,14 +1,19 @@
 package presentation
 
+import org.example.presentation.menus.MainMenu
 import org.example.presentation.menus.Menu
+import org.koin.java.KoinJavaComponent.getKoin
 import presentation.io.InputReader
 import presentation.io.UiDisplayer
 
 class App(
     private val uiDisplayer: UiDisplayer,
     private val inputReader: InputReader,
-    private var menu: Menu
-) {
+
+    ) {
+
+    private var menu: Menu = getKoin().get()
+
     fun start() {
         do {
             processUserMenuSelection()
