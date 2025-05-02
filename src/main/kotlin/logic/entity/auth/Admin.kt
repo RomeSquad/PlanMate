@@ -5,4 +5,4 @@ data class Admin(
     override val username: String,
     override val password: String,
     override val userRole: UserRole = UserRole.ADMIN
-) : User
+) : IUser
