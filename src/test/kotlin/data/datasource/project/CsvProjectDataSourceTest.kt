@@ -1,6 +1,5 @@
 package data.datasource.project
 
-import data.utils.CustomFile
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -16,13 +15,14 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.io.File
 import java.util.Locale
 
 class CsvProjectDataSourceTest{
     private lateinit var projectDataSource: CsvProjectDataSource
     private lateinit var csvFileReader: CsvFileReader
     private lateinit var csvFileWriter: CsvFileWriter
-    private val projectsFile = CustomFile("project3.csv")
+    private val projectsFile = File("project3.csv")
     private val dateFormat = java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
 
     @BeforeEach
