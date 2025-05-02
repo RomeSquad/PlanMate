@@ -37,5 +37,22 @@ class ProjectRepositoryImplTest {
         val projectResponse = projectRepository.insertProject(testProjectRequest)
         assertEquals(projectResponse.getOrNull(), testProjectResponse)
     }
+    @Test
+    fun `when request specific project by id then return valid project`() {
+        every { projectDataSource.getAllProjects() } returns Result.success(listOf(testProjectRequest.toProject(0)))
+        val projectResponse = projectRepository.getProjectById(1)
+        assertEquals(projectResponse.getOrNull()?.id, testProjectRequest.toProject(0).id)
+    }
+    @Test
+    fun `when request all projects then return valid projects`() {
+        val projectResponse = projectRepository.getAllProjects()
+        assertEquals(projectResponse.getOrNull(), emptyList<CreateProjectRequest>())
+    }
+    @Test
+    fun `when request specific project by invalid id then return exception`() {
+        assertThrows(Exception::class.java) {
+            projectRepository.getProjectById(2).getOrThrow()
+        }
+    }
 
 }

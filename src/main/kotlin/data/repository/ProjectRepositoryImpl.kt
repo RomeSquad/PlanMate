@@ -11,17 +11,19 @@ class ProjectRepositoryImpl(
     private val projectDataSource: ProjectDataSource
 ) : ProjectRepository {
 
-    private var projects = mutableListOf<Project>()
+    private val projects by lazy { getAllProjects().getOrDefault(emptyList()).toMutableList()}
 
-    init {
-        projects += getAllProjects().getOrThrow()
-    }
+
 
     override fun insertProject(projectRequest: CreateProjectRequest): Result<CreateProjectResponse> {
         return projectRequest.toProject(getLatestProjectId()).run {
             projects.add(this)
             Result.success(CreateProjectResponse(id))
         }
+    }
+
+    override fun getProjectById(id: Int): Result<Project> {
+        return projects.firstOrNull { it.id == id }?.let { Result.success(it) }?: Result.failure(Exception("Project not found"))
     }
 
     override fun getAllProjects(): Result<List<Project>> {
