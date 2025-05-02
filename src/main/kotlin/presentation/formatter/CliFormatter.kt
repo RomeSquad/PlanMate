@@ -90,15 +90,14 @@ class CliFormatter : Formatter {
     }
 
     fun verticalLayout(messages: List<String>, width: Int = 30, height: Int = 3): String {
-
         val output = StringBuilder()
         messages.map {
-            output.append(
+            output.appendLine(
                 rectangleLayout(
                     message = it,
                     width = width,
                     height = height,
-                    omitRightSideBorder = true
+                    omitBottomBorder = true
                 )
             )
         }
@@ -108,12 +107,12 @@ class CliFormatter : Formatter {
     fun horizontalLayout(messages: List<String>, width: Int = 30, height: Int = 3): String {
         val output = StringBuilder()
         messages.map {
-            output.appendLine(
+            output.append(
                 rectangleLayout(
                     message = it,
                     width = width,
                     height = height,
-                    omitBottomBorder = true
+                    omitRightSideBorder = true
                 )
             )
         }
