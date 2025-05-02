@@ -7,13 +7,17 @@ import presentation.io.UiDisplayer
 class App(
     private val uiDisplayer: UiDisplayer,
     private val inputReader: InputReader,
-    private val menu: Menu
+    private var menu: Menu
 ) {
     fun start() {
         do {
             processUserMenuSelection()
         } while (shouldContinue())
         uiDisplayer.displayMessage("Goodbye")
+    }
+
+    fun changeMenu(menu: Menu) {
+        this.menu = menu
     }
 
     private fun processUserMenuSelection() {
@@ -28,7 +32,7 @@ class App(
 
     private fun displayMenuAndExecuteAction() {
         uiDisplayer.displayMenu(menu.getActions())
-        val input = inputReader.readIntOrNull()?: throw IllegalArgumentException("Invalid input")
+        val input = inputReader.readIntOrNull() ?: throw IllegalArgumentException("Invalid input")
         val selectedAction = menu.getAction(input)
         selectedAction.execute(uiDisplayer, inputReader)
     }
