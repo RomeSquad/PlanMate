@@ -9,10 +9,11 @@ import org.example.logic.entity.Task
 
 class CsvTaskDataSource (
     private val csvFileReader: CsvFileReader,
-    private val csvFileWriter: CsvFileWriter
+    private val csvFileWriter: CsvFileWriter,
+    private val tasksFile: CustomFile = CustomFile("tasks.csv")
 ): TaskDataSource {
 
-    private val tasksFile = CustomFile("tasks.csv")
+   // private val tasksFile = CustomFile("tasks.csv")
 
     override fun getTaskByIdFromFile(taskId: String): Result<Task> {
         return try {
