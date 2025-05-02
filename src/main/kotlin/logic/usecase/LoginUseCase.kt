@@ -1,14 +1,13 @@
 package org.example.logic.usecase
 
 import org.example.logic.entity.auth.User
-import org.example.logic.entity.auth.UserRole
-import org.example.logic.repository.AuthenticationRepository
+import org.example.logic.repository.AuthRepository
 
 class LoginUseCase(
-    private val authenticationRepository: AuthenticationRepository
+    private val authRepository: AuthRepository
 ) {
     fun login(username: String, password: String): Result<User> {
-        return authenticationRepository.loginUser(username, password)
+        return authRepository.loginUser(username, password)
     }
 
 }
