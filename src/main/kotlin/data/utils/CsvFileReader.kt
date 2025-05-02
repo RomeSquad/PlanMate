@@ -1,12 +1,9 @@
 package org.example.data.utils
 
-import data.utils.CustomFile
+import java.io.File
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 
 interface CsvFileReader {
-    fun readCsv(
-        csvFile: CustomFile,
-        hasHeader: Boolean = true,
-        delimiter: Char? = ',',
-        skipEmptyLines: Boolean = true
-    ): List<List<String>>
+    fun readCsv(file: File, charset: Charset = StandardCharsets.UTF_8): List<List<String>>
 }

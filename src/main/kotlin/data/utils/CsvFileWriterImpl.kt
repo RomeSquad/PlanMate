@@ -1,31 +1,41 @@
 package org.example.data.utils
 
-import data.utils.CustomFile
-import java.nio.charset.StandardCharsets
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
+import java.nio.charset.Charset
 
 class CsvFileWriterImpl(
     private val validator: FileValidator = FileValidator()
-) : CvsFileWriter {
+) : CsvFileWriter {
     override fun writeCsv(
-        csvFile: CustomFile,
+        file: File,
         data: List<List<String>>?,
+        charset: Charset,
         header: List<String>?,
-        append: Boolean
+        append: Boolean,
+        allowedExtensions: Set<String>
     ) {
-        validator.validateFile(csvFile, isReadOperation = false, append = append)
-        if (data == null && header == null) {
-            return
-        }
-        validator.createParentDirsIfNeeded(csvFile.file)
-        val content = buildString {
-            header?.let { appendLine(it.joinToString(",")) }
-            data?.forEach { appendLine(it.joinToString(",")) }
-        }.trimEnd()
-        if (append && csvFile.file.exists()) {
-            csvFile.file.appendText("\n$content", csvFile.charset ?: StandardCharsets.UTF_8)
-        } else {
-            csvFile.file.writeText(content, csvFile.charset ?: StandardCharsets.UTF_8)
+        validator.validateFile(file, allowedExtensions, isReadOperation = false)
+
+        try {
+            BufferedWriter(FileWriter(file, charset, append)).use { writer ->
+                val shouldWriteHeader = !append || !file.exists()
+                if (shouldWriteHeader && header != null && header.isNotEmpty()) {
+                    writer.write(header.joinToString(","))
+                    writer.newLine()
+                }
+
+                data?.forEach { row ->
+                    if (row.isNotEmpty()) {
+                        writer.write(row.joinToString(","))
+                        writer.newLine()
+                    }
+                }
+            }
+        } catch (e: IOException) {
+            throw IOException("Failed to write file: ${file.absolutePath}", e)
         }
     }
-
 }
