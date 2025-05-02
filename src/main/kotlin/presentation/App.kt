@@ -1,5 +1,6 @@
 package presentation
 
+import org.example.presentation.menus.Menu
 import presentation.io.InputReader
 import presentation.io.UiDisplayer
 
@@ -27,7 +28,8 @@ class App(
 
     private fun displayMenuAndExecuteAction() {
         uiDisplayer.displayMenu(menu.getActions())
-        val selectedAction = menu.getAction(inputReader.readIntOrNull()) ?: return
+        val input = inputReader.readIntOrNull()?: throw IllegalArgumentException("Invalid input")
+        val selectedAction = menu.getAction(input)
         selectedAction.execute(uiDisplayer, inputReader)
     }
 
