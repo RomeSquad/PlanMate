@@ -15,7 +15,6 @@ class CsvProjectDataSource(
 
     override fun getAllProjects(): Result<List<Project>> {
         val data = csvFileReader.readCsv(projectsFile)
-        println(data[0])
         val projects = data.map { it.fromCsvRowToProject() }
         return Result.success(projects)
     }
