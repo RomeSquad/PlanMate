@@ -27,21 +27,21 @@ class CsvStateDataSource : StateDataSource {
         val stateIndex = line.split(",")
         return State(
             projectId = stateIndex.get(0),
-            name = stateIndex.get(1)
+            stateName = stateIndex.get(1)
         )
     }
 
     override fun addState(state: State) {
-        csvFile.appendText("${state.projectId},${state.name}\n")
+        csvFile.appendText("${state.projectId},${state.stateName}\n")
     }
 
-    override fun editState(id: String) {
+    override fun editState(id: String, newStateName: String) {
         val allStates = getAllStates().toMutableList()
         val index = allStates.indexOfFirst { it.projectId == id }
 
         if (index != -1) {
             val newName = "EditedName"
-            allStates[index] = allStates[index].copy(name = newName)
+            allStates[index] = allStates[index].copy(stateName = newName)
             saveAllStates(allStates)
         }
     }
@@ -54,7 +54,7 @@ class CsvStateDataSource : StateDataSource {
     private fun saveAllStates(states: List<State>) {
         csvFile.writeText("")
         states.forEach { state ->
-            csvFile.appendText("${state.projectId},${state.name}\n")
+            csvFile.appendText("${state.projectId},${state.stateName}\n")
         }
     }
 }
