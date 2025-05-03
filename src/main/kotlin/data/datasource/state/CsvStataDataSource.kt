@@ -31,11 +31,12 @@ class CsvStateDataSource : StateDataSource {
         )
     }
 
-    override fun addState(state: State) {
+    override fun addState(state: State):Boolean {
         csvFile.appendText("${state.projectId},${state.stateName}\n")
+        return true
     }
 
-    override fun editState(id: String, newStateName: String) {
+    override fun editState(id: String, newStateName: String):Boolean {
         val allStates = getAllStates().toMutableList()
         val index = allStates.indexOfFirst { it.projectId == id }
 
@@ -44,11 +45,13 @@ class CsvStateDataSource : StateDataSource {
             allStates[index] = allStates[index].copy(stateName = newName)
             saveAllStates(allStates)
         }
+        return true
     }
 
-    override fun deleteState(id: String) {
+    override fun deleteState(id: String):Boolean {
         val updatedStates = getAllStates().filterNot { it.projectId == id }
         saveAllStates(updatedStates)
+        return true
     }
 
     private fun saveAllStates(states: List<State>) {

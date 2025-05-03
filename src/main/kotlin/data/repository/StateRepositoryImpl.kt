@@ -8,17 +8,17 @@ class StateRepositoryImpl(private val stateDataSource: StateDataSource) : StateR
         return stateDataSource.getAllStates()
     }
 
-    override fun addState(state: State) {
+    override fun addState(state: State): Boolean {
         return stateDataSource.addState(state)
     }
 
-    override fun editState(stateId: String, newStateName: String) {
+    override fun editState(stateId: String, newStateName: String):Boolean {
         return stateDataSource.editState(stateId,newStateName)
     }
 
 
-    override fun deleteState(id: String) {
+    override fun deleteState(id: String):Boolean {
         stateDataSource.deleteState(id)
+        return true
     }
 }
-//
