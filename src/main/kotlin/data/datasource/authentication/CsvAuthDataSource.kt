@@ -9,13 +9,12 @@ import java.io.File
 
 class CsvAuthDataSource(
     private val csvFileReader: CsvFileReader,
-    private val csvFileWriter: CsvFileWriter
+    private val csvFileWriter: CsvFileWriter,
+    private val userFile : File
 ) : AuthDataSource {
 
-    private val userFile = File("users.csv")
     override fun getAllUsers(): Result<List<User>> {
         val data = csvFileReader.readCsv(userFile)
-        println(data[0])
         val users = data.map { it.fromCsvRowToUser() }
         return Result.success(users)
     }

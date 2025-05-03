@@ -1,13 +1,11 @@
 package org.example.di
 
 import org.example.presentation.action.InsertProjectMenuAction
-import org.example.presentation.menus.AdminMenu
-import org.example.presentation.menus.MainMenu
-import org.example.presentation.menus.MateMenu
-import org.koin.dsl.module
-import org.example.presentation.menus.Menu
+import org.example.presentation.action.InsertUserMenuAction
+import org.example.presentation.action.LoginMenuAction
 import org.example.presentation.menus.MenuAction
 import org.koin.core.qualifier.named
+import org.koin.dsl.module
 import presentation.App
 import presentation.io.ConsoleInputReader
 import presentation.io.ConsoleWriter
@@ -29,15 +27,18 @@ val presentationModule = module {
         )
     }
 
-//    single(named("mateMenu")) {
-//        listOf<MenuAction>(
-//        )
-//    }
-//
-//    single(named("adminMenu")) {
-//        listOf<MenuAction>(
-//        )
-//    }
+    single(named("mateMenu")) {
+        listOf<MenuAction>(
+            LoginMenuAction(get())
+        )
+    }
+
+    single(named("adminMenu")) {
+        listOf<MenuAction>(
+            InsertUserMenuAction(get()),
+            LoginMenuAction(get())
+        )
+    }
 
 
 }
