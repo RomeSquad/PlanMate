@@ -10,13 +10,12 @@ import java.io.File
 class CsvTaskDataSource (
     private val csvFileReader: CsvFileReader,
     private val csvFileWriter: CsvFileWriter,
+    private val taskFile: File
 ): TaskDataSource {
-
-    private val tasksFile = File("tasks.csv")
 
     override fun getTaskByIdFromFile(taskId: String): Result<Task> {
         return try {
-            val data = csvFileReader.readCsv(tasksFile)
+            val data = csvFileReader.readCsv(taskFile)
             val tasks = data.map { it.fromCsvRowToTask() }
             val task = tasks.firstOrNull { it.id == taskId }
                 ?: return Result.failure(NoSuchElementException("Not founded for this id"))
@@ -27,7 +26,7 @@ class CsvTaskDataSource (
     }
 
     override fun getAllTasks(): Result<List<Task>> {
-        val data = csvFileReader.readCsv(tasksFile)
+        val data = csvFileReader.readCsv(taskFile)
         println(data[0])
         val tasks = data.map { it.fromCsvRowToTask() }
         return Result.success(tasks)
@@ -36,7 +35,7 @@ class CsvTaskDataSource (
     override fun setAllTasks(tasks: List<Task>): Result<Unit> {
         tasks.forEach { task ->
             val row = task.toCsvRow()
-            csvFileWriter.writeCsv(tasksFile, listOf(row))
+            csvFileWriter.writeCsv(taskFile, listOf(row))
         }
         return Result.success(Unit)
     }
@@ -44,7 +43,7 @@ class CsvTaskDataSource (
     override fun createTask(task: Task): Result<Unit> {
         return try {
             val row = task.toCsvRow()
-            csvFileWriter.writeCsv(tasksFile, listOf(row))
+            csvFileWriter.writeCsv(taskFile, listOf(row))
             Result.success(Unit)
         } catch (exception: Exception) {
             Result.failure(exception)
