@@ -7,8 +7,19 @@ import org.example.logic.repository.ChangeHistoryRepository
 class ChangeHistoryRepositoryImpl(private val dataSource: ProjectDataSource
 ) : ChangeHistoryRepository {
 
-    override fun getHistoryByProjectId(projectId: Int): Result<List<Project>> {
-        TODO("Not yet implemented")
+    override fun getHistoryByProjectId(projectId: Int): Result<Project> {
+
+            return dataSource.getAllProjects().fold(
+                onSuccess = { list ->
+                    list.firstOrNull { it.id == projectId }
+                        ?.let { Result.success(it) }
+                        ?: Result.failure(NoSuchElementException("Project $projectId not found"))
+                },
+                onFailure = { exception ->
+                    Result.failure(exception)
+                }
+            )
+        }
+
     }
 
-}
