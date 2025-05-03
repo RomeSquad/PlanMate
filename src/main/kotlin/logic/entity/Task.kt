@@ -5,7 +5,7 @@ data class Task(
     var title: String,
     var description: String,
     var state: State,
-    val projectId: String,
+    val projectId: Int,
     val createdBy: String,
     val createdAt: Long,
     var updatedAt: Long

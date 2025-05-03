@@ -1,0 +1,39 @@
+package logic.usecase
+
+import io.mockk.every
+import io.mockk.mockk
+import org.example.logic.entity.auth.User
+import org.example.logic.entity.auth.UserRole
+import org.example.logic.repository.AuthRepository
+import org.example.logic.usecase.InsertUserUseCase
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import kotlin.test.Test
+
+class InsertUserUseCaseTest {
+
+    private val authRepository: AuthRepository = mockk()
+    private val insertUserUseCase = InsertUserUseCase(authRepository)
+
+    @Test
+    fun `should insertUser return user when authRepository returns successful insertion`() {
+        // Given
+        val username = "amr"
+        val password = "password"
+        val userRole = UserRole.ADMIN
+        val expectedUser = User(
+            userId = 1,
+            username = username,
+            password = "5f4dcc3b5aa765d61d8327deb882cf99",
+            userRole = userRole
+        )
+        every { authRepository.insertUser(username, password, userRole) } returns Result.success(expectedUser)
+
+        // When
+        val result = insertUserUseCase.insertUser(username, password, userRole)
+
+        // Then
+        assertTrue(result.isSuccess)
+        assertEquals(expectedUser, result.getOrThrow())
+    }
+}
