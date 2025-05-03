@@ -29,6 +29,11 @@ class ProjectRepositoryImpl(
     override fun getAllProjects(): Result<List<Project>> {
         return projectDataSource.getAllProjects()
     }
+
+    override fun saveAllProjects(): Result<Unit> {
+        return projectDataSource.saveAllProjects(projects)
+    }
+
     private fun getLatestProjectId() = projects.lastOrNull()?.id ?: 0
 
 }
