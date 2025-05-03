@@ -54,5 +54,12 @@ class ProjectRepositoryImplTest {
             projectRepository.getProjectById(2).getOrThrow()
         }
     }
+    @Test
+    fun `when save all projects then return success`() {
+        every { projectDataSource.saveAllProjects(any()) } returns Result.success(Unit)
+        val projectResponse = projectRepository.saveAllProjects()
+        assertEquals(projectResponse.getOrNull(), Unit)
+    }
+
 
 }
