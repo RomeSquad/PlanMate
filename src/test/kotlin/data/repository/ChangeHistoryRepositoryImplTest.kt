@@ -37,10 +37,11 @@ class ChangeHistoryRepositoryImplTest() {
         assertEquals(expected, result.getOrNull())
 
     }
+
     @Test
-    fun ` should return failure when project id is not exist`(){
+    fun ` should return failure when project id is not exist`() {
         //given
-        val  projectID= 123
+        val projectID = 123
         val expected = FakeChangeHistoryData.firstOrNull { it.id == projectID }
         every { projectDataSource.getAllProjects() } returns Result.success(FakeChangeHistoryData)
 
@@ -48,36 +49,36 @@ class ChangeHistoryRepositoryImplTest() {
         val result = changeHistoryRepository.getHistoryByProjectId(projectID)
 
         //then
-        assertEquals(expected,result.getOrNull())
+        assertEquals(expected, result.getOrNull())
     }
 
     @Test
-    fun `should return failure exception when data source faile`(){
+    fun `should return failure exception when data source failure`() {
 
         //given
-        val projectID =1
-        val exception =NoSuchElementException()
+        val projectID = 1
+        val exception = NoSuchElementException()
         every { projectDataSource.getAllProjects() } returns Result.failure(exception)
 
         //when
-        val result =changeHistoryRepository.getHistoryByProjectId(projectID)
+        val result = changeHistoryRepository.getHistoryByProjectId(projectID)
 
         //then
-        assertEquals(exception,result.exceptionOrNull())
+        assertEquals(exception, result.exceptionOrNull())
 
     }
 
     //helper
     fun getFakeChangeHistoryData(): List<Project> {
-
+        val fakeDate = Date(1234)
         return listOf(
             Project(
                 id = 1,
                 name = "Project One",
                 description = "First test project",
                 changeHistory = listOf(
-                    ChangeHistory("1", "T1", "U1", Date(), "Created project"),
-                    ChangeHistory("1", "T2", "U1", Date(), "Edited project")
+                    ChangeHistory("1", "T1", "U1", fakeDate, "Created project"),
+                    ChangeHistory("1", "T2", "U1", fakeDate, "Edited project")
                 ),
                 state = org.example.logic.entity.State("1", "InProgress")
             ),
@@ -86,7 +87,7 @@ class ChangeHistoryRepositoryImplTest() {
                 name = "Project Two",
                 description = "Second test project",
                 changeHistory = listOf(
-                    ChangeHistory("2", "T3", "U2", Date(), "Created second project")
+                    ChangeHistory("2", "T3", "U2", fakeDate, "Created second project")
                 ),
                 state = org.example.logic.entity.State("2", "Completed")
             ),
