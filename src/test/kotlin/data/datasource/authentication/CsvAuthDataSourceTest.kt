@@ -27,7 +27,7 @@ class CsvAuthDataSourceTest {
     fun setup() {
         csvFileReader = mockk()
         csvFileWriter = mockk()
-        authDataSource = CsvAuthDataSource(csvFileReader, csvFileWriter)
+        authDataSource = CsvAuthDataSource(csvFileReader, csvFileWriter,usersFile)
     }
 
     @Test

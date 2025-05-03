@@ -8,4 +8,5 @@ interface ProjectRepository {
     fun insertProject(projectRequest: CreateProjectRequest): Result<CreateProjectResponse>
     fun getProjectById(id: Int): Result<Project>
     fun getAllProjects(): Result<List<Project>>
+    fun saveAllProjects(): Result<Unit>
 }
