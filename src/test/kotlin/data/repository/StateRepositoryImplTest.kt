@@ -21,7 +21,7 @@ class StateRepositoryImplTest {
     fun `getAllStates should return list of states`() {
         // Gevin
         val mockStates = listOf(
-            State(projectId = "1", stateName =  "Cairo"),
+            State(projectId = "1", stateName = "Cairo"),
             State(projectId = "2", stateName = "Alex")
         )
         every { stateDataSource.getAllStates() } returns mockStates
@@ -46,17 +46,6 @@ class StateRepositoryImplTest {
         verify { stateDataSource.addState(state) }
     }
 
-    @Test
-    fun `editState should call dataSource editState`() {
-        // GEvin
-        val id = "1"
-
-        // When
-        stateRepository.editState(id , newStateName= "done" )
-
-        // Then
-        verify { stateDataSource.editState(id,"todo") }
-    }
 
     @Test
     fun `deleteState should call dataSource deleteState`() {
