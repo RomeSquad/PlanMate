@@ -7,7 +7,7 @@ import org.example.logic.entity.Project
 import org.example.logic.entity.toProject
 import org.example.logic.repository.ProjectRepository
 
-abstract class ProjectRepositoryImpl(
+ class ProjectRepositoryImpl(
     private val projectDataSource: ProjectDataSource
 ) : ProjectRepository {
 
