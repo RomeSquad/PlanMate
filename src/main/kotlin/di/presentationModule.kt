@@ -6,6 +6,7 @@ import org.koin.dsl.module
 import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
 import org.koin.core.qualifier.named
+import org.koin.dsl.module
 import presentation.App
 import presentation.io.ConsoleInputReader
 import presentation.io.ConsoleWriter
@@ -26,15 +27,17 @@ val presentationModule = module {
 //        )
 //    }
 
+
     single(named("mateMenuActions")) {
         listOf<MenuAction>(
-            InsertProjectMenuAction(projectUseCase = get(), description = "this is mate", menu = get())
+            LoginMenuAction(get())
         )
     }
 
     single(named("adminMenuActions")) {
         listOf<MenuAction>(
-            InsertProjectMenuAction(projectUseCase = get(), menu = get())
+            InsertProjectMenuAction(projectUseCase = get(), menu = get()),
+            LoginMenuAction(get())
         )
     }
 
