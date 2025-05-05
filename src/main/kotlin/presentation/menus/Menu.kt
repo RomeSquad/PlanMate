@@ -1,14 +1,11 @@
 package org.example.presentation.menus
 
-import org.example.presentation.action.ChooseRoleUseCase
-import org.koin.core.qualifier.named
-import org.koin.java.KoinJavaComponent.getKoin
-import presentation.App
+import org.example.presentation.action.ChooseRoleMenuAction
 
 class Menu {
 
     private var actions: List<MenuAction> = listOf<MenuAction>(
-        ChooseRoleUseCase(menu= this)
+        ChooseRoleMenuAction(menu= this)
     )
 
     fun getAction(index: Int): MenuAction {

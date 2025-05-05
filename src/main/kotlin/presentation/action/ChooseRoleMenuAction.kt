@@ -1,6 +1,5 @@
 package org.example.presentation.action
 
-import org.example.logic.usecase.InsertProjectUseCase
 import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
 import org.koin.core.qualifier.named
@@ -8,7 +7,7 @@ import org.koin.java.KoinJavaComponent.getKoin
 import presentation.io.InputReader
 import presentation.io.UiDisplayer
 
-class ChooseRoleUseCase(
+class ChooseRoleMenuAction(
     override val description: String = "Choose your role",
     override val menu: Menu
 ) : MenuAction {

@@ -1,13 +1,11 @@
 package org.example.di
 
-import org.example.presentation.action.ChooseRoleUseCase
 import org.example.presentation.action.InsertProjectMenuAction
 import org.example.presentation.action.LoginMenuAction
 import org.koin.dsl.module
 import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
 import org.koin.core.qualifier.named
-import org.koin.dsl.module
 import presentation.App
 import presentation.io.ConsoleInputReader
 import presentation.io.ConsoleWriter
