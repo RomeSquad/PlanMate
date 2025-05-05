@@ -1,9 +1,6 @@
 package data.datasource.task
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.verify
+
+import io.mockk.*
 import org.example.data.datasource.task.CsvTaskDataSource
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
@@ -26,7 +23,7 @@ class CsvTaskDataSourceTest {
     fun setup() {
         csvFileReader = mockk()
         csvFileWriter = mockk()
-        csvTaskDataSource = CsvTaskDataSource(csvFileReader, csvFileWriter)
+        csvTaskDataSource = CsvTaskDataSource(csvFileReader, csvFileWriter, tasksFile)
     }
 
     @Test
