@@ -7,7 +7,7 @@ import org.example.logic.entity.Project
 import org.example.logic.entity.toProject
 import org.example.logic.repository.ProjectRepository
 
-class ProjectRepositoryImpl(
+ class ProjectRepositoryImpl(
     private val projectDataSource: ProjectDataSource
 ) : ProjectRepository {
 
@@ -21,7 +21,15 @@ class ProjectRepositoryImpl(
             Result.success(CreateProjectResponse(id))
         }
     }
-
+    override fun editProject(project: Project): Result<Unit> {
+        val index = projects.indexOfFirst { it.id == project.id }
+        if (index != -1) {
+            projects[index] = project
+        } else {
+            throw Exception("Project with id ${project.id} not found")
+        }
+        return TODO("Provide the return value")
+    }
     override fun getProjectById(id: Int): Result<Project> {
         return projects.firstOrNull { it.id == id }?.let { Result.success(it) }?: Result.failure(Exception("Project not found"))
     }
