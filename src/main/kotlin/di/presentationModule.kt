@@ -1,9 +1,7 @@
 package org.example.di
 
+import org.example.presentation.action.ChooseRoleUseCase
 import org.example.presentation.action.InsertProjectMenuAction
-import org.example.presentation.menus.AdminMenu
-import org.example.presentation.menus.MainMenu
-import org.example.presentation.menus.MateMenu
 import org.koin.dsl.module
 import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
@@ -20,24 +18,27 @@ val presentationModule = module {
     single<InputReader> { ConsoleInputReader() }
     single<UiDisplayer> { ConsoleWriter() }
 
-    single { App(get(), get()) }
+    single<Menu> { Menu() }
 
+//    single(named("mainMenuActions")) {
+//        listOf<MenuAction>(
+//            ChooseRoleUseCase(menu = get())
+//        )
+//    }
 
-    single(named("mainMenu")) {
+    single(named("mateMenuActions")) {
         listOf<MenuAction>(
-            InsertProjectMenuAction(get())
+            InsertProjectMenuAction(projectUseCase = get(), description = "this is mate", menu = get())
         )
     }
 
-//    single(named("mateMenu")) {
-//        listOf<MenuAction>(
-//        )
-//    }
-//
-//    single(named("adminMenu")) {
-//        listOf<MenuAction>(
-//        )
-//    }
+    single(named("adminMenuActions")) {
+        listOf<MenuAction>(
+            InsertProjectMenuAction(projectUseCase = get(), menu = get())
+        )
+    }
 
 
+
+    single { App(get(), get(), get()) }
 }
