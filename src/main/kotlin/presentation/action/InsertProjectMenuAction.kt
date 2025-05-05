@@ -1,8 +1,7 @@
 package org.example.presentation.action
 
 import org.example.logic.entity.CreateProjectRequest
-import org.example.logic.usecase.InsertProjectUseCase
-import org.example.logic.usecase.InsertUserUseCase
+import org.example.logic.usecase.project.InsertProjectUseCase
 import org.example.presentation.menus.MenuAction
 import presentation.io.InputReader
 import presentation.io.UiDisplayer

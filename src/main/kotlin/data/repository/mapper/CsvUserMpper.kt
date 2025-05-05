@@ -1,4 +1,4 @@
-package org.example.data.utils
+package org.example.data.repository.mapper
 
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
