@@ -37,6 +37,6 @@ fun CreateProjectRequest.toProject(lastId: Int) =
         ),
         state = State(
             projectId = (lastId + 1).toString(),
-            name = "InProgress"
+            stateName = "InProgress"
         )
     )
