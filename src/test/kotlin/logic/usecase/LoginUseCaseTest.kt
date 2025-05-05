@@ -5,7 +5,7 @@ import io.mockk.mockk
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.repository.AuthRepository
-import org.example.logic.usecase.LoginUseCase
+import org.example.logic.usecase.auth.LoginUseCase
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import kotlin.test.Test

@@ -1,10 +1,10 @@
-package org.example.data.utils
+package org.example.data.repository.mapper
 
+import org.example.data.utils.ParserImpl
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
 import org.example.logic.entity.State
-import org.example.logic.entity.auth.User
-import org.example.logic.entity.auth.UserRole
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -22,7 +22,7 @@ fun Project.toCsvRow(): List<String> {
 fun ChangeHistory.toCsvCell() = listOf(projectID, taskID, authorID, changeDescription, changeDate).toString()
 
 fun State.toCsvCell() = listOf(projectId, name).toString()
-val dateFormat = java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
+val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
 
 
 
