@@ -2,6 +2,7 @@ package org.example.di
 
 import org.example.presentation.action.ChooseRoleUseCase
 import org.example.presentation.action.InsertProjectMenuAction
+import org.example.presentation.action.LoginMenuAction
 import org.koin.dsl.module
 import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
@@ -30,14 +31,14 @@ val presentationModule = module {
 
     single(named("mateMenuActions")) {
         listOf<MenuAction>(
-            LoginMenuAction(get())
+            LoginMenuAction(get(), menu = get()),
         )
     }
 
     single(named("adminMenuActions")) {
         listOf<MenuAction>(
             InsertProjectMenuAction(projectUseCase = get(), menu = get()),
-            LoginMenuAction(get())
+            LoginMenuAction(get(), menu = get()),
         )
     }
 

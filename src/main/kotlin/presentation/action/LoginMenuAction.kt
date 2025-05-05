@@ -1,6 +1,7 @@
 package org.example.presentation.action
 
 import org.example.logic.usecase.LoginUseCase
+import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
 import presentation.io.InputReader
 import presentation.io.UiDisplayer
@@ -8,6 +9,7 @@ import presentation.io.UiDisplayer
 class LoginMenuAction(
     private val loginUseCase: LoginUseCase,
     override val description: String = "Login",
+    override var menu: Menu,
 ) : MenuAction {
     override fun execute(ui: UiDisplayer, inputReader: InputReader) {
 

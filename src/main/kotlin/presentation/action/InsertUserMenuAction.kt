@@ -2,6 +2,7 @@ package org.example.presentation.action
 
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.usecase.InsertUserUseCase
+import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
 import presentation.io.InputReader
 import presentation.io.UiDisplayer
@@ -9,6 +10,7 @@ import presentation.io.UiDisplayer
 class InsertUserMenuAction(
     private val insertUserUseCase: InsertUserUseCase,
     override val description: String = "Insert User",
+    override var menu: Menu,
 ) : MenuAction {
     override fun execute(ui: UiDisplayer, inputReader: InputReader) {
 
