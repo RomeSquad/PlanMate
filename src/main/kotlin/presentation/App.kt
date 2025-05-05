@@ -1,7 +1,6 @@
 package presentation
 
-import org.example.presentation.action.EditProjectMenuAction
-import org.example.presentation.action.InsertProjectMenuAction
+
 import org.example.presentation.menus.MainMenu
 import org.example.presentation.menus.Menu
 import org.koin.core.qualifier.named
@@ -18,13 +17,6 @@ class App(
     private var menu: Menu = MainMenu(getKoin().get((named("mainMenu"))), this)
 
     fun start() {
-       menu= MainMenu(
-            actions = listOf(
-                InsertProjectMenuAction(getKoin().get()),
-                EditProjectMenuAction(getKoin().get())
-            ),
-            app = this
-        )
 
         do {
             processUserMenuSelection()
