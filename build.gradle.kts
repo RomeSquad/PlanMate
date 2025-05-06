@@ -36,7 +36,7 @@ dependencies {
     implementation(platform("org.mongodb:mongodb-driver-bom:5.4.0"))
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine")
     implementation("org.mongodb:bson-kotlinx:5.4.0")
-    implementation("ch.qos.logback:logback-classic:1.2.11")
+//    implementation("ch.qos.logback:logback-classic:1.2.11")
 }
 
 tasks.test {
