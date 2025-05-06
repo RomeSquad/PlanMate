@@ -11,7 +11,7 @@ class InsertProjectMenuAction(
     override val description: String = "Create new Project"
 ) : MenuAction {
 
-    override fun execute(ui: UiDisplayer, inputReader: InputReader) {
+    override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
         ui.displayMessage("Enter project name:")
         val projectName = inputReader.readString()
 

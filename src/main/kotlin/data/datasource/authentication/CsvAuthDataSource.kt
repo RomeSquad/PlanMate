@@ -13,13 +13,13 @@ class CsvAuthDataSource(
     private val userFile : File
 ) : AuthDataSource {
 
-    override fun getAllUsers(): Result<List<User>> {
+    override suspend fun getAllUsers(): Result<List<User>> {
         val data = csvFileReader.readCsv(userFile)
         val users = data.map { it.fromCsvRowToUser() }
         return Result.success(users)
     }
 
-    override fun saveAllUsers(users: List<User>): Result<Unit> {
+    override suspend fun saveAllUsers(users: List<User>): Result<Unit> {
         users.forEach { user ->
             val csvRow = user.toCsvRow()
             csvFileWriter.writeCsv(userFile, listOf(csvRow))

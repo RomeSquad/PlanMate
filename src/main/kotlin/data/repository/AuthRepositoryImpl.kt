@@ -1,5 +1,6 @@
 package org.example.data.repository
 
+import kotlinx.coroutines.runBlocking
 import org.example.data.datasource.authentication.AuthDataSource
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
@@ -13,10 +14,12 @@ class AuthRepositoryImpl(
     private var users = mutableListOf<User>()
 
     init {
-        users += getAllUsers().getOrThrow()
+        runBlocking {
+            users += getAllUsers().getOrThrow()
+        }
     }
 
-    override fun insertUser(username: String, password: String, userRole: UserRole): Result<User> {
+    override suspend fun insertUser(username: String, password: String, userRole: UserRole): Result<User> {
 
 
         checkUserNameAndPassword(username, password).onFailure { return Result.failure(it) }
@@ -33,17 +36,19 @@ class AuthRepositoryImpl(
         return authDataSource.saveAllUsers(users).map { newUser }
     }
 
-    override fun loginUser(username: String, password: String): Result<User> {
+    override suspend fun loginUser(username: String, password: String): Result<User> {
 
         checkUserNameAndPassword(username, password).onFailure { return Result.failure(it) }
         validPassword(password).onFailure { return Result.failure(it) }
 
-        val user = users.find { it.username == username } ?: return Result.failure(Exception("User not found"))
+        val hashedPassword = hashPassword(password)
+
+        val user = users.find { it.username == username && it.password == hashedPassword } ?: return Result.failure(Exception("User not found"))
         return Result.success(user)
 
     }
 
-    override fun getAllUsers(): Result<List<User>> {
+    override suspend fun getAllUsers(): Result<List<User>> {
         return authDataSource.getAllUsers()
     }
 

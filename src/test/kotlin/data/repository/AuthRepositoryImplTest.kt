@@ -1,7 +1,8 @@
 package data.repository
 
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.example.data.datasource.authentication.AuthDataSource
 import org.example.data.repository.AuthRepositoryImpl
 import org.example.logic.entity.auth.User
@@ -17,13 +18,13 @@ class AuthRepositoryImplTest {
     @BeforeEach
     fun setup() {
         authDataSource = mockk()
-        every { authDataSource.getAllUsers() } returns Result.success(emptyList())
+        coEvery { authDataSource.getAllUsers() } returns Result.success(emptyList())
         authRepository = AuthRepositoryImpl(authDataSource)
     }
 
     // region success
     @Test
-    fun `should return user info when insertUser with valid user`() {
+    fun `should return user info when insertUser with valid user`() = runTest {
 
         // Given
         val username = "amr"
@@ -31,7 +32,7 @@ class AuthRepositoryImplTest {
         val userRole = UserRole.ADMIN
         val expectedUser =
             User(userId = 1, username = username, password = "5f4dcc3b5aa765d61d8327deb882cf99", userRole = userRole)
-        every { authDataSource.saveAllUsers(any()) } returns Result.success(Unit)
+        coEvery { authDataSource.saveAllUsers(any()) } returns Result.success(Unit)
 
         // When
         val result = authRepository.insertUser(username, password, userRole)
@@ -42,15 +43,15 @@ class AuthRepositoryImplTest {
     }
 
     @Test
-    fun `should return user info when login with valid user`() {
+    fun `should return user info when login with valid user`() = runTest {
 
         // Given
         val username = "amr"
         val password = "password"
 
-        val expectedUser = User(userId = 1, username = username, password = "password", userRole = UserRole.MATE)
+        val expectedUser = User(userId = 1, username = username, password = "5f4dcc3b5aa765d61d8327deb882cf99", userRole = UserRole.MATE)
 
-        every { authDataSource.getAllUsers() } returns Result.success(listOf(expectedUser))
+        coEvery { authDataSource.getAllUsers() } returns Result.success(listOf(expectedUser))
 
         authRepository = AuthRepositoryImpl(authDataSource)
 
@@ -63,13 +64,13 @@ class AuthRepositoryImplTest {
     }
 
     @Test
-    fun `should return list when call getAllUsers of users`() {
+    fun `should return list when call getAllUsers of users`() = runTest {
         // Arrange
         val users = listOf(
             User(userId = 1, username = "amr", password = "password", userRole = UserRole.MATE),
             User(userId = 2, username = "nasser", password = "password", userRole = UserRole.ADMIN)
         )
-        every { authDataSource.getAllUsers() } returns Result.success(users)
+        coEvery { authDataSource.getAllUsers() } returns Result.success(users)
 
         authRepository = AuthRepositoryImpl(authDataSource)
 
@@ -85,7 +86,7 @@ class AuthRepositoryImplTest {
     // region failure
 
     @Test
-    fun `should insertUser return fail when username already exists`() {
+    fun `should insertUser return fail when username already exists`() = runTest {
         // Given
         val username = "amr"
         val password = "password"
@@ -98,7 +99,7 @@ class AuthRepositoryImplTest {
             password = "5f4dcc3b5aa765d61d8327deb882cf99",
             userRole = UserRole.ADMIN
         )
-        every { authDataSource.getAllUsers() } returns Result.success(listOf(existingUser))
+        coEvery { authDataSource.getAllUsers() } returns Result.success(listOf(existingUser))
 
 
         // When
@@ -111,7 +112,7 @@ class AuthRepositoryImplTest {
 
 
     @Test
-    fun `should insertUser return fail when insert empty username`() {
+    fun `should insertUser return fail when insert empty username`() = runTest {
 
         // Given
         val username = ""
@@ -128,7 +129,7 @@ class AuthRepositoryImplTest {
     }
 
     @Test
-    fun `should insertUser return fail when insert empty password`() {
+    fun `should insertUser return fail when insert empty password`() = runTest {
 
         // Given
         val username = "amr"
@@ -145,7 +146,7 @@ class AuthRepositoryImplTest {
     }
 
     @Test
-    fun `should insertUser return fail when password is shorter than 6 characters`() {
+    fun `should insertUser return fail when password is shorter than 6 characters`() = runTest {
         // Given
         val username = "amr"
         val password = "pass"
@@ -159,7 +160,7 @@ class AuthRepositoryImplTest {
     }
 
     @Test
-    fun `should login return fail when insert empty username`() {
+    fun `should login return fail when insert empty username`() = runTest {
 
         // Given
         val username = ""
@@ -176,7 +177,7 @@ class AuthRepositoryImplTest {
     }
 
     @Test
-    fun `should login return fail when insert empty password`() {
+    fun `should login return fail when insert empty password`() = runTest {
 
         // Given
         val username = "amr"
@@ -192,7 +193,7 @@ class AuthRepositoryImplTest {
     }
 
     @Test
-    fun `should login return fail when password is shorter than 6 characters`() {
+    fun `should login return fail when password is shorter than 6 characters`() = runTest {
         // Given
         val username = "amr"
         val password = "pass"
@@ -207,7 +208,7 @@ class AuthRepositoryImplTest {
 
 
     @Test
-    fun `should loginUser  return user not found when username does not exist`() {
+    fun `should loginUser  return user not found when username does not exist`() = runTest {
         // Given
         val username = "amr"
         val password = "password"

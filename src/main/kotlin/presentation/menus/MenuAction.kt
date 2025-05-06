@@ -6,7 +6,7 @@ import presentation.io.UiDisplayer
 interface MenuAction {
     val description: String
 
-    fun execute (
+    suspend fun execute (
         ui: UiDisplayer,
         inputReader: InputReader
     )
