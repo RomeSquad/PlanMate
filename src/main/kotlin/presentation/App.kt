@@ -1,20 +1,14 @@
 package presentation
 
-
-import org.example.presentation.menus.MainMenu
 import org.example.presentation.menus.Menu
-import org.koin.core.qualifier.named
-import org.koin.java.KoinJavaComponent.getKoin
 import presentation.io.InputReader
 import presentation.io.UiDisplayer
 
 class App(
     private val uiDisplayer: UiDisplayer,
     private val inputReader: InputReader,
-
+    private val menu: Menu
     ) {
-
-    private var menu: Menu = MainMenu(getKoin().get((named("mainMenu"))), this)
 
     suspend fun start() {
 
@@ -24,9 +18,6 @@ class App(
         uiDisplayer.displayMessage("Goodbye")
     }
 
-    fun changeMenu(menu: Menu) {
-        this.menu = menu
-    }
 
     private suspend fun processUserMenuSelection() {
         try {

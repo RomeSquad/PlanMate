@@ -1,11 +1,13 @@
 package org.example.di
 
+import org.example.presentation.action.EditProjectMenuAction
 import org.example.presentation.action.InsertProjectMenuAction
 import org.example.presentation.action.InsertUserMenuAction
 import org.example.presentation.action.LoginMenuAction
+import org.koin.dsl.module
+import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
 import org.koin.core.qualifier.named
-import org.koin.dsl.module
 import presentation.App
 import presentation.io.ConsoleInputReader
 import presentation.io.ConsoleWriter
@@ -18,29 +20,31 @@ val presentationModule = module {
     single<InputReader> { ConsoleInputReader() }
     single<UiDisplayer> { ConsoleWriter() }
 
-    single { App(get(), get()) }
+    single<Menu> { Menu() }
 
-
-    single(named("mainMenu")) {
+    single(named("mainMenuActions")) {
         listOf<MenuAction>(
-            InsertUserMenuAction(get()),
-            LoginMenuAction(get()),
-            InsertProjectMenuAction(get())
-        )
-    }
-
-    single(named("mateMenu")) {
-        listOf<MenuAction>(
-            LoginMenuAction(get())
-        )
-    }
-
-    single(named("adminMenu")) {
-        listOf<MenuAction>(
-            InsertUserMenuAction(get()),
-            LoginMenuAction(get())
+            LoginMenuAction(get(), menu = get()),
         )
     }
 
 
+    single(named("mateMenuActions")) {
+        listOf<MenuAction>(
+            LoginMenuAction(get(), "logout", menu = get()),
+        )
+    }
+
+    single(named("adminMenuActions")) {
+        listOf<MenuAction>(
+            InsertProjectMenuAction(projectUseCase = get(), menu = get()),
+            EditProjectMenuAction(editProjectUseCase = get(), menu = get()),
+            InsertUserMenuAction(insertUserUseCase = get(), menu = get()),
+            LoginMenuAction(get(), "logout", menu = get()),
+        )
+    }
+
+
+
+    single { App(get(), get(), get()) }
 }
