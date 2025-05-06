@@ -1,13 +1,19 @@
 package org.example.data.datasource.authentication
 
+import com.mongodb.kotlin.client.coroutine.MongoCollection
+import kotlinx.coroutines.flow.toList
 import org.example.logic.entity.auth.User
+import org.koin.core.qualifier.named
+import org.koin.java.KoinJavaComponent.getKoin
 
-class MongoAuthDataSource : AuthDataSource {
+class MongoAuthDataSource(
+    val mongo: MongoCollection<User>
+) : AuthDataSource {
     override suspend fun getAllUsers(): List<User> {
-        TODO("Not yet implemented")
+        return mongo.find().toList()
     }
 
     override suspend fun saveAllUsers(users: List<User>) {
-        TODO("Not yet implemented")
+        mongo.insertMany(users)
     }
 }

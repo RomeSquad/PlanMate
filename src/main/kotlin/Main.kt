@@ -16,19 +16,9 @@ fun main() {
     startKoin {
         modules(dataModule, logicModule, presentationModule)
     }
-    val mongo: MongoCollection<User> = getKoin().get(named("users-collection"))
+
     val app: App = getKoin().get()
     runBlocking {
-        val result = mongo.insertOne(
-            User(
-                userId = 1,
-                username = "amr",
-                password = "c24a542f884e144451f9063b79e7994e",
-                userRole = UserRole.MATE
-            )
-        )
-        println(result.wasAcknowledged())
-
         app.start()
     }
 }
