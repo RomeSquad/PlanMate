@@ -49,7 +49,7 @@ class AuthRepositoryImplTest {
         val username = "amr"
         val password = "password"
 
-        val expectedUser = User(userId = 1, username = username, password = "password", userRole = UserRole.MATE)
+        val expectedUser = User(userId = 1, username = username, password = "5f4dcc3b5aa765d61d8327deb882cf99", userRole = UserRole.MATE)
 
         coEvery { authDataSource.getAllUsers() } returns Result.success(listOf(expectedUser))
 
