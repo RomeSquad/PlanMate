@@ -1,5 +1,6 @@
 package org.example.data.repository
 
+import kotlinx.coroutines.runBlocking
 import org.example.data.datasource.authentication.AuthDataSource
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
@@ -13,55 +14,51 @@ class AuthRepositoryImpl(
     private var users = mutableListOf<User>()
 
     init {
-        users += getAllUsers().getOrThrow()
+        runBlocking {
+            users += getAllUsers()
+        }
     }
 
-    override fun insertUser(username: String, password: String, userRole: UserRole): Result<User> {
-
-
-        checkUserNameAndPassword(username, password).onFailure { return Result.failure(it) }
-        validPassword(password).onFailure { return Result.failure(it) }
+    override suspend fun insertUser(username: String, password: String, userRole: UserRole): User {
+        checkUserNameAndPassword(username, password)
+        validPassword(password)
 
         val hashedPassword = hashPassword(password)
 
         if (users.any { it.username == username }) {
-            return Result.failure(Exception("Username already exists"))
+            throw Exception("Username already exists")
         }
 
         val newUser = User(userId = users.size + 1, username = username, password = hashedPassword, userRole = userRole)
         users.add(newUser)
-        return authDataSource.saveAllUsers(users).map { newUser }
+        authDataSource.saveAllUsers(users)
+        return newUser
     }
 
-    override fun loginUser(username: String, password: String): Result<User> {
+    override suspend fun loginUser(username: String, password: String): User {
 
-        checkUserNameAndPassword(username, password).onFailure { return Result.failure(it) }
-        validPassword(password).onFailure { return Result.failure(it) }
+        checkUserNameAndPassword(username, password)
+        validPassword(password)
 
-        val user = users.find { it.username == username } ?: return Result.failure(Exception("User not found"))
-        return Result.success(user)
+        val hashedPassword = hashPassword(password)
+
+        val user =
+            users.find { it.username == username && it.password == hashedPassword } ?: throw Exception("User not found")
+        return user
 
     }
 
-    override fun getAllUsers(): Result<List<User>> {
+    override suspend fun getAllUsers(): List<User> {
         return authDataSource.getAllUsers()
     }
 
 
-    private fun checkUserNameAndPassword(username: String, password: String): Result<Unit> {
-        return if (username.isNotEmpty() && password.isNotEmpty()) {
-            Result.success(Unit)
-        } else {
-            Result.failure(Exception("Username or password cannot be empty"))
-        }
+    private fun checkUserNameAndPassword(username: String, password: String) {
+        if (username.isEmpty() || password.isEmpty()) throw Exception("Username or password cannot be empty")
     }
 
-    private fun validPassword(password: String): Result<Unit> {
-        return if (password.length >= 6) {
-            Result.success(Unit)
-        } else {
-            Result.failure(Exception("Password must be at least 6 characters"))
-        }
+    private fun validPassword(password: String) {
+        if (password.length <= 6) throw Exception("Password must be at least 6 characters")
     }
 
 }

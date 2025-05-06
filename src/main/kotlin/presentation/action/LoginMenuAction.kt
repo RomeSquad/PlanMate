@@ -11,7 +11,7 @@ class LoginMenuAction(
     override val description: String = "Login",
     override var menu: Menu,
 ) : MenuAction {
-    override fun execute(ui: UiDisplayer, inputReader: InputReader) {
+    override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
 
         ui.displayMessage("Enter username:")
         val username = inputReader.readString()
@@ -19,12 +19,13 @@ class LoginMenuAction(
         ui.displayMessage("Enter  password:")
         val password = inputReader.readString()
 
-
-        val result = loginUseCase.login(username, password)
-        if (result.isSuccess) {
+        try {
+            val result = loginUseCase.login(username, password)
             ui.displayMessage("User Login Successfully")
-        } else {
-            ui.displayMessage("Failed To Login : ${result.exceptionOrNull()?.message}")
+        } catch (e: Exception) {
+            ui.displayError("Error: ${e.message}")
         }
+
+
     }
 }

@@ -1,7 +1,8 @@
 package logic.usecase
 
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.repository.AuthRepository
@@ -18,7 +19,7 @@ class LoginUseCaseTest {
 
 
     @Test
-    fun `should login return user when authRepository returns successful login`() {
+    fun `should login return user when authRepository returns successful login`() = runTest {
         // Given
         val username = "amr"
         val password = "password"
@@ -28,13 +29,12 @@ class LoginUseCaseTest {
             password = "5f4dcc3b5aa765d61d8327deb882cf99",
             userRole = UserRole.ADMIN
         )
-        every { authRepository.loginUser(username, password) } returns Result.success(expectedUser)
+        coEvery { authRepository.loginUser(username, password) } returns expectedUser
 
         // When
         val result = loginUseCase.login(username, password)
 
         // Then
-        assertTrue(result.isSuccess)
-        assertEquals(expectedUser, result.getOrThrow())
+        assertEquals(expectedUser,result)
     }
 }

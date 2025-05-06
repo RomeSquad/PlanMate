@@ -1,5 +1,6 @@
 package org.example
 
+import kotlinx.coroutines.runBlocking
 import org.example.di.dataModule
 import org.example.di.logicModule
 import org.example.di.presentationModule
@@ -13,6 +14,7 @@ fun main() {
     }
 
     val app: App = getKoin().get()
-    app.start()
-
+    runBlocking {
+        app.start()
+    }
 }

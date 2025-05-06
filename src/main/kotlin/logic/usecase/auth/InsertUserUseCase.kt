@@ -7,7 +7,7 @@ import org.example.logic.repository.AuthRepository
 class InsertUserUseCase(
     private val authRepository: AuthRepository
 ) {
-    fun insertUser(username: String, password: String, userRole: UserRole): Result<User> {
+    suspend fun insertUser(username: String, password: String, userRole: UserRole): User {
         return authRepository.insertUser(username, password, userRole)
     }
 

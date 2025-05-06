@@ -13,7 +13,7 @@ class InsertProjectMenuAction(
     override var menu : Menu
 ) : MenuAction {
 
-    override fun execute(ui: UiDisplayer, inputReader: InputReader) {
+    override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
         ui.displayMessage("Enter project name:")
         val projectName = inputReader.readString()
 

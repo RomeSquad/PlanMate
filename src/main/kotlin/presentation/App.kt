@@ -10,7 +10,7 @@ class App(
     private val menu: Menu
     ) {
 
-    fun start() {
+    suspend fun start() {
 
         do {
             processUserMenuSelection()
@@ -19,7 +19,7 @@ class App(
     }
 
 
-    private fun processUserMenuSelection() {
+    private suspend fun processUserMenuSelection() {
         try {
             displayMenuAndExecuteAction()
         } catch (e: IllegalArgumentException) {
@@ -29,7 +29,7 @@ class App(
         }
     }
 
-    private fun displayMenuAndExecuteAction() {
+    private suspend fun displayMenuAndExecuteAction() {
         uiDisplayer.displayMenu(menu.getActionsList())
         val input = inputReader.readIntOrNull() ?: throw IllegalArgumentException("Invalid input")
         val selectedAction = menu.getAction(input)
