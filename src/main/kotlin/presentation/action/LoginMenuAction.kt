@@ -1,8 +1,11 @@
 package org.example.presentation.action
 
+import org.example.logic.entity.auth.UserRole
 import org.example.logic.usecase.auth.LoginUseCase
 import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
+import org.koin.core.qualifier.named
+import org.koin.java.KoinJavaComponent.getKoin
 import presentation.io.InputReader
 import presentation.io.UiDisplayer
 
@@ -21,7 +24,10 @@ class LoginMenuAction(
 
         try {
             val result = loginUseCase.login(username, password)
-            ui.displayMessage("User Login Successfully")
+            if (result.userRole == UserRole.ADMIN)
+                menu.setActions(getKoin().get((named("adminMenuActions"))))
+            else if (result.userRole == UserRole.MATE)
+                menu.setActions(getKoin().get((named("mateMenuActions"))))
         } catch (e: Exception) {
             ui.displayError("Error: ${e.message}")
         }

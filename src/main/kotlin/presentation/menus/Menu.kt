@@ -1,11 +1,12 @@
 package org.example.presentation.menus
 
-import org.example.presentation.action.ChooseRoleMenuAction
+import org.example.presentation.action.LoginMenuAction
+import org.koin.java.KoinJavaComponent.getKoin
 
 class Menu {
 
     private var actions: List<MenuAction> = listOf<MenuAction>(
-        ChooseRoleMenuAction(menu= this)
+        LoginMenuAction(getKoin().get(), menu = this),
     )
 
     fun getAction(index: Int): MenuAction {
