@@ -3,13 +3,15 @@ package org.example.presentation.action
 import org.example.logic.entity.Project
 import org.example.logic.entity.State
 import logic.usecases.EditProjectUseCase
+import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
 import presentation.io.InputReader
 import presentation.io.UiDisplayer
 
 
 class EditProjectMenuAction(
-    private val editProjectUseCase: EditProjectUseCase
+    private val editProjectUseCase: EditProjectUseCase,
+    override val menu: Menu
 ) : MenuAction {
 
     override val description = "Edit existing project"
