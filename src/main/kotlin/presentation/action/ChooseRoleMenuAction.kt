@@ -12,7 +12,7 @@ class ChooseRoleMenuAction(
     override val menu: Menu
 ) : MenuAction {
 
-    override fun execute(ui: UiDisplayer, inputReader: InputReader) {
+    override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
         ui.displayMessage("Choose your role:")
         ui.displayMessage("1. Admin")
         ui.displayMessage("2. Mate")
@@ -24,10 +24,12 @@ class ChooseRoleMenuAction(
                 ui.displayMessage("You chose Admin")
                 menu.setActions(getKoin().get((named("adminMenuActions"))))
             }
+
             2 -> {
                 ui.displayMessage("You chose Mate")
                 menu.setActions(getKoin().get((named("mateMenuActions"))))
             }
+
             3 -> ui.displayMessage("Exiting...")
             else -> ui.displayError("Invalid choice, please try again.")
         }
