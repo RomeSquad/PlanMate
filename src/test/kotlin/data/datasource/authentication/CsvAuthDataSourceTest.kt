@@ -1,11 +1,9 @@
 package data.datasource.authentication
 
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
+import io.mockk.*
 import kotlinx.coroutines.test.runTest
 import org.example.data.datasource.authentication.CsvAuthDataSource
+import org.example.data.repository.mapper.toCsvRow
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.logic.entity.auth.User
@@ -28,11 +26,11 @@ class CsvAuthDataSourceTest {
     fun setup() {
         csvFileReader = mockk()
         csvFileWriter = mockk()
-        authDataSource = CsvAuthDataSource(csvFileReader, csvFileWriter,usersFile)
+        authDataSource = CsvAuthDataSource(csvFileReader, csvFileWriter, usersFile)
     }
 
     @Test
-    fun `should return list of users from CSV data when getAllUsers fun call `() = runTest{
+    fun `should return list of users from CSV data when getAllUsers fun call `() = runTest {
 
         //Given
         val csvRows = listOf(readTestUser1List, readTestUser2List)
@@ -41,16 +39,16 @@ class CsvAuthDataSourceTest {
         every { csvFileReader.readCsv(usersFile) } returns csvRows
 
         //When
-        val result = authDataSource.getAllUsers()
+        val result = authDataSource.getAllUsers().map { it.userId }
 
         //Then
-        Assertions.assertEquals(expectedUsers.map { it.userId }, result.getOrNull()?.map { it.userId })
+        Assertions.assertEquals(expectedUsers.map { it.userId }, result)
 
 
     }
 
     @Test
-    fun `should write users to CSV file when saveAllUsers fun call`() = runTest{
+    fun `should write users to CSV file when saveAllUsers fun call`() = runTest {
 
         //Given
         val expectedUsers = listOf(testUser1, testUser2)
@@ -61,7 +59,9 @@ class CsvAuthDataSourceTest {
         val result = authDataSource.saveAllUsers(expectedUsers)
 
         //Then
-        Assertions.assertTrue(result.isSuccess)
+        expectedUsers.forEach { user ->
+            coVerify { csvFileWriter.writeCsv(usersFile, listOf(user.toCsvRow())) }
+        }
 
     }
 
