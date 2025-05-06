@@ -1,6 +1,8 @@
 package org.example.di
 
+import org.example.presentation.action.EditProjectMenuAction
 import org.example.presentation.action.InsertProjectMenuAction
+import org.example.presentation.action.InsertUserMenuAction
 import org.example.presentation.action.LoginMenuAction
 import org.koin.dsl.module
 import org.example.presentation.menus.Menu
@@ -20,23 +22,25 @@ val presentationModule = module {
 
     single<Menu> { Menu() }
 
-//    single(named("mainMenuActions")) {
-//        listOf<MenuAction>(
-//            ChooseRoleUseCase(menu = get())
-//        )
-//    }
+    single(named("mainMenuActions")) {
+        listOf<MenuAction>(
+            LoginMenuAction(get(), menu = get()),
+        )
+    }
 
 
     single(named("mateMenuActions")) {
         listOf<MenuAction>(
-            LoginMenuAction(get(), menu = get()),
+            LoginMenuAction(get(), "logout", menu = get()),
         )
     }
 
     single(named("adminMenuActions")) {
         listOf<MenuAction>(
             InsertProjectMenuAction(projectUseCase = get(), menu = get()),
-            LoginMenuAction(get(), menu = get()),
+            EditProjectMenuAction(editProjectUseCase = get(), menu = get()),
+            InsertUserMenuAction(insertUserUseCase = get(), menu = get()),
+            LoginMenuAction(get(), "logout", menu = get()),
         )
     }
 
