@@ -1,4 +1,4 @@
-package logic.usecases
+package logic.usecase.project
 
 import org.example.logic.entity.Project
 import org.example.logic.repository.ProjectRepository
