@@ -4,6 +4,7 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.example.data.datasource.authentication.CsvAuthDataSource
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
@@ -31,7 +32,7 @@ class CsvAuthDataSourceTest {
     }
 
     @Test
-    fun `should return list of users from CSV data when getAllUsers fun call `() {
+    fun `should return list of users from CSV data when getAllUsers fun call `() = runTest{
 
         //Given
         val csvRows = listOf(readTestUser1List, readTestUser2List)
@@ -49,7 +50,7 @@ class CsvAuthDataSourceTest {
     }
 
     @Test
-    fun `should write users to CSV file when saveAllUsers fun call`() {
+    fun `should write users to CSV file when saveAllUsers fun call`() = runTest{
 
         //Given
         val expectedUsers = listOf(testUser1, testUser2)

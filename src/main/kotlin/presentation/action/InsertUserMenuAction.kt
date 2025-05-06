@@ -10,7 +10,7 @@ class InsertUserMenuAction(
     private val insertUserUseCase: InsertUserUseCase,
     override val description: String = "Insert User",
 ) : MenuAction {
-    override fun execute(ui: UiDisplayer, inputReader: InputReader) {
+    override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
 
         ui.displayMessage("Enter username:")
         val username = inputReader.readString()

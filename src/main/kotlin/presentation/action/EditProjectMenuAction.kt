@@ -14,7 +14,7 @@ class EditProjectMenuAction(
 
     override val description = "Edit existing project"
 
-    override fun execute(ui: UiDisplayer, inputReader: InputReader) {
+    override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
         ui.displayPrompt("Enter project ID to edit:")
         val id = inputReader.readIntOrNull() ?: return ui.displayError("Invalid ID")
 

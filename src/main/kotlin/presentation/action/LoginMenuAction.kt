@@ -9,7 +9,7 @@ class LoginMenuAction(
     private val loginUseCase: LoginUseCase,
     override val description: String = "Login",
 ) : MenuAction {
-    override fun execute(ui: UiDisplayer, inputReader: InputReader) {
+    override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
 
         ui.displayMessage("Enter username:")
         val username = inputReader.readString()

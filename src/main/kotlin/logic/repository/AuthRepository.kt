@@ -5,7 +5,7 @@ import org.example.logic.entity.auth.UserRole
 
 interface AuthRepository {
 
-    fun insertUser(username: String, password: String, userRole: UserRole): Result<User>
-    fun loginUser(username: String, password: String): Result<User>
-    fun getAllUsers(): Result<List<User>>
+    suspend fun insertUser(username: String, password: String, userRole: UserRole): Result<User>
+    suspend fun loginUser(username: String, password: String): Result<User>
+    suspend fun getAllUsers(): Result<List<User>>
 }
