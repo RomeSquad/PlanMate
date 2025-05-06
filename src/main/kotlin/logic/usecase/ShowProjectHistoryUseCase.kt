@@ -2,7 +2,7 @@ package org.example.logic.usecase
 
 import org.example.logic.repository.ChangeHistoryRepository
 
-class ShowProjectHistory(
+class ShowProjectHistoryUseCase(
     private val repository: ChangeHistoryRepository
 )
 
