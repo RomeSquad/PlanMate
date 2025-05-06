@@ -2,7 +2,7 @@ package org.example.presentation.action
 
 import org.example.logic.entity.Project
 import org.example.logic.entity.State
-import logic.usecases.EditProjectUseCase
+import logic.usecase.project.EditProjectUseCase
 import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
 import presentation.io.InputReader
