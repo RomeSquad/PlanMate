@@ -8,10 +8,12 @@ import presentation.io.UiDisplayer
 
 class InsertProjectMenuAction(
     private val projectUseCase: InsertProjectUseCase,
-    override val description: String = "Create new Project"
+    override val description: String = "Create new Project",
+    private val ui: UiDisplayer ,
+    private val inputReader: InputReader,
 ) : MenuAction {
 
-    override fun execute(ui: UiDisplayer, inputReader: InputReader) {
+    operator fun invoke() {
         ui.displayMessage("Enter project name:")
         val projectName = inputReader.readString()
 

@@ -9,8 +9,11 @@ import presentation.io.UiDisplayer
 class InsertUserMenuAction(
     private val insertUserUseCase: InsertUserUseCase,
     override val description: String = "Insert User",
+    private val ui: UiDisplayer ,
+    private val inputReader: InputReader,
+    private val navigateBack: () -> Unit = {}
 ) : MenuAction {
-    override fun execute(ui: UiDisplayer, inputReader: InputReader) {
+    operator fun invoke() {
 
         ui.displayMessage("Enter username:")
         val username = inputReader.readString()
@@ -33,6 +36,7 @@ class InsertUserMenuAction(
         val result = insertUserUseCase.insertUser(username, password, userRole)
         if (result.isSuccess) {
             ui.displayMessage("User inserted successfully")
+            navigateBack()
         } else {
             ui.displayMessage("Error inserting user: ${result.exceptionOrNull()?.message}")
         }

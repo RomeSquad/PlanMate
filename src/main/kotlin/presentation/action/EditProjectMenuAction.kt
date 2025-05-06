@@ -9,12 +9,14 @@ import presentation.io.UiDisplayer
 
 
 class EditProjectMenuAction(
-    private val editProjectUseCase: EditProjectUseCase
+    private val editProjectUseCase: EditProjectUseCase,
+    private val ui: UiDisplayer ,
+    private val inputReader: InputReader,
 ) : MenuAction {
 
     override val description = "Edit existing project"
 
-    override fun execute(ui: UiDisplayer, inputReader: InputReader) {
+    operator fun invoke() {
         ui.displayPrompt("Enter project ID to edit:")
         val id = inputReader.readIntOrNull() ?: return ui.displayError("Invalid ID")
 
