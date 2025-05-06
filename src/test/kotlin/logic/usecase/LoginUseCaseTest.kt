@@ -29,13 +29,12 @@ class LoginUseCaseTest {
             password = "5f4dcc3b5aa765d61d8327deb882cf99",
             userRole = UserRole.ADMIN
         )
-        coEvery { authRepository.loginUser(username, password) } returns Result.success(expectedUser)
+        coEvery { authRepository.loginUser(username, password) } returns expectedUser
 
         // When
         val result = loginUseCase.login(username, password)
 
         // Then
-        assertTrue(result.isSuccess)
-        assertEquals(expectedUser, result.getOrThrow())
+        assertEquals(expectedUser,result)
     }
 }

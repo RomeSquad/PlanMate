@@ -30,11 +30,13 @@ class InsertUserMenuAction(
             }
         }
 
-        val result = insertUserUseCase.insertUser(username, password, userRole)
-        if (result.isSuccess) {
+        try {
+            val result = insertUserUseCase.insertUser(username, password, userRole)
             ui.displayMessage("User inserted successfully")
-        } else {
-            ui.displayMessage("Error inserting user: ${result.exceptionOrNull()?.message}")
+        } catch (e: Exception) {
+            ui.displayError("Error: ${e.message}")
         }
+
+
     }
 }

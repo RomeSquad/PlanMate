@@ -28,13 +28,13 @@ class InsertUserUseCaseTest {
             password = "5f4dcc3b5aa765d61d8327deb882cf99",
             userRole = userRole
         )
-        coEvery { authRepository.insertUser(username, password, userRole) } returns Result.success(expectedUser)
+        coEvery { authRepository.insertUser(username, password, userRole) } returns expectedUser
 
         // When
         val result = insertUserUseCase.insertUser(username, password, userRole)
 
         // Then
-        assertTrue(result.isSuccess)
-        assertEquals(expectedUser, result.getOrThrow())
+
+        assertEquals(expectedUser, result)
     }
 }
