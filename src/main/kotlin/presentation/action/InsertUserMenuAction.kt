@@ -18,7 +18,7 @@ class InsertUserMenuAction(
         ui.displayMessage("Enter  password:")
         val password = inputReader.readString()
 
-        ui.displayMessage("Enter  role:")
+        ui.displayMessage("Enter  role: admin or mate:")
         val userRole: UserRole = inputReader.readString().let {
             when (it) {
                 "admin" -> UserRole.ADMIN

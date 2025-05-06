@@ -41,7 +41,7 @@ class AuthRepositoryImpl(
         checkUserNameAndPassword(username, password).onFailure { return Result.failure(it) }
         validPassword(password).onFailure { return Result.failure(it) }
 
-        val user = users.find { it.username == username } ?: return Result.failure(Exception("User not found"))
+        val user = users.find { it.username == username && it.password == password } ?: return Result.failure(Exception("User not found"))
         return Result.success(user)
 
     }

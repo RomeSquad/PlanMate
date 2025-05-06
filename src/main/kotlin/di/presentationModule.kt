@@ -23,6 +23,8 @@ val presentationModule = module {
 
     single(named("mainMenu")) {
         listOf<MenuAction>(
+            InsertUserMenuAction(get()),
+            LoginMenuAction(get()),
             InsertProjectMenuAction(get())
         )
     }
