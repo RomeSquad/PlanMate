@@ -1,6 +1,6 @@
 package org.example.presentation.action
 
-import org.example.logic.usecase.LoginUseCase
+import org.example.logic.usecase.auth.LoginUseCase
 import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
 import presentation.io.InputReader

@@ -1,8 +1,6 @@
 package presentation
 
 import org.example.presentation.menus.Menu
-import org.koin.core.qualifier.named
-import org.koin.java.KoinJavaComponent.getKoin
 import presentation.io.InputReader
 import presentation.io.UiDisplayer
 
@@ -13,6 +11,7 @@ class App(
     ) {
 
     fun start() {
+
         do {
             processUserMenuSelection()
         } while (shouldContinue())
@@ -41,5 +40,6 @@ class App(
         uiDisplayer.displayPrompt("Do you want to perform another action? (y/n): ")
         return inputReader.readString().equals("y", ignoreCase = true)
     }
+
 
 }

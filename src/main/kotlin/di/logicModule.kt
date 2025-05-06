@@ -1,8 +1,8 @@
 package org.example.di
 
-import org.example.logic.usecase.InsertProjectUseCase
-import org.example.logic.usecase.InsertUserUseCase
-import org.example.logic.usecase.LoginUseCase
+import org.example.logic.usecase.auth.InsertUserUseCase
+import org.example.logic.usecase.auth.LoginUseCase
+import org.example.logic.usecase.project.InsertProjectUseCase
 import org.example.logic.usecase.task.*
 import org.koin.dsl.module
 

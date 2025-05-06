@@ -11,4 +11,5 @@ interface MenuAction {
         ui: UiDisplayer,
         inputReader: InputReader
     )
+
 }

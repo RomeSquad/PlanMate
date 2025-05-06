@@ -1,8 +1,8 @@
 package org.example.presentation.action
 
 import org.example.logic.entity.auth.UserRole
-import org.example.logic.usecase.InsertUserUseCase
 import org.example.presentation.menus.Menu
+import org.example.logic.usecase.auth.InsertUserUseCase
 import org.example.presentation.menus.MenuAction
 import presentation.io.InputReader
 import presentation.io.UiDisplayer
