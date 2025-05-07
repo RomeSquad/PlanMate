@@ -6,7 +6,7 @@ import org.example.logic.repository.ChangeHistoryRepository
 class ShowProjectHistoryUseCase(
     private val repository: ChangeHistoryRepository
 ) {
-    fun execute(projectId: Int): List<ChangeHistory> {
+    suspend fun  execute(projectId: Int): List<ChangeHistory> {
         return repository.getHistoryByProjectID(projectId)
     }
 }
