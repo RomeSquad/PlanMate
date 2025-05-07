@@ -1,20 +1,25 @@
 package org.example.data.datasource.changelog
 
+import com.mongodb.client.model.Filters
+import com.mongodb.kotlin.client.coroutine.MongoCollection
+import kotlinx.coroutines.flow.toList
 import org.example.logic.entity.ChangeHistory
 
 class MongoChangeHistoryDataSource(
     val mongo: MongoCollection<ChangeHistory>
 ) : ChangeHistoryDataSource {
 
-    override fun addChangeHistory(changeHistory: ChangeHistory): ChangeHistory {
-        return mongo.insertOne(changeHistory)
+    override suspend fun addChangeHistory(changeHistory: ChangeHistory): ChangeHistory {
+        return mongo.insertOne(changeHistory).let { changeHistory }
     }
 
-    override fun getByProjectId(projectId: Int): List<ChangeHistory> {
-        return mongo.find(projectID == projectId)
+    override suspend fun getByProjectId(projectId: Int): List<ChangeHistory> {
+        val filter = Filters.eq("projectID", projectId)
+        return mongo.find(filter).toList()
     }
 
-    override fun getByTaskId(taskId: Int): List<ChangeHistory> {
-        return mongo.finf(taskID == taskId)
+    override suspend fun getByTaskId(taskId: Int): List<ChangeHistory> {
+        val filter = Filters.eq("taskID", taskId)
+        return mongo.find(filter).toList()
     }
 }

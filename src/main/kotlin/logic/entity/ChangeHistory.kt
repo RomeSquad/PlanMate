@@ -3,7 +3,7 @@ package org.example.logic.entity
 import java.util.Date
 
 data class ChangeHistory(
-    val projectID: String,
+    val projectID: Int,
     val taskID: String,
     val authorID: String,
     val changeDate: Date,
