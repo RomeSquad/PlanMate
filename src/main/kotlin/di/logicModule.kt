@@ -3,6 +3,9 @@ package org.example.di
 import logic.usecase.project.EditProjectUseCase
 import org.example.logic.usecase.auth.InsertUserUseCase
 import org.example.logic.usecase.auth.LoginUseCase
+import org.example.logic.usecase.history.AddChangeHistoryUseCase
+import org.example.logic.usecase.history.ShowProjectHistoryUseCase
+import org.example.logic.usecase.history.ShowTaskHistoryUseCase
 import org.example.logic.usecase.project.GetProjectByIdUseCase
 import org.example.logic.usecase.project.InsertProjectUseCase
 import org.example.logic.usecase.project.SaveAllProjectUseCase
@@ -38,4 +41,9 @@ val logicModule = module {
     single { DeleteStatesUseCase(get()) }
     single { EditStateUseCase(get()) }
     single { GetAllStatesUseCase(get()) }
+
+    single { AddChangeHistoryUseCase(get()) }
+    single { ShowTaskHistoryUseCase(get()) }
+    single { ShowProjectHistoryUseCase(get()) }
+
 }
