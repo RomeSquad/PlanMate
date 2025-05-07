@@ -1,7 +1,8 @@
 package logic.usecase
 
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 import org.example.logic.entity.Project
 import org.example.logic.entity.State
 import org.example.logic.repository.ProjectRepository
@@ -9,12 +10,20 @@ import org.example.logic.usecase.project.GetProjectByIdUseCase
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
-class GetProjectByIdUseCaseTest{
+class GetProjectByIdUseCaseTest {
+
     private lateinit var projectRepository: ProjectRepository
     private lateinit var getProjectByIdUseCase: GetProjectByIdUseCase
-    private val testProject = Project(1, "test", "test description", listOf(), State("12", "in progress"))
+
+    private val testProject = Project(
+        id = 1,
+        name = "test",
+        description = "test description",
+        changeHistory = listOf(),
+        state = State("12", "in progress")
+    )
+
     @BeforeEach
     fun setup() {
         projectRepository = mockk()
@@ -22,18 +31,22 @@ class GetProjectByIdUseCaseTest{
     }
 
     @Test
-    fun `when request specific project by id then return valid project`() {
-        every { projectRepository.getProjectById(1) } returns (Result.success(testProject))
+    fun `when request specific project by id then return valid project`() = runBlocking {
+        coEvery { projectRepository.getProjectById(1) }
+
         val projectResponse = getProjectByIdUseCase.getProjectById(1)
-        assertEquals(projectResponse.getOrNull(), testProject)
-    }
-    @Test
-    fun `when request specific project by invalid id then return result failure with exception`() {
-        every { projectRepository.getProjectById(2) } returns (Result.failure(Exception("Project not found")))
-        val projectResponse = getProjectByIdUseCase.getProjectById(2)
-        assertThrows<Exception> {
-            projectResponse.getOrThrow()
-        }
+
+        assertEquals(testProject, projectResponse)
     }
 
+    @Test
+    fun `when request specific project by invalid id then return result failure with exception`() = runBlocking {
+        coEvery { projectRepository.getProjectById(2) }
+
+        val result = getProjectByIdUseCase.getProjectById(2)
+
+        assertEquals(Exception::class.java) {
+            result
+        }
+    }
 }

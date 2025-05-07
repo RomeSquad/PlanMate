@@ -1,65 +1,72 @@
 package data.repository
 
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.example.data.datasource.project.ProjectDataSource
 import org.example.data.repository.ProjectRepositoryImpl
 import org.example.logic.entity.CreateProjectRequest
 import org.example.logic.entity.CreateProjectResponse
+import org.example.logic.entity.Project
 import org.example.logic.entity.toProject
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class ProjectRepositoryImplTest {
-    private lateinit var projectRepository: ProjectRepositoryImpl
-    private lateinit var projectDataSource: ProjectDataSource
-    private val testProjectRequest = CreateProjectRequest(
+
+    private lateinit var repository: ProjectRepositoryImpl
+    private lateinit var fakeDataSource: ProjectDataSource
+
+    private val request = CreateProjectRequest(
         userId = 1,
         userName = "Mohamed",
         name = "test",
-        description = "test description",
+        description = "desc"
     )
-    private val testProjectResponse = CreateProjectResponse(
-        id = 1,
-    )
+
+    private val project = request.toProject(1)
 
     @BeforeEach
-    fun setup() {
-        projectDataSource = mockk()
-        every { projectDataSource.getAllProjects() } returns Result.success(emptyList())
-       projectRepository = ProjectRepositoryImpl(projectDataSource)
+    fun setup() = runTest {
+        fakeDataSource = mockk()
+        coEvery { fakeDataSource.getAllProjects() } returns emptyList()
+        repository = ProjectRepositoryImpl(fakeDataSource)
     }
 
     @Test
-    fun `when insert valid project request then return valid project response`() {
-        val projectResponse = projectRepository.insertProject(testProjectRequest)
-        assertEquals(projectResponse.getOrNull(), testProjectResponse)
+    fun `insert project returns valid response`() = runTest {
+        val result = repository.insertProject(request)
+        assertEquals(CreateProjectResponse(1), result)
     }
+
     @Test
-    fun `when request specific project by id then return valid project`() {
-        every { projectDataSource.getAllProjects() } returns Result.success(listOf(testProjectRequest.toProject(0)))
-        val projectResponse = projectRepository.getProjectById(1)
-        assertEquals(projectResponse.getOrNull()?.id, testProjectRequest.toProject(0).id)
+    fun `get project by id returns correct project`() = runTest {
+        coEvery { fakeDataSource.getAllProjects() } returns listOf(project)
+        repository = ProjectRepositoryImpl(fakeDataSource)
+
+        val result = repository.getProjectById(1)
+        assertEquals(project.id, result.id)
     }
+
     @Test
-    fun `when request all projects then return valid projects`() {
-        val projectResponse = projectRepository.getAllProjects()
-        assertEquals(projectResponse.getOrNull(), emptyList<CreateProjectRequest>())
+    fun `get all projects returns list`() = runTest {
+        val result = repository.getAllProjects()
+        assertEquals(emptyList<Project>(), result)
     }
+
     @Test
-    fun `when request specific project by invalid id then return exception`() {
-        assertThrows(Exception::class.java) {
-            projectRepository.getProjectById(2).getOrThrow()
+    fun `get project by invalid id throws exception`() = runTest {
+        assertFailsWith<Exception> {
+            repository.getProjectById(99)
         }
     }
+
     @Test
-    fun `when save all projects then return success`() {
-        every { projectDataSource.saveAllProjects(any()) } returns Result.success(Unit)
-        val projectResponse = projectRepository.saveAllProjects()
-        assertEquals(projectResponse.getOrNull(), Unit)
+    fun `save all projects returns unit`() = runTest {
+        coEvery { fakeDataSource.saveAllProjects(any()) }
+        val result = repository.saveAllProjects()
+        assertEquals(Unit, result)
     }
-
-
 }
