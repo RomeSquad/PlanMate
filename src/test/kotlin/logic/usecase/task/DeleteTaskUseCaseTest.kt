@@ -1,4 +1,4 @@
-package logic.usecase
+package logic.usecase.task
 
 import io.mockk.*
 import org.example.logic.repository.TaskRepository

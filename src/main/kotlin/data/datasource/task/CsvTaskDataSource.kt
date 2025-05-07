@@ -4,6 +4,7 @@ import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.data.repository.mapper.fromCsvRowToTask
 import org.example.data.repository.mapper.toCsvRow
+import org.example.logic.TaskNotFoundException
 import org.example.logic.entity.Task
 import java.io.File
 
@@ -13,55 +14,72 @@ class CsvTaskDataSource (
     private val taskFile: File
 ): TaskDataSource {
 
-    override fun getTaskByIdFromFile(taskId: String): Result<Task> {
-        return try {
-            val data = csvFileReader.readCsv(taskFile)
-            val tasks = data.map { it.fromCsvRowToTask() }
-            val task = tasks.firstOrNull { it.id == taskId }
-                ?: return Result.failure(NoSuchElementException("Not founded for this id"))
-            Result.success(task)
-        } catch (exception: Exception) {
-            Result.failure(exception)
+    override fun createTask(task: Task) {
+        val row = task.toCsvRow()
+        csvFileWriter.writeCsv(taskFile, listOf(row))
+    }
+
+    override fun editTask(
+        taskId: String,
+        title: String,
+        description: String,
+        updatedAt: Long
+    ) {
+        val tasks = getAllTasks().toMutableList()
+        val index = tasks.indexOfFirst { it.id == taskId }
+
+        if (index == -1) {
+            throw TaskNotFoundException("Task with id $taskId not found")
         }
+
+        val task = tasks[index]
+        tasks[index] = task.copy(
+            title = title,
+            description = description,
+            updatedAt = updatedAt
+        )
+
+        saveAllTasks(tasks)
     }
 
-    override fun getAllTasks(): Result<List<Task>> {
+    override fun deleteTask(projectId: Int, taskId: String) {
+        val allTasks = getAllTasks().toMutableList()
+        val removed = allTasks.removeIf {
+            it.projectId == projectId
+            &&
+            it.id == taskId
+        }
+
+        if (!removed) {
+            throw TaskNotFoundException(
+                "Task with id $taskId in project $projectId not found"
+            )
+        }
+
+        saveAllTasks(allTasks)
+    }
+
+    override fun getTaskByIdFromFile(taskId: String): Task {
         val data = csvFileReader.readCsv(taskFile)
-        println(data[0])
         val tasks = data.map { it.fromCsvRowToTask() }
-        return Result.success(tasks)
+        val task = tasks.firstOrNull { it.id == taskId }
+            ?: throw TaskNotFoundException("Task not found for this id")
+        return task
     }
 
-    override fun setAllTasks(tasks: List<Task>): Result<Unit> {
+    override fun getTasksByProjectId(projectId: Int): List<Task> {
+        return getAllTasks().filter { it.projectId == projectId }
+    }
+
+    override fun getAllTasks(): List<Task> {
+        val data = csvFileReader.readCsv(taskFile)
+        return data.map { it.fromCsvRowToTask() }
+    }
+
+    override fun saveAllTasks(tasks: List<Task>) {
         tasks.forEach { task ->
             val row = task.toCsvRow()
             csvFileWriter.writeCsv(taskFile, listOf(row))
         }
-        return Result.success(Unit)
-    }
-
-    override fun createTask(task: Task): Result<Unit> {
-        return try {
-            val row = task.toCsvRow()
-            csvFileWriter.writeCsv(taskFile, listOf(row))
-            Result.success(Unit)
-        } catch (exception: Exception) {
-            Result.failure(exception)
-        }
-    }
-
-    override fun deleteTask(projectId: Int, taskId: String) {
-        val result = getAllTasks()
-        if (result.isFailure) throw result.exceptionOrNull()!!
-
-        val allTasks = result.getOrThrow().toMutableList()
-        val removed = allTasks.removeIf { it.projectId == projectId && it.id == taskId }
-
-        if (!removed) {
-            throw NoSuchElementException("Task with id $taskId in project $projectId not found")
-        }
-
-        val writeResult = setAllTasks(allTasks)
-        if (writeResult.isFailure) throw writeResult.exceptionOrNull()!!
     }
 }

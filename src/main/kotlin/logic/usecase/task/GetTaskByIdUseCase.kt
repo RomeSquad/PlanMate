@@ -6,7 +6,7 @@ import org.example.logic.repository.TaskRepository
 class GetTaskByIdUseCase(
     private val taskRepository: TaskRepository
 ) {
-    fun getTaskById(taskId: String): Result<Task> {
+    fun getTaskById(taskId: String): Task {
         require(taskId.isNotBlank()) { "taskId must not be blank" }
         return taskRepository.getTaskById(taskId)
     }

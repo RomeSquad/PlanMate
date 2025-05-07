@@ -1,9 +1,11 @@
 package logic.usecase.task
 
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
-import logic.usecase.createTask
-import org.example.data.datasource.task.TaskDataSource
+import io.mockk.verify
+import org.example.logic.TaskNotFoundException
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.EditTaskUseCase
 import org.junit.jupiter.api.BeforeEach
@@ -13,13 +15,11 @@ import kotlin.test.Test
 class EditTaskUseCaseTest {
 
     private lateinit var taskRepository: TaskRepository
-    private lateinit var taskDataSource: TaskDataSource
     private lateinit var editTaskUseCase: EditTaskUseCase
 
     @BeforeEach
     fun setup() {
         taskRepository = mockk()
-        taskDataSource = mockk()
         editTaskUseCase = EditTaskUseCase(taskRepository)
     }
 
@@ -31,7 +31,6 @@ class EditTaskUseCaseTest {
             description = "description",
             projectId = 1,
         )
-        every { taskDataSource.getTaskByIdFromFile(task.id) } returns Result.success(task)
 
         assertThrows<IllegalArgumentException> {
             editTaskUseCase.editTask(
@@ -51,7 +50,6 @@ class EditTaskUseCaseTest {
             description = "",
             projectId = 1,
         )
-        every { taskDataSource.getTaskByIdFromFile(task.id) } returns Result.success(task)
 
         assertThrows<IllegalArgumentException> {
             editTaskUseCase.editTask(
@@ -71,7 +69,9 @@ class EditTaskUseCaseTest {
             description = "description",
             projectId = 1,
         )
-        every { taskDataSource.getTaskByIdFromFile("") } returns Result.failure(Exception("Task not found"))
+        every {
+            taskRepository.editTask(task.id, task.title, task.description, task.updatedAt)
+        } throws TaskNotFoundException("Task not found")
 
         assertThrows<IllegalArgumentException> {
             editTaskUseCase.editTask(
@@ -79,6 +79,35 @@ class EditTaskUseCaseTest {
                 title = task.title,
                 description = task.description,
                 updatedAt = task.updatedAt
+            )
+        }
+    }
+
+    @Test
+    fun `should edit task successfully when valid data`() {
+        val task = createTask(
+            id = "A1",
+            title = "Updated Title",
+            description = "Updated Description",
+            projectId = 1
+        )
+
+        every {
+            taskRepository.editTask(task.id, task.title, task.description, task.updatedAt)
+        } just Runs
+
+        editTaskUseCase.editTask(
+            taskId = task.id,
+            title = task.title,
+            description = task.description,
+            updatedAt = task.updatedAt
+        )
+        verify {
+            taskRepository.editTask(
+            task.id,
+            task.title,
+            task.description,
+            task.updatedAt
             )
         }
     }
