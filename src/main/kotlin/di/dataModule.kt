@@ -8,6 +8,8 @@ import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import org.example.data.datasource.authentication.AuthDataSource
 import org.example.data.datasource.authentication.CsvAuthDataSource
 import org.example.data.datasource.authentication.MongoAuthDataSource
+import org.example.data.datasource.changelog.ChangeHistoryDataSource
+import org.example.data.datasource.changelog.MongoChangeHistoryDataSource
 import org.example.data.datasource.project.CsvProjectDataSource
 import org.example.data.datasource.project.ProjectDataSource
 import org.example.data.datasource.state.StateDataSource
@@ -17,6 +19,7 @@ import org.example.data.repository.AuthRepositoryImpl
 import org.example.data.repository.ProjectRepositoryImpl
 import org.example.data.repository.TaskRepositoryImpl
 import org.example.data.utils.*
+import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
 import org.example.logic.entity.State
 import org.example.logic.entity.Task
@@ -46,6 +49,8 @@ val dataModule = module {
     single<AuthDataSource> { MongoAuthDataSource(get(named("users-collection"))) }
     single<TaskDataSource> { CsvTaskDataSource(get(), get(), get(named("taskFile"))) }
     single<StateDataSource> { CsvStateDataSource() }
+    single<ChangeHistoryDataSource> { MongoChangeHistoryDataSource(get(named("change-history-collection"))) }
+
 
     //TODO: add other data sources. Follow the same pattern as above
 
@@ -73,5 +78,8 @@ val dataModule = module {
     }
     single<MongoCollection<State>>(named("states-collection")){
         get<MongoDatabase>().getCollection<State>("states")
+    }
+    single<MongoCollection<ChangeHistory>>(named("change-history-collection")){
+        get<MongoDatabase>().getCollection<ChangeHistory>("change-history")
     }
 }
