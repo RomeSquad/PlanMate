@@ -6,7 +6,7 @@ import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
 import org.example.logic.entity.State
 import org.example.logic.repository.ChangeHistoryRepository
-import org.example.logic.usecase.ShowProjectHistoryUseCase
+import org.example.logic.usecase.history.ShowProjectHistoryUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.sql.Date
