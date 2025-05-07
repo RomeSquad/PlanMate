@@ -11,5 +11,5 @@ interface TaskDataSource {
     fun getTasksByProjectId(projectId: Int): List<Task>
 
     fun getAllTasks(): List<Task>
-    fun setAllTasks(tasks: List<Task>)
+    fun saveAllTasks(tasks: List<Task>)
 }

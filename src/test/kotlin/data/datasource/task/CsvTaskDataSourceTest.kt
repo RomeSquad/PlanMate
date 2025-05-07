@@ -110,7 +110,7 @@ class CsvTaskDataSourceTest {
         val tasksData = tasksData()
         every { csvFileWriter.writeCsv(tasksFile, any()) } just Runs
 
-        csvTaskDataSource.setAllTasks(tasksData)
+        csvTaskDataSource.saveAllTasks(tasksData)
 
         tasksData.forEach {
             verify { csvFileWriter.writeCsv(tasksFile, listOf(it.toCsvRow())) }

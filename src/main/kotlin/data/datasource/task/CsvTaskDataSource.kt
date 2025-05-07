@@ -38,7 +38,7 @@ class CsvTaskDataSource (
             updatedAt = updatedAt
         )
 
-        setAllTasks(tasks)
+        saveAllTasks(tasks)
     }
 
     override fun deleteTask(projectId: Int, taskId: String) {
@@ -55,7 +55,7 @@ class CsvTaskDataSource (
             )
         }
 
-        setAllTasks(allTasks)
+        saveAllTasks(allTasks)
     }
 
     override fun getTaskByIdFromFile(taskId: String): Task {
@@ -75,7 +75,7 @@ class CsvTaskDataSource (
         return data.map { it.fromCsvRowToTask() }
     }
 
-    override fun setAllTasks(tasks: List<Task>) {
+    override fun saveAllTasks(tasks: List<Task>) {
         tasks.forEach { task ->
             val row = task.toCsvRow()
             csvFileWriter.writeCsv(taskFile, listOf(row))
