@@ -2,15 +2,16 @@ package data.datasource.task
 
 import io.mockk.*
 import org.example.data.datasource.task.CsvTaskDataSource
+import org.example.data.repository.mapper.toCsvRow
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.logic.entity.State
 import org.example.logic.entity.Task
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.assertThrows
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class CsvTaskDataSourceTest {
 
@@ -27,14 +28,57 @@ class CsvTaskDataSourceTest {
     }
 
     @Test
+    fun `when use createTask should write task to csv file`() {
+        val task = tasksData().first()
+        every { csvFileWriter.writeCsv(tasksFile, listOf(task.toCsvRow())) } just Runs
+
+        csvTaskDataSource.createTask(task)
+
+        verify { csvFileWriter.writeCsv(tasksFile, listOf(task.toCsvRow())) }
+    }
+
+    @Test
+    fun `when use editTask should update task in csv file`() {
+        val csvData = csvRowsData()
+        every { csvFileReader.readCsv(tasksFile) } returns csvData
+        every { csvFileWriter.writeCsv(tasksFile, any()) } just Runs
+
+        csvTaskDataSource.editTask("task1", "new title", "new description", 19)
+
+        verify { csvFileReader.readCsv(tasksFile) }
+        verify { csvFileWriter.writeCsv(tasksFile, any()) }
+    }
+
+    @Test
+    fun `when use editTask should throw exception when task not found`() {
+        val csvData = csvRowsData()
+        every { csvFileReader.readCsv(tasksFile) } returns csvData
+
+        assertThrows<NoSuchElementException> {
+            csvTaskDataSource.editTask("task3", "title", "description", 19)
+        }
+        verify { csvFileReader.readCsv(tasksFile) }
+    }
+
+    @Test
+    fun `when use getTaskByProjectId should return tasks by same projectId`() {
+        val csvData = csvRowsData()
+        every { csvFileReader.readCsv(tasksFile) } returns csvData
+
+        val result = csvTaskDataSource.getTasksByProjectId(1)
+
+        assertEquals("task1", result.first().id)
+        verify { csvFileReader.readCsv(tasksFile) }
+    }
+
+    @Test
     fun `when use getTaskByIdFromFile should return task when found it`() {
         val csvData = csvRowsData()
         every { csvFileReader.readCsv(tasksFile) } returns csvData
 
         val result = csvTaskDataSource.getTaskByIdFromFile("task1")
 
-        assertTrue(result.isSuccess)
-        assertEquals("task1", result.getOrNull()?.id)
+        assertEquals("task1", result.id)
         verify { csvFileReader.readCsv(tasksFile) }
     }
 
@@ -43,9 +87,9 @@ class CsvTaskDataSourceTest {
         val csvData = csvRowsData()
         every { csvFileReader.readCsv(tasksFile) } returns csvData
 
-        val result = csvTaskDataSource.getTaskByIdFromFile("task3")
-
-        assertTrue(result.isFailure)
+        assertThrows<NoSuchElementException> {
+            csvTaskDataSource.getTaskByIdFromFile("task3")
+        }
         verify { csvFileReader.readCsv(tasksFile) }
     }
 
@@ -57,7 +101,7 @@ class CsvTaskDataSourceTest {
 
         val result = csvTaskDataSource.getAllTasks()
 
-        assertEquals(tasksData.map { it.id }, result.getOrNull()?.map { it.id })
+        assertEquals(tasksData.map { it.id }, result.map { it.id })
         verify { csvFileReader.readCsv(tasksFile) }
     }
 
@@ -66,8 +110,59 @@ class CsvTaskDataSourceTest {
         val tasksData = tasksData()
         every { csvFileWriter.writeCsv(tasksFile, any()) } just Runs
 
-        val result = csvTaskDataSource.setAllTasks(tasksData)
-        assertTrue(result.isSuccess)
+        csvTaskDataSource.setAllTasks(tasksData)
+
+        tasksData.forEach {
+            verify { csvFileWriter.writeCsv(tasksFile, listOf(it.toCsvRow())) }
+        }
+    }
+
+    @Test
+    fun `when use deleteTask should throw exception when task not found`() {
+        val csvData = csvRowsData()
+        every { csvFileReader.readCsv(tasksFile) } returns csvData
+
+        assertThrows<NoSuchElementException> {
+            csvTaskDataSource.deleteTask(3,"task3")
+        }
+        verify { csvFileReader.readCsv(tasksFile) }
+    }
+
+    @Test
+    fun `when use deleteTask should delete task when found it`() {
+        val csvData = csvRowsData()
+        val tasksData = tasksData().toMutableList()
+        every { csvFileReader.readCsv(tasksFile) } returns csvData
+        every { csvFileWriter.writeCsv(tasksFile, any()) } just Runs
+
+        csvTaskDataSource.deleteTask(1,"task1")
+
+        val remainTasks = tasksData.filterNot { it.projectId == 1 && it.id == "task1" }
+        remainTasks.forEach {
+            verify { csvFileWriter.writeCsv(tasksFile, listOf(it.toCsvRow())) }
+        }
+    }
+
+    @Test
+    fun `when use deleteTask should throw exception when taskId not match`() {
+        val csvData = csvRowsData()
+        every { csvFileReader.readCsv(tasksFile) } returns csvData
+
+        assertThrows<NoSuchElementException> {
+            csvTaskDataSource.deleteTask(1,"task3")
+        }
+        verify { csvFileReader.readCsv(tasksFile) }
+    }
+
+    @Test
+    fun `when use deleteTask should throw exception when projectId not match`() {
+        val csvData = csvRowsData()
+        every { csvFileReader.readCsv(tasksFile) } returns csvData
+
+        assertThrows<NoSuchElementException> {
+            csvTaskDataSource.deleteTask(3,"task1")
+        }
+        verify { csvFileReader.readCsv(tasksFile) }
     }
 
     private fun csvRowsData(): List<List<String>> {
