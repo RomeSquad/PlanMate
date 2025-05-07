@@ -6,6 +6,6 @@ data class ChangeHistory(
     val projectID: String,
     val taskID: String,
     val authorID: String,
-    val changeDate: Date,
-    val changeDescription: String
+    val changeDate: String,
+    val changeDescription: Date?
 )

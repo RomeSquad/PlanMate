@@ -6,7 +6,8 @@ import org.example.logic.repository.ProjectRepository
 class GetProjectByIdUseCase(
     private val projectRepository: ProjectRepository
 ) {
-    fun getProjectById(id: Int): Result<Project> {
-        return if(id >0) projectRepository.getProjectById(id)  else  Result.failure(Exception("Project name cannot be blank"))
+    suspend fun getProjectById(id: Int): Project {
+        require(id > 0) { "Project id must be greater than zero" }
+        return projectRepository.getProjectById(id)
     }
 }

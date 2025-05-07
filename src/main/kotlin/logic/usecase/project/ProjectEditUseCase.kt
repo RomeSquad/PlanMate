@@ -6,7 +6,7 @@ import org.example.logic.repository.ProjectRepository
 class EditProjectUseCase(
     private val projectRepository: ProjectRepository
 ) {
-    fun execute(project: Project): Result<Unit> {
+    suspend fun execute(project: Project) {
         projectRepository.editProject(project)
         return projectRepository.editProject(project)
     }
