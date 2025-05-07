@@ -32,7 +32,7 @@ class ChangeHistoryRepositoryImplTest() {
         every { projectDataSource.getAllProjects() } returns Result.success(FakeChangeHistoryData)
 
         //when
-        val result = changeHistoryRepository.getHistoryByProjectId(projectID)
+        val result = changeHistoryRepository.ShowHistoryByProjectID(projectID)
         //then
         assertEquals(expected, result.getOrNull())
 
@@ -46,7 +46,7 @@ class ChangeHistoryRepositoryImplTest() {
         every { projectDataSource.getAllProjects() } returns Result.success(FakeChangeHistoryData)
 
         //when
-        val result = changeHistoryRepository.getHistoryByProjectId(projectID)
+        val result = changeHistoryRepository.ShowHistoryByProjectID(projectID)
 
         //then
         assertEquals(expected, result.getOrNull())
@@ -61,7 +61,7 @@ class ChangeHistoryRepositoryImplTest() {
         every { projectDataSource.getAllProjects() } returns Result.failure(exception)
 
         //when
-        val result = changeHistoryRepository.getHistoryByProjectId(projectID)
+        val result = changeHistoryRepository.ShowHistoryByProjectID(projectID)
 
         //then
         assertEquals(exception, result.exceptionOrNull())

@@ -7,7 +7,7 @@ class ShowProjectHistoryUseCase(
     private val repository: ChangeHistoryRepository
 ) {
     fun execute(projectId: Int): Result<Project> {
-        return repository.getHistoryByProjectId(projectId)
+        return repository.ShowHistoryByProjectID(projectId)
     }
 }
 

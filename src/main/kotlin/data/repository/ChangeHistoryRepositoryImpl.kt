@@ -7,7 +7,7 @@ import org.example.logic.repository.ChangeHistoryRepository
 class ChangeHistoryRepositoryImpl(private val dataSource: ProjectDataSource
 ) : ChangeHistoryRepository {
 
-    override fun getHistoryByProjectId(projectId: Int): Result<Project> {
+    override fun ShowHistoryByProjectID(projectId: Int): Result<Project> {
 
             return dataSource.getAllProjects().fold(
                 onSuccess = { list ->
