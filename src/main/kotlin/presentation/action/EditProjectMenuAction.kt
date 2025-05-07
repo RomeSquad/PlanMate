@@ -30,7 +30,6 @@ class EditProjectMenuAction(
             id = id,
             name = name,
             description = description,
-            changeHistory = listOf(),
             state = State(projectId = id.toString(), stateName = "In progress")
         )
 
