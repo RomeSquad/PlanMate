@@ -1,15 +1,16 @@
 package logic.usecase.task
 
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
-import logic.usecase.createTask
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.CreateTaskUseCase
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class CreateTaskUseCaseTest {
 
@@ -25,11 +26,10 @@ class CreateTaskUseCaseTest {
     @Test
     fun `should return success when valid all attributes`() {
         val task = createTask(title = "title", description = "description", projectId = 1)
-        every { taskRepository.createTask(task) } returns Result.success(Unit)
+        every { taskRepository.createTask(task) } just Runs
 
-        val result = createTaskUseCase.createTask(task)
+        createTaskUseCase.createTask(task)
 
-        assertTrue(result.isSuccess)
         verify { taskRepository.createTask(task) }
     }
 
@@ -41,11 +41,13 @@ class CreateTaskUseCaseTest {
         )
         val expectedException = "Title must not be empty"
 
-        val result = createTaskUseCase.createTask(task)
+        val result = assertThrows<IllegalArgumentException> {
+            createTaskUseCase.createTask(task)
+        }
 
         assertEquals(
             expected = expectedException,
-            actual = result.exceptionOrNull()?.message
+            actual = result.message
         )
         verify(exactly = 0) { taskRepository.createTask(any()) }
     }
@@ -58,9 +60,11 @@ class CreateTaskUseCaseTest {
         )
         val expectedException = "Description must not be empty"
 
-        val result = createTaskUseCase.createTask(task)
+        val result = assertThrows<IllegalArgumentException> {
+            createTaskUseCase.createTask(task)
+        }
 
-        assertEquals(expectedException, result.exceptionOrNull()?.message)
+        assertEquals(expectedException, result.message)
         verify(exactly = 0) { taskRepository.createTask(any()) }
     }
 
@@ -73,9 +77,11 @@ class CreateTaskUseCaseTest {
         )
         val expectedException = "Project ID cannot be zero"
 
-        val result = createTaskUseCase.createTask(task)
+        val result = assertThrows<IllegalArgumentException> {
+            createTaskUseCase.createTask(task)
+        }
 
-        assertEquals(expectedException, result.exceptionOrNull()?.message)
+        assertEquals(expectedException, result.message)
         verify(exactly = 0) { taskRepository.createTask(any()) }
     }
 

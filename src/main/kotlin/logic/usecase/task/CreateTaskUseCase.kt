@@ -6,27 +6,19 @@ import org.example.logic.repository.TaskRepository
 class CreateTaskUseCase(
     private val taskRepository: TaskRepository
 ) {
-    fun createTask(task: Task): Result<Unit> {
-        return try {
-            if (task.title.isEmpty()) {
-                return failedException("Title must not be empty")
-            }
-
-            if (task.description.isEmpty()) {
-                return failedException("Description must not be empty")
-            }
-
-            if (task.projectId == 0) {
-                return failedException("Project ID cannot be zero")
-            }
-
-            taskRepository.createTask(task)
-        } catch (exception: Exception) {
-            Result.failure(exception)
+    fun createTask(task: Task) {
+        if (task.title.isEmpty()) {
+            throw IllegalArgumentException("Title must not be empty")
         }
-    }
 
-    private fun failedException(message: String): Result<Unit> {
-        return Result.failure(IllegalArgumentException(message))
+        if (task.description.isEmpty()) {
+            throw IllegalArgumentException("Description must not be empty")
+        }
+
+        if (task.projectId == 0) {
+            throw IllegalArgumentException("Project ID cannot be zero")
+        }
+
+        taskRepository.createTask(task)
     }
 }

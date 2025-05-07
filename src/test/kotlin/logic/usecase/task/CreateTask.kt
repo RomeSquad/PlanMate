@@ -1,4 +1,4 @@
-package logic.usecase
+package logic.usecase.task
 
 import org.example.logic.entity.State
 import org.example.logic.entity.Task
