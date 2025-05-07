@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import org.example.logic.TaskNotFoundException
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.EditTaskUseCase
 import org.junit.jupiter.api.BeforeEach
@@ -70,7 +71,7 @@ class EditTaskUseCaseTest {
         )
         every {
             taskRepository.editTask(task.id, task.title, task.description, task.updatedAt)
-        } throws NoSuchElementException("Task not found")
+        } throws TaskNotFoundException("Task not found")
 
         assertThrows<IllegalArgumentException> {
             editTaskUseCase.editTask(

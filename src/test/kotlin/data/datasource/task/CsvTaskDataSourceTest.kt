@@ -5,6 +5,7 @@ import org.example.data.datasource.task.CsvTaskDataSource
 import org.example.data.repository.mapper.toCsvRow
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
+import org.example.logic.TaskNotFoundException
 import org.example.logic.entity.State
 import org.example.logic.entity.Task
 import org.junit.jupiter.api.BeforeEach
@@ -54,7 +55,7 @@ class CsvTaskDataSourceTest {
         val csvData = csvRowsData()
         every { csvFileReader.readCsv(tasksFile) } returns csvData
 
-        assertThrows<NoSuchElementException> {
+        assertThrows<TaskNotFoundException> {
             csvTaskDataSource.editTask("task3", "title", "description", 19)
         }
         verify { csvFileReader.readCsv(tasksFile) }
@@ -87,7 +88,7 @@ class CsvTaskDataSourceTest {
         val csvData = csvRowsData()
         every { csvFileReader.readCsv(tasksFile) } returns csvData
 
-        assertThrows<NoSuchElementException> {
+        assertThrows<TaskNotFoundException> {
             csvTaskDataSource.getTaskByIdFromFile("task3")
         }
         verify { csvFileReader.readCsv(tasksFile) }
@@ -122,7 +123,7 @@ class CsvTaskDataSourceTest {
         val csvData = csvRowsData()
         every { csvFileReader.readCsv(tasksFile) } returns csvData
 
-        assertThrows<NoSuchElementException> {
+        assertThrows<TaskNotFoundException> {
             csvTaskDataSource.deleteTask(3,"task3")
         }
         verify { csvFileReader.readCsv(tasksFile) }
@@ -148,7 +149,7 @@ class CsvTaskDataSourceTest {
         val csvData = csvRowsData()
         every { csvFileReader.readCsv(tasksFile) } returns csvData
 
-        assertThrows<NoSuchElementException> {
+        assertThrows<TaskNotFoundException> {
             csvTaskDataSource.deleteTask(1,"task3")
         }
         verify { csvFileReader.readCsv(tasksFile) }
@@ -159,7 +160,7 @@ class CsvTaskDataSourceTest {
         val csvData = csvRowsData()
         every { csvFileReader.readCsv(tasksFile) } returns csvData
 
-        assertThrows<NoSuchElementException> {
+        assertThrows<TaskNotFoundException> {
             csvTaskDataSource.deleteTask(3,"task1")
         }
         verify { csvFileReader.readCsv(tasksFile) }
@@ -220,5 +221,4 @@ class CsvTaskDataSourceTest {
             )
         )
     }
-
 }

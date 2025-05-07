@@ -4,6 +4,7 @@ import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.data.repository.mapper.fromCsvRowToTask
 import org.example.data.repository.mapper.toCsvRow
+import org.example.logic.TaskNotFoundException
 import org.example.logic.entity.Task
 import java.io.File
 
@@ -28,7 +29,7 @@ class CsvTaskDataSource (
         val index = tasks.indexOfFirst { it.id == taskId }
 
         if (index == -1) {
-            throw NoSuchElementException("Task with id $taskId not found")
+            throw TaskNotFoundException("Task with id $taskId not found")
         }
 
         val task = tasks[index]
@@ -50,7 +51,7 @@ class CsvTaskDataSource (
         }
 
         if (!removed) {
-            throw NoSuchElementException(
+            throw TaskNotFoundException(
                 "Task with id $taskId in project $projectId not found"
             )
         }
@@ -62,7 +63,7 @@ class CsvTaskDataSource (
         val data = csvFileReader.readCsv(taskFile)
         val tasks = data.map { it.fromCsvRowToTask() }
         val task = tasks.firstOrNull { it.id == taskId }
-            ?: throw NoSuchElementException("Task not found for this id")
+            ?: throw TaskNotFoundException("Task not found for this id")
         return task
     }
 
