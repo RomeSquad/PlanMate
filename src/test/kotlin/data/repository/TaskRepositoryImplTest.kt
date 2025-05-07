@@ -1,4 +1,5 @@
 package data.repository
+
 import io.mockk.*
 import org.example.data.datasource.task.TaskDataSource
 import org.example.data.repository.TaskRepositoryImpl
@@ -7,9 +8,9 @@ import org.example.logic.entity.Task
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 import kotlin.test.BeforeTest
-import kotlin.test.assertFailsWith
 
 class TaskRepositoryImplTest {
+
     private lateinit var taskDataSource: TaskDataSource
     private lateinit var taskRepository: TaskRepositoryImpl
 
@@ -32,61 +33,45 @@ class TaskRepositoryImplTest {
 
     @Test
     fun `should create task successfully when calling createTask`() {
-        every { taskDataSource.createTask(any()) } returns Result.success(Unit)
+        every { taskDataSource.createTask(any()) } just Runs
 
-        val result = taskRepository.createTask(sampleTask)
+        taskRepository.createTask(sampleTask)
 
-        assertTrue(result.isSuccess)
         verify { taskDataSource.createTask(sampleTask) }
     }
+
     @Test
-    fun `should update task fields when calling editTask with valid id`() {
-        val updatedTitle = "New Title"
-        val updatedDesc = "New Desc"
-        val updatedAt = 99L
+    fun `should edit task when calling editTask`() {
+        every { taskDataSource.editTask("task1", "new title", "new description", 20L) } just Runs
 
-        val tasks = listOf(sampleTask)
-        every { taskDataSource.getAllTasks() } returns Result.success(tasks)
-        every { taskDataSource.setAllTasks(any()) } returns Result.success(Unit)
+        taskRepository.editTask("task1", "new title", "new description", 20L)
 
-        taskRepository.editTask("task1", updatedTitle, updatedDesc, updatedAt)
-
-        verify {
-            taskDataSource.setAllTasks(withArg {
-                assertEquals(1, it.size)
-                assertEquals(updatedTitle, it[0].title)
-                assertEquals(updatedDesc, it[0].description)
-                assertEquals(updatedAt, it[0].updatedAt)
-            })
-        }
+        verify { taskDataSource.editTask("task1", "new title", "new description", 20L) }
     }
 
     @Test
-    fun `editTask throws if task not found`() {
-        every { taskDataSource.getAllTasks() } returns Result.success(emptyList())
+    fun `should delete task when calling deleteTask`() {
+        every { taskDataSource.deleteTask(1, "task1") } just Runs
 
-        val exception = assertFailsWith <NoSuchElementException> {
-            taskRepository.editTask("taskX", "title", "desc", 0)
-        }
+        taskRepository.deleteTask(1, "task1")
 
-        assertTrue(exception.message!!.contains("not found"))
+        verify { taskDataSource.deleteTask(1, "task1") }
     }
 
     @Test
     fun `should return task when calling getTaskById with valid id`() {
-        every { taskDataSource.getTaskByIdFromFile("task1") } returns Result.success(sampleTask)
+        every { taskDataSource.getTaskByIdFromFile("task1") } returns sampleTask
 
         val result = taskRepository.getTaskById("task1")
 
-        assertTrue(result.isSuccess)
-        assertEquals("task1", result.getOrNull()?.id)
+        assertEquals("task1", result.id)
         verify { taskDataSource.getTaskByIdFromFile("task1") }
     }
 
     @Test
     fun `getTasksByProject returns filtered tasks`() {
         val tasks = listOf(sampleTask, sampleTask.copy(id = "t2", projectId = 2))
-        every { taskDataSource.getAllTasks() } returns Result.success(tasks)
+        every { taskDataSource.getAllTasks() } returns tasks
 
         val result = taskRepository.getTasksByProject(1)
 
@@ -95,26 +80,15 @@ class TaskRepositoryImplTest {
     }
 
     @Test
-    fun `should delete task when calling deleteTask`() {
-        every { taskDataSource.deleteTask(1, "task1") } just  Runs
-
-        taskRepository.deleteTask(1, "task1")
-
-        verify { taskDataSource.deleteTask(1, "task1") }
-    }
-
-
-    @Test
     fun `should return all tasks when calling getAllTasks`() {
         val tasks = listOf(sampleTask, sampleTask.copy(id = "task2"))
-        every { taskDataSource.getAllTasks() } returns Result.success(tasks)
+        every { taskDataSource.getAllTasks() } returns tasks
 
         val result = taskRepository.getAllTasks()
 
-        assertTrue(result.isSuccess)
-        assertEquals(2, result.getOrNull()?.size)
-        assertEquals("task1", result.getOrNull()?.get(0)?.id)
-        assertEquals("task2", result.getOrNull()?.get(1)?.id)
+        assertEquals(2, result.size)
+        assertEquals("task1", result[0].id)
+        assertEquals("task2", result[1].id)
         verify { taskDataSource.getAllTasks() }
     }
 }

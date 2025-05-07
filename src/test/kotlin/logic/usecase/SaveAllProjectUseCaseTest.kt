@@ -2,9 +2,8 @@ package logic.usecase
 
 import io.mockk.every
 import io.mockk.mockk
-import org.example.data.datasource.project.ProjectDataSource
 import org.example.data.repository.ProjectRepositoryImpl
-import org.example.logic.usecase.SaveAllProjectUseCase
+import org.example.logic.usecase.project.SaveAllProjectUseCase
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

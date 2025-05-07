@@ -27,6 +27,16 @@ dependencies {
     // kotest, assertion
     testImplementation("io.kotest:kotest-runner-junit5:5.7.2")
     testImplementation("io.kotest:kotest-assertions-core:5.7.2")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    //mongo-db
+    implementation(platform("org.mongodb:mongodb-driver-bom:5.4.0"))
+    implementation("org.mongodb:mongodb-driver-kotlin-coroutine")
+    implementation("org.mongodb:bson-kotlinx:5.4.0")
+//    implementation("ch.qos.logback:logback-classic:1.2.11")
 }
 
 tasks.test {
@@ -74,7 +84,7 @@ tasks.jacocoTestCoverageVerification {
     classDirectories.setFrom(
         files(
             fileTree("build/classes/kotlin/main") {
-                exclude("**/entity/**", "**/di/**", "**/exceptions/**" , "**/presentation/**")
+                exclude("**/entity/**", "**/di/**", "**/exceptions/**", "**/presentation/**")
             }
         )
     )

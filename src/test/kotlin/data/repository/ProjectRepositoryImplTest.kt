@@ -29,7 +29,7 @@ class ProjectRepositoryImplTest {
     fun setup() {
         projectDataSource = mockk()
         every { projectDataSource.getAllProjects() } returns Result.success(emptyList())
-        projectRepository = ProjectRepositoryImpl(projectDataSource)
+       projectRepository = ProjectRepositoryImpl(projectDataSource)
     }
 
     @Test

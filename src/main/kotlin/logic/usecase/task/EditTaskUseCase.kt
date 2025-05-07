@@ -14,9 +14,11 @@ class EditTaskUseCase(
         if (taskId.isBlank()) {
             throw IllegalArgumentException("taskId must not be blank")
         }
+
         if (title.isBlank()) {
             throw IllegalArgumentException("title must not be blank")
         }
+
         if (description.isBlank()) {
             throw IllegalArgumentException("description must not be blank")
         }

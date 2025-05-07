@@ -1,7 +1,8 @@
 package org.example.presentation.action
 
 import org.example.logic.entity.auth.UserRole
-import org.example.logic.usecase.InsertUserUseCase
+import org.example.presentation.menus.Menu
+import org.example.logic.usecase.auth.InsertUserUseCase
 import org.example.presentation.menus.MenuAction
 import presentation.io.InputReader
 import presentation.io.UiDisplayer
@@ -9,8 +10,9 @@ import presentation.io.UiDisplayer
 class InsertUserMenuAction(
     private val insertUserUseCase: InsertUserUseCase,
     override val description: String = "Insert User",
+    override var menu: Menu,
 ) : MenuAction {
-    override fun execute(ui: UiDisplayer, inputReader: InputReader) {
+    override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
 
         ui.displayMessage("Enter username:")
         val username = inputReader.readString()
@@ -18,7 +20,7 @@ class InsertUserMenuAction(
         ui.displayMessage("Enter  password:")
         val password = inputReader.readString()
 
-        ui.displayMessage("Enter  role:")
+        ui.displayMessage("Enter  role: admin or mate:")
         val userRole: UserRole = inputReader.readString().let {
             when (it) {
                 "admin" -> UserRole.ADMIN
@@ -30,11 +32,13 @@ class InsertUserMenuAction(
             }
         }
 
-        val result = insertUserUseCase.insertUser(username, password, userRole)
-        if (result.isSuccess) {
+        try {
+            val result = insertUserUseCase.insertUser(username, password, userRole)
             ui.displayMessage("User inserted successfully")
-        } else {
-            ui.displayMessage("Error inserting user: ${result.exceptionOrNull()?.message}")
+        } catch (e: Exception) {
+            ui.displayError("Error: ${e.message}")
         }
+
+
     }
 }

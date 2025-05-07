@@ -5,7 +5,7 @@ import io.mockk.mockk
 import org.example.logic.entity.Project
 import org.example.logic.entity.State
 import org.example.logic.repository.ProjectRepository
-import org.example.logic.usecase.GetProjectByIdUseCase
+import org.example.logic.usecase.project.GetProjectByIdUseCase
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

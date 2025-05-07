@@ -3,8 +3,6 @@ package logic.usecase.task
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import logic.usecase.createTask
-import org.example.data.datasource.task.TaskDataSource
 import org.example.logic.TaskNotFoundException
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.GetTaskByIdUseCase
@@ -26,13 +24,12 @@ class GetTaskByIdUseCaseTest {
 
     @Test
     fun `should return task when existing it`() {
-        val task = createTask("19","title", "description")
-        every { taskRepository.getTaskById(task.id) } returns Result.success(task)
+        val task = createTask("19", "title", "description")
+        every { taskRepository.getTaskById(task.id) } returns task
 
         val result = getTaskByIdUseCase.getTaskById(taskId = task.id)
 
-        assertTrue(result.isSuccess)
-        assertEquals(task, result.getOrNull())
+        assertEquals(task, result)
         verify { taskRepository.getTaskById(task.id) }
     }
 
@@ -40,12 +37,13 @@ class GetTaskByIdUseCaseTest {
     fun `should throw TaskNotFoundException when not existing it`() {
         val taskId = "19"
         val exception = TaskNotFoundException("task not found")
-        every { taskRepository.getTaskById(taskId) } returns Result.failure(exception)
+        every { taskRepository.getTaskById(taskId) } throws exception
 
-        val result = getTaskByIdUseCase.getTaskById(taskId)
+        val result = assertThrows<TaskNotFoundException> {
+            getTaskByIdUseCase.getTaskById(taskId)
+        }
 
-        assertTrue(result.isFailure)
-        assertEquals(exception, result.exceptionOrNull())
+        assertEquals("task not found", result.message)
         verify { taskRepository.getTaskById(taskId) }
     }
 
@@ -57,5 +55,4 @@ class GetTaskByIdUseCaseTest {
 
         assertEquals("taskId must not be blank", exception.message)
     }
-
 }

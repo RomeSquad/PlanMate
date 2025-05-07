@@ -1,11 +1,12 @@
 package logic.usecase
 
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.repository.AuthRepository
-import org.example.logic.usecase.InsertUserUseCase
+import org.example.logic.usecase.auth.InsertUserUseCase
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import kotlin.test.Test
@@ -16,7 +17,7 @@ class InsertUserUseCaseTest {
     private val insertUserUseCase = InsertUserUseCase(authRepository)
 
     @Test
-    fun `should insertUser return user when authRepository returns successful insertion`() {
+    fun `should insertUser return user when authRepository returns successful insertion`() = runTest {
         // Given
         val username = "amr"
         val password = "password"
@@ -27,13 +28,13 @@ class InsertUserUseCaseTest {
             password = "5f4dcc3b5aa765d61d8327deb882cf99",
             userRole = userRole
         )
-        every { authRepository.insertUser(username, password, userRole) } returns Result.success(expectedUser)
+        coEvery { authRepository.insertUser(username, password, userRole) } returns expectedUser
 
         // When
         val result = insertUserUseCase.insertUser(username, password, userRole)
 
         // Then
-        assertTrue(result.isSuccess)
-        assertEquals(expectedUser, result.getOrThrow())
+
+        assertEquals(expectedUser, result)
     }
 }
