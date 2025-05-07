@@ -28,30 +28,33 @@ class ShowProjectHistoryUseCaseTest {
 
         //given
         val Id = 12355
-        every { useCase.excute(Id) } returns Result.success(FakeProjectData())
+        every { useCase.execute(Id) } returns Result.success(fakeProjectData())
 
         //when
-        val result = useCase.excute(Id)
+        val result = useCase.execute(Id)
 
         //then
-        assertEquals(result.getOrNull(), FakeProjectData())
+        assertEquals(result.getOrNull(), fakeProjectData())
     }
+
     @Test
-    fun`should return failure when the project id is not exist`(){
+    fun `should return failure when the project id is not exist`() {
 
         //given
-        val ID=11111
-        every { useCase.excute(ID) }returns Result.failure( NoSuchElementException("Project 11111 not found"))
+        val ID = 11111
+        every { useCase.execute(ID) } returns Result.failure(NoSuchElementException("Project 11111 not found"))
 
         //when
-        val result=useCase.excute(ID)
+        val result = useCase.execute(ID)
 
         //then
-        assertEquals(NoSuchElementException(), result.exceptionOrNull())  }
+        assertEquals("Project 11111 not found", result.exceptionOrNull()?.message)
+
+    }
 
 
     //helper
-    fun FakeProjectData(): Project {
+    private fun fakeProjectData(): Project {
         val fixedDate = Date(12355)
         return Project(
             id = 123,
