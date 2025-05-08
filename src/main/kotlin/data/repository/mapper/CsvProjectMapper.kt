@@ -58,7 +58,7 @@ fun String.parseState(): State {
     val parser = ParserImpl()
     val state = parser.parseStringList(this)
     return State(
-        projectId = state[0].trim(),
+        projectId = state[0].trim().toInt(),
         stateName = state[1].trim()
     )
 }

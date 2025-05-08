@@ -31,7 +31,7 @@ class EditProjectMenuAction(
             name = name,
             description = description,
             changeHistory = listOf(),
-            state = State(projectId = id.toString(), stateName = "In progress")
+            state = State(projectId = id, stateName = "In progress")
         )
 
         editProjectUseCase.execute(updatedProject)

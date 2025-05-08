@@ -198,7 +198,7 @@ class CsvTaskDataSourceTest {
                 title = "title1",
                 description = "description1",
                 state = State(
-                    "P1",
+                    1,
                     "To-Do"
                 ),
                 projectId = 1,
@@ -211,7 +211,7 @@ class CsvTaskDataSourceTest {
                 title = "title2",
                 description = "description2",
                 state = State(
-                    "P2",
+                    2,
                     "In-Progress"
                 ),
                 projectId = 2,

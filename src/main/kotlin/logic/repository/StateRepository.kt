@@ -3,8 +3,9 @@ package org.example.logic.repository
 import org.example.logic.entity.State
 
 interface StateRepository {
-    fun getAllStates(): List<State>
-    fun addState(state: State): Boolean
-    fun editState(stateId:String , newStateName:String) : Boolean
-    fun deleteState(id: String): Boolean
+    fun getAllStatesProject(): List<State>
+    fun addState(state: State)
+    fun editState(projectId: Int , newStateName:String)
+    fun deleteState(projectId: Int)
+    fun getStateById (projectId: Int): State
 }

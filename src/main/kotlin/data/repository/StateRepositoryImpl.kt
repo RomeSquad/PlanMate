@@ -1,24 +1,26 @@
-import org.example.data.datasource.state.StateDataSource
+import org.example.data.datasource.state.StateProjectDataSource
 import org.example.logic.entity.State
 import org.example.logic.repository.StateRepository
 
-class StateRepositoryImpl(private val stateDataSource: StateDataSource) : StateRepository {
+class StateRepositoryImpl(private val stateProjectDataSource: StateProjectDataSource) : StateRepository {
 
-    override fun getAllStates(): List<State> {
-        return stateDataSource.getAllStates()
+    override fun getAllStatesProject(): List<State> {
+        return stateProjectDataSource.getAllStatesProject()
     }
 
-    override fun addState(state: State): Boolean {
-        return stateDataSource.addState(state)
+    override fun addState(state: State) {
+        return stateProjectDataSource.addState(state)
     }
 
-    override fun editState(stateId: String, newStateName: String):Boolean {
-        return stateDataSource.editState(stateId,newStateName)
+    override fun editState(projectId: Int, newStateName: String) {
+        return stateProjectDataSource.editState(projectId, newStateName)
     }
 
+    override fun deleteState(projectId: Int) {
+        return stateProjectDataSource.deleteState(projectId)
+    }
 
-    override fun deleteState(id: String):Boolean {
-        stateDataSource.deleteState(id)
-        return true
+    override fun getStateById(projectId: Int): State {
+        return stateProjectDataSource.getStateById(projectId)
     }
 }

@@ -1,6 +1,6 @@
 package org.example.logic.entity
 
 data class State(
-    val projectId: String,
-    val stateName: String
+    val projectId: Int,
+    val stateName: String,
 )

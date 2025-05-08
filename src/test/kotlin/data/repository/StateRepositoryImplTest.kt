@@ -1,5 +1,5 @@
 import io.mockk.*
-import org.example.data.datasource.state.StateDataSource
+import org.example.data.datasource.state.StateProjectDataSource
 import org.example.logic.entity.State
 import org.example.logic.repository.StateRepository
 import org.junit.jupiter.api.BeforeEach
@@ -8,54 +8,54 @@ import kotlin.test.assertEquals
 
 class StateRepositoryImplTest {
 
-    private lateinit var stateDataSource: StateDataSource
+    private lateinit var stateProjectDataSource: StateProjectDataSource
     private lateinit var stateRepository: StateRepository
 
     @BeforeEach
     fun setup() {
-        stateDataSource = mockk(relaxed = true)
-        stateRepository = StateRepositoryImpl(stateDataSource)
+        stateProjectDataSource = mockk(relaxed = true)
+        stateRepository = StateRepositoryImpl(stateProjectDataSource)
     }
 
     @Test
     fun `getAllStates should return list of states`() {
-        // Gevin
+        // Given
         val mockStates = listOf(
-            State(projectId = "1", stateName = "Cairo"),
-            State(projectId = "2", stateName = "Alex")
+            State(projectId = 1, stateName = "Cairo"),
+            State(projectId = 2, stateName = "Alex")
         )
-        every { stateDataSource.getAllStates() } returns mockStates
+        every { stateProjectDataSource.getAllStatesProject() } returns mockStates
 
         // When
-        val result = stateRepository.getAllStates()
+        val result = stateRepository.getAllStatesProject()
 
         // Then
         assertEquals(mockStates, result)
-        verify { stateDataSource.getAllStates() }
+        verify { stateProjectDataSource.getAllStatesProject() }
     }
 
     @Test
     fun `addState should call dataSource addState`() {
-        // Gevin
-        val state = State(projectId = "5", stateName = "inPrograss")
+        // Given
+        val state = State(projectId = 5, stateName = "inPrograss")
 
         // When
         stateRepository.addState(state)
 
         // Then
-        verify { stateDataSource.addState(state) }
+        verify { stateProjectDataSource.addState(state) }
     }
 
 
     @Test
     fun `deleteState should call dataSource deleteState`() {
-        // GEven
-        val id = "2"
+        // Given
+        val id = 2
 
         // When
         stateRepository.deleteState(id)
 
         // Then
-        verify { stateDataSource.deleteState(id) }
+        verify { stateProjectDataSource.deleteState(id) }
     }
 }

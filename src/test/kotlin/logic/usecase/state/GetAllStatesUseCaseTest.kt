@@ -22,12 +22,12 @@ class GetAllStatesUseCaseTest {
     @Test
     fun `should return all states of the project from repository`() {
         val allStates = listOf(
-            State(projectId = "1", stateName = "todo"),
-            State(projectId = "2", stateName = "pending")
+            State(projectId = 1, stateName = "todo"),
+            State(projectId = 2, stateName = "pending")
         )
-        every { stateRepository.getAllStates() } returns allStates
+        every { stateRepository.getAllStatesProject() } returns allStates
 
-        val result = getAllStatesUseCase.executeGetAllStates()
+        val result = getAllStatesUseCase.execute()
 
         assertEquals("todo", result[0].stateName)
     }

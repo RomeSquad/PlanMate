@@ -23,7 +23,7 @@ class EditProjectUseCaseTest {
         name = "Updated Project",
         description = "Updated Description",
         changeHistory = emptyList(),
-        state = org.example.logic.entity.State("1", "In progress")
+        state = org.example.logic.entity.State(1, "In progress")
     )
 
     @BeforeEach

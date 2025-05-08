@@ -18,7 +18,7 @@ class TaskRepositoryImplTest {
         id = "task1",
         title = "title1",
         description = "desc",
-        state = State("1", "To-Do"),
+        state = State(1, "To-Do"),
         projectId = 1,
         createdBy = "U1",
         createdAt = 5,
