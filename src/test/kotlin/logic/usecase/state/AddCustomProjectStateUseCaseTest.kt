@@ -5,20 +5,20 @@ import org.example.logic.entity.State
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.repository.StateRepository
-import org.example.logic.usecase.state.AddCustomStateUseCase
+import org.example.logic.usecase.state.AddCustomProjectStateUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertFailsWith
 
-class AddCustomStateUseCaseTest {
+class AddCustomProjectStateUseCaseTest {
     private lateinit var stateRepository: StateRepository
-    private lateinit var addCustomStateUseCase: AddCustomStateUseCase
+    private lateinit var addCustomStateUseCase: AddCustomProjectStateUseCase
 
     @BeforeEach
     fun setup() {
         stateRepository = mockk(relaxed = true)
-        addCustomStateUseCase = AddCustomStateUseCase(stateRepository)
+        addCustomStateUseCase = AddCustomProjectStateUseCase(stateRepository)
     }
 
     @Test

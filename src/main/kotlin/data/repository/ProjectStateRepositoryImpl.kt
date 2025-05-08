@@ -1,8 +1,8 @@
-import org.example.data.datasource.state.StateProjectDataSource
+import org.example.data.datasource.state.ProjectStateDataSource
 import org.example.logic.entity.State
 import org.example.logic.repository.StateRepository
 
-class StateRepositoryImpl(private val stateProjectDataSource: StateProjectDataSource) : StateRepository {
+class ProjectStateRepositoryImpl(private val stateProjectDataSource: ProjectStateDataSource) : StateRepository {
 
     override fun getAllStatesProject(): List<State> {
         return stateProjectDataSource.getAllStatesProject()

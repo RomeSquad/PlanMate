@@ -1,20 +1,20 @@
 import io.mockk.*
-import org.example.data.datasource.state.StateProjectDataSource
+import org.example.data.datasource.state.ProjectStateDataSource
 import org.example.logic.entity.State
 import org.example.logic.repository.StateRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-class StateRepositoryImplTest {
+class ProjectStateRepositoryImplTest {
 
-    private lateinit var stateProjectDataSource: StateProjectDataSource
+    private lateinit var stateProjectDataSource: ProjectStateDataSource
     private lateinit var stateRepository: StateRepository
 
     @BeforeEach
     fun setup() {
         stateProjectDataSource = mockk(relaxed = true)
-        stateRepository = StateRepositoryImpl(stateProjectDataSource)
+        stateRepository = ProjectStateRepositoryImpl(stateProjectDataSource)
     }
 
     @Test

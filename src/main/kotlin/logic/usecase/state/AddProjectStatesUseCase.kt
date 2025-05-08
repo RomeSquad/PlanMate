@@ -3,7 +3,7 @@ package org.example.logic.usecase.state
 import org.example.logic.entity.State
 import org.example.logic.repository.StateRepository
 
-class AddStatesUseCase(
+class AddProjectStatesUseCase(
     private val stateRepository: StateRepository
 ) {
     fun execute(stateName: String, projectId: Int) {

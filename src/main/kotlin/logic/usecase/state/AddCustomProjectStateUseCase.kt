@@ -5,7 +5,7 @@ import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.repository.StateRepository
 
-class AddCustomStateUseCase(
+class AddCustomProjectStateUseCase(
     private val stateRepository: StateRepository
 ) {
 

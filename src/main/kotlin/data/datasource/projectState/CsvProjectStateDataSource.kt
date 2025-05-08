@@ -1,8 +1,8 @@
-import org.example.data.datasource.state.StateProjectDataSource
+import org.example.data.datasource.state.ProjectStateDataSource
 import org.example.logic.entity.State
 import java.io.File
 
-class CsvStateProjectDataSource : StateProjectDataSource {
+class CsvProjectStateDataSource : ProjectStateDataSource {
     private val csvFile = File("state.csv")
 
     override fun getAllStatesProject(): List<State> {

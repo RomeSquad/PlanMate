@@ -4,19 +4,19 @@ import io.mockk.every
 import io.mockk.mockk
 import org.example.logic.entity.State
 import org.example.logic.repository.StateRepository
-import org.example.logic.usecase.state.GetAllStatesUseCase
+import org.example.logic.usecase.state.GetAllProjectStatesUseCase
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class GetAllStatesUseCaseTest {
+class GetAllProjectStatesUseCaseTest {
     private lateinit var stateRepository: StateRepository
-    private lateinit var getAllStatesUseCase: GetAllStatesUseCase
+    private lateinit var getAllStatesUseCase: GetAllProjectStatesUseCase
 
     @BeforeEach
     fun setup() {
         stateRepository = mockk(relaxed = true)
-        getAllStatesUseCase = GetAllStatesUseCase(stateRepository)
+        getAllStatesUseCase = GetAllProjectStatesUseCase(stateRepository)
     }
 
     @Test

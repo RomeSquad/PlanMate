@@ -2,7 +2,7 @@ package org.example.logic.usecase.state
 
 import org.example.logic.repository.StateRepository
 
-class EditStateUseCase(
+class EditProjectStateUseCase(
     private val stateRepository: StateRepository
 ) {
     fun execute(projectId: Int, newStateName: String) {
