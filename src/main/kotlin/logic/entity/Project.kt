@@ -6,7 +6,7 @@ data class Project(
     val id: Int,
     val name: String,
     val description: String,
-    val state: State
+
 )
 
 data class CreateProjectRequest(
@@ -25,8 +25,7 @@ fun CreateProjectRequest.toProject(lastId: Int) =
         id = lastId + 1,
         name = name,
         description = description,
-        state = State(
-            projectId = (lastId + 1).toString(),
+
             stateName = "InProgress"
         )
     )

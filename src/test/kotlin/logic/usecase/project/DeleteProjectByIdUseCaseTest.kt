@@ -3,12 +3,9 @@ package logic.usecase.project
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.test.runTest
-import org.example.logic.entity.Project
-import org.example.logic.entity.State
+
 import org.example.logic.repository.ProjectRepository
 import org.example.logic.usecase.project.DeleteProjectByIdUseCase
-import org.example.logic.usecase.project.GetProjectByIdUseCase
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

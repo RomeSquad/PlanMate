@@ -10,7 +10,7 @@ import org.example.data.datasource.project.CsvProjectDataSource
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.logic.entity.Project
-import org.example.logic.entity.State
+import org.example.logic.entity.ProjectState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -47,19 +47,7 @@ class CsvProjectDataSourceTest {
             )
         )
         val expectedProjects = listOf(
-            Project(
-                name = "PlanMate",
-                description = "PlanMate Description",
-                state = State("12", "in progress"),
-                id = 1
-            ),
-            Project(
-                name = "PlanMate",
-                description = "PlanMate Description",
-                state = State("12", "in progress"),
-                id = 2
-            )
-        )
+
 
         every { csvFileReader.readCsv(projectsFile) } returns csvRows as List<List<String>>
 
@@ -70,14 +58,7 @@ class CsvProjectDataSourceTest {
     }
 
     @Test
-    fun saveAllProjects_shouldWriteProjectsToCSV() = runBlocking {
-          val projects = listOf(
-            Project(
-                name = "PlanMate",
-                description = "PlanMate Description",
-                state = State("12", "in progress"),
-                id = 1
-            )
+
         )
 
         every { csvFileWriter.writeCsv(projectsFile, any()) } just Runs

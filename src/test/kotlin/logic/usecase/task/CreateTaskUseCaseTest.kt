@@ -1,10 +1,11 @@
 package logic.usecase.task
 
 import io.mockk.Runs
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.coVerify
+import kotlinx.coroutines.test.runTest
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.CreateTaskUseCase
 import org.junit.jupiter.api.BeforeEach
@@ -24,17 +25,17 @@ class CreateTaskUseCaseTest {
     }
 
     @Test
-    fun `should return success when valid all attributes`() {
+    fun `should return success when valid all attributes`() = runTest {
         val task = createTask(title = "title", description = "description", projectId = 1)
-        every { taskRepository.createTask(task) } just Runs
+        coEvery { taskRepository.createTask(task) } just Runs
 
         createTaskUseCase.createTask(task)
 
-        verify { taskRepository.createTask(task) }
+        coVerify { taskRepository.createTask(task) }
     }
 
     @Test
-    fun `should return failure when title is empty`() {
+    fun `should return failure when title is empty`() = runTest {
         val task = createTask(
             title = "",
             description = "description"
@@ -49,11 +50,11 @@ class CreateTaskUseCaseTest {
             expected = expectedException,
             actual = result.message
         )
-        verify(exactly = 0) { taskRepository.createTask(any()) }
+        coVerify(exactly = 0) { taskRepository.createTask(any()) }
     }
 
     @Test
-    fun `should return failure when description is empty`() {
+    fun `should return failure when description is empty`() = runTest {
         val task = createTask(
             title = "title",
             description = ""
@@ -65,11 +66,11 @@ class CreateTaskUseCaseTest {
         }
 
         assertEquals(expectedException, result.message)
-        verify(exactly = 0) { taskRepository.createTask(any()) }
+        coVerify(exactly = 0) { taskRepository.createTask(any()) }
     }
 
     @Test
-    fun `should return failure when projectId is zero`() {
+    fun `should return failure when projectId is zero`() = runTest {
         val task = createTask(
             title = "title",
             description = "description",
@@ -82,7 +83,7 @@ class CreateTaskUseCaseTest {
         }
 
         assertEquals(expectedException, result.message)
-        verify(exactly = 0) { taskRepository.createTask(any()) }
+        coVerify(exactly = 0) { taskRepository.createTask(any()) }
     }
 
 }

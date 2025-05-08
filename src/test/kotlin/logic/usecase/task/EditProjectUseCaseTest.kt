@@ -22,8 +22,7 @@ class EditProjectUseCaseTest {
         id = 1,
         name = "Updated Project",
         description = "Updated Description",
-        state = State("1", "In progress")
-    )
+
 
     @BeforeEach
     fun setup() {

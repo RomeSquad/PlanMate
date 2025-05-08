@@ -5,7 +5,7 @@ import org.example.logic.repository.TaskRepository
 class EditTaskUseCase(
     private val taskRepository: TaskRepository
 ) {
-    fun editTask(
+    suspend fun editTask(
         taskId: String,
         title: String,
         description: String,
