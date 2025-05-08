@@ -1,12 +1,13 @@
 package logic.usecase.state
 
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import org.example.logic.entity.State
 import org.example.logic.repository.StateRepository
 import org.example.logic.usecase.state.AddStatesUseCase
 import org.example.logic.usecase.state.DefaultProjectStateUseCase
-import org.example.logic.usecase.state.EditStateUseCase
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -27,9 +28,9 @@ class DefaultProjectStateUseCaseTest {
     fun `should initialize default states for a new project`() {
         val getStates = mutableListOf<State>()
 
-        every { stateRepository.addState(capture(getStates)) } returns true
+        every { stateRepository.addState(capture(getStates)) } just Runs
 
-        defaultProjectStateUseCase.initializeProjectState("todo")
+        defaultProjectStateUseCase.initializeProjectState(2)
         assertTrue(getStates.any { it.stateName == "todo" || it.stateName == "in progress" || it.stateName == "done" })
     }
 
@@ -37,9 +38,9 @@ class DefaultProjectStateUseCaseTest {
     fun `should have 3 default state for a new project`() {
         val getStates = mutableListOf<State>()
 
-        every { stateRepository.addState(capture(getStates)) } returns true
+        every { stateRepository.addState(capture(getStates)) } just Runs
 
-        defaultProjectStateUseCase.initializeProjectState("3")
+        defaultProjectStateUseCase.initializeProjectState(3)
 
         assertEquals(3, getStates.size)
     }
