@@ -6,7 +6,7 @@ import java.util.Date
 
 class AddChangeHistoryUseCase(private val repository: ChangeHistoryRepository) {
 
-    suspend fun execute(projectId: Int, taskId: String, authorId: Int, changeDate: Date, changeDescription: String): ChangeHistory {
+    suspend fun execute(projectId: Int, taskId: Int, authorId: Int, changeDate: Date, changeDescription: String): ChangeHistory {
         try {
             val changeHistory = ChangeHistory(
                 projectID = projectId,

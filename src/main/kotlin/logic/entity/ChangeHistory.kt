@@ -4,7 +4,7 @@ import java.util.Date
 
 data class ChangeHistory(
     val projectID: Int,
-    val taskID: String,
+    val taskID: Int,
     val authorID: Int,
     val changeDate: Date,
     val changeDescription: String
