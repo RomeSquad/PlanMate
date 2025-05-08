@@ -7,12 +7,11 @@ import org.example.logic.entity.Project
 import org.example.logic.entity.toProject
 import org.example.logic.repository.ProjectRepository
 
- class ProjectRepositoryImpl(
+class ProjectRepositoryImpl(
     private val projectDataSource: ProjectDataSource
 ) : ProjectRepository {
 
-    private val projects by lazy { getAllProjects().getOrDefault(emptyList()).toMutableList()}
-
+    private val projects by lazy { getAllProjects().getOrDefault(emptyList()).toMutableList() }
 
 
     override fun insertProject(projectRequest: CreateProjectRequest): Result<CreateProjectResponse> {
@@ -21,6 +20,7 @@ import org.example.logic.repository.ProjectRepository
             Result.success(CreateProjectResponse(id))
         }
     }
+
     override fun editProject(project: Project): Result<Unit> {
         val index = projects.indexOfFirst { it.id == project.id }
         if (index != -1) {
@@ -30,8 +30,11 @@ import org.example.logic.repository.ProjectRepository
         }
         return TODO("Provide the return value")
     }
+
     override fun getProjectById(id: Int): Result<Project> {
-        return projects.firstOrNull { it.id == id }?.let { Result.success(it) }?: Result.failure(Exception("Project not found"))
+        return projects.firstOrNull { it.id == id }?.let { Result.success(it) } ?: Result.failure(
+            Exception("Project not found")
+        )
     }
 
     override fun getAllProjects(): Result<List<Project>> {
@@ -40,6 +43,16 @@ import org.example.logic.repository.ProjectRepository
 
     override fun saveAllProjects(): Result<Unit> {
         return projectDataSource.saveAllProjects(projects)
+    }
+
+    override fun deleteProject(id: Int): Result<Unit> {
+        return projects.removeIf { it.id == id }.let {
+            if (it) {
+                Result.success(Unit)
+            } else {
+                Result.failure(NoSuchElementException("Project with id $id not found"))
+            }
+        }
     }
 
     private fun getLatestProjectId() = projects.lastOrNull()?.id ?: 0
