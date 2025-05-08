@@ -9,8 +9,10 @@ import org.example.logic.entity.CreateProjectResponse
 import org.example.logic.entity.toProject
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class ProjectRepositoryImplTest {
     private lateinit var projectRepository: ProjectRepositoryImpl
@@ -59,6 +61,24 @@ class ProjectRepositoryImplTest {
         every { projectDataSource.saveAllProjects(any()) } returns Result.success(Unit)
         val projectResponse = projectRepository.saveAllProjects()
         assertEquals(projectResponse.getOrNull(), Unit)
+    }
+    @Test
+    fun `when delete project by valid id then return success`() {
+        every { projectDataSource.getAllProjects() } returns Result.success(listOf(testProjectRequest.toProject(0)))
+
+        val result = projectRepository.deleteProject(1)
+
+        assertEquals(Result.success(Unit), result)
+    }
+
+
+    @Test
+    fun `when delete project by invalid id then return failure`() {
+        every { projectDataSource.getAllProjects() } returns Result.success(listOf(testProjectRequest.toProject(0)))
+
+        assertThrows<NoSuchElementException> {
+            projectRepository.deleteProject(999).getOrThrow()
+        }
     }
 
 
