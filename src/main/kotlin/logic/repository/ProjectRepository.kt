@@ -10,4 +10,5 @@ interface ProjectRepository {
     suspend fun getProjectById(id: Int): Project
     suspend fun saveAllProjects()
     suspend fun  editProject(project: Project)
+    suspend fun deleteProject(id: Int)
 }
