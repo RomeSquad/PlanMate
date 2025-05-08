@@ -1,12 +1,10 @@
 package logic.usecase.state
 
-import io.mockk.every
-import io.mockk.mockk
+import io.mockk.*
 import org.example.logic.repository.StateRepository
 import org.example.logic.usecase.state.DeleteStatesUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import kotlin.test.assertTrue
 
 class DeleteStatesUseCaseTest {
     private lateinit var stateRepository: StateRepository
@@ -20,10 +18,10 @@ class DeleteStatesUseCaseTest {
 
     @Test
     fun ` should throw exception when state name is blank`() {
-        every { stateRepository.deleteState("2") } returns true
+        every { stateRepository.deleteState(2) } just Runs
 
-        val result = deleteStatesUseCase.executeDeleteState("2")
+        deleteStatesUseCase.execute(2)
 
-        assertTrue(result)
+        verify(exactly = 1) { stateRepository.deleteState(2) }
     }
 }
