@@ -12,13 +12,7 @@ class ProjectRepositoryImpl(
     private val projectDataSource: ProjectDataSource
 ) : ProjectRepository {
 
-    private var projects = mutableListOf<Project>()
-
-    init {
-        runBlocking {
-            projects += getAllProjects()
-        }
-    }
+    private val projects by lazy { getAllProjects().getOrDefault(emptyList()).toMutableList() }
 
     override suspend fun insertProject(projectRequest: CreateProjectRequest): CreateProjectResponse {
         val newProject = projectRequest.toProject(getLatestProjectId())
@@ -47,9 +41,16 @@ class ProjectRepositoryImpl(
         projectDataSource.saveAllProjects(projects)
     }
 
-    private fun getLatestProjectId(): Int {
-        return projects.lastOrNull()?.id ?: 0
+    override fun deleteProject(id: Int): Result<Unit> {
+        return projects.removeIf { it.id == id }.let {
+            if (it) {
+                Result.success(Unit)
+            } else {
+                Result.failure(NoSuchElementException("Project with id $id not found"))
+            }
+        }
     }
+
+    private fun getLatestProjectId() = projects.lastOrNull()?.id ?: 0
+
 }
-
-
