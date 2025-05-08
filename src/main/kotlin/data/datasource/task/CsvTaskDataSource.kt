@@ -14,12 +14,12 @@ class CsvTaskDataSource (
     private val taskFile: File
 ): TaskDataSource {
 
-    override fun createTask(task: Task) {
+    override suspend fun createTask(task: Task) {
         val row = task.toCsvRow()
         csvFileWriter.writeCsv(taskFile, listOf(row))
     }
 
-    override fun editTask(
+    override suspend fun editTask(
         taskId: String,
         title: String,
         description: String,
@@ -42,7 +42,7 @@ class CsvTaskDataSource (
         saveAllTasks(tasks)
     }
 
-    override fun deleteTask(projectId: Int, taskId: String) {
+    override suspend fun deleteTask(projectId: Int, taskId: String) {
         val allTasks = getAllTasks().toMutableList()
         val removed = allTasks.removeIf {
             it.projectId == projectId
@@ -59,7 +59,7 @@ class CsvTaskDataSource (
         saveAllTasks(allTasks)
     }
 
-    override fun getTaskByIdFromFile(taskId: String): Task {
+    override suspend fun getTaskByIdFromFile(taskId: String): Task {
         val data = csvFileReader.readCsv(taskFile)
         val tasks = data.map { it.fromCsvRowToTask() }
         val task = tasks.firstOrNull { it.id == taskId }
@@ -67,16 +67,16 @@ class CsvTaskDataSource (
         return task
     }
 
-    override fun getTasksByProjectId(projectId: Int): List<Task> {
+    override suspend fun getTasksByProjectId(projectId: Int): List<Task> {
         return getAllTasks().filter { it.projectId == projectId }
     }
 
-    override fun getAllTasks(): List<Task> {
+    override suspend fun getAllTasks(): List<Task> {
         val data = csvFileReader.readCsv(taskFile)
         return data.map { it.fromCsvRowToTask() }
     }
 
-    override fun saveAllTasks(tasks: List<Task>) {
+    override suspend fun saveAllTasks(tasks: List<Task>) {
         tasks.forEach { task ->
             val row = task.toCsvRow()
             csvFileWriter.writeCsv(taskFile, listOf(row))

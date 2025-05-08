@@ -8,9 +8,9 @@ class TaskRepositoryImpl(
     private val taskDataSource: TaskDataSource,
 ) : TaskRepository {
 
-    override fun createTask(task: Task) = taskDataSource.createTask(task)
+    override suspend fun createTask(task: Task) = taskDataSource.createTask(task)
 
-    override fun editTask(
+    override suspend fun editTask(
         taskId: String,
         title: String,
         description: String,
@@ -19,17 +19,17 @@ class TaskRepositoryImpl(
         taskDataSource.editTask(taskId, title, description, updatedAt)
     }
 
-    override fun deleteTask(projectId: Int, taskId: String) {
+    override suspend fun deleteTask(projectId: Int, taskId: String) {
         taskDataSource.deleteTask(projectId, taskId)
     }
 
-    override fun getTaskById(taskId: String): Task {
+    override suspend fun getTaskById(taskId: String): Task {
         return taskDataSource.getTaskByIdFromFile(taskId)
     }
 
-    override fun getTasksByProject(projectId: Int): List<Task> {
+    override suspend fun getTasksByProject(projectId: Int): List<Task> {
         return taskDataSource.getAllTasks().filter { it.projectId == projectId }
     }
 
-    override fun getAllTasks(): List<Task> = taskDataSource.getAllTasks()
+    override suspend fun getAllTasks(): List<Task> = taskDataSource.getAllTasks()
 }

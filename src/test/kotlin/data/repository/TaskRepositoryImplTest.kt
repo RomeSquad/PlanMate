@@ -1,6 +1,7 @@
 package data.repository
 
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.example.data.datasource.task.TaskDataSource
 import org.example.data.repository.TaskRepositoryImpl
 import org.example.logic.entity.ProjectState
@@ -32,46 +33,46 @@ class TaskRepositoryImplTest {
     }
 
     @Test
-    fun `should create task successfully when calling createTask`() {
-        every { taskDataSource.createTask(any()) } just Runs
+    fun `should create task successfully when calling createTask`() = runTest {
+        coEvery { taskDataSource.createTask(any()) } just Runs
 
         taskRepository.createTask(sampleTask)
 
-        verify { taskDataSource.createTask(sampleTask) }
+        coVerify { taskDataSource.createTask(sampleTask) }
     }
 
     @Test
-    fun `should edit task when calling editTask`() {
-        every { taskDataSource.editTask("task1", "new title", "new description", 20L) } just Runs
+    fun `should edit task when calling editTask`() = runTest {
+        coEvery { taskDataSource.editTask("task1", "new title", "new description", 20L) } just Runs
 
         taskRepository.editTask("task1", "new title", "new description", 20L)
 
-        verify { taskDataSource.editTask("task1", "new title", "new description", 20L) }
+        coVerify { taskDataSource.editTask("task1", "new title", "new description", 20L) }
     }
 
     @Test
-    fun `should delete task when calling deleteTask`() {
-        every { taskDataSource.deleteTask(1, "task1") } just Runs
+    fun `should delete task when calling deleteTask`() = runTest {
+        coEvery { taskDataSource.deleteTask(1, "task1") } just Runs
 
         taskRepository.deleteTask(1, "task1")
 
-        verify { taskDataSource.deleteTask(1, "task1") }
+        coVerify { taskDataSource.deleteTask(1, "task1") }
     }
 
     @Test
-    fun `should return task when calling getTaskById with valid id`() {
-        every { taskDataSource.getTaskByIdFromFile("task1") } returns sampleTask
+    fun `should return task when calling getTaskById with valid id`() = runTest {
+        coEvery { taskDataSource.getTaskByIdFromFile("task1") } returns sampleTask
 
         val result = taskRepository.getTaskById("task1")
 
         assertEquals("task1", result.id)
-        verify { taskDataSource.getTaskByIdFromFile("task1") }
+        coVerify { taskDataSource.getTaskByIdFromFile("task1") }
     }
 
     @Test
-    fun `getTasksByProject returns filtered tasks`() {
+    fun `getTasksByProject returns filtered tasks`() = runTest {
         val tasks = listOf(sampleTask, sampleTask.copy(id = "t2", projectId = 2))
-        every { taskDataSource.getAllTasks() } returns tasks
+        coEvery { taskDataSource.getAllTasks() } returns tasks
 
         val result = taskRepository.getTasksByProject(1)
 
@@ -80,15 +81,15 @@ class TaskRepositoryImplTest {
     }
 
     @Test
-    fun `should return all tasks when calling getAllTasks`() {
+    fun `should return all tasks when calling getAllTasks`() = runTest {
         val tasks = listOf(sampleTask, sampleTask.copy(id = "task2"))
-        every { taskDataSource.getAllTasks() } returns tasks
+        coEvery { taskDataSource.getAllTasks() } returns tasks
 
         val result = taskRepository.getAllTasks()
 
         assertEquals(2, result.size)
         assertEquals("task1", result[0].id)
         assertEquals("task2", result[1].id)
-        verify { taskDataSource.getAllTasks() }
+        coVerify { taskDataSource.getAllTasks() }
     }
 }

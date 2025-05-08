@@ -1,7 +1,9 @@
 package org.example.logic.entity
 
+import org.bson.codecs.pojo.annotations.BsonId
+
 data class Task(
-    val id: String,
+    @BsonId val id: String,
     var title: String,
     var description: String,
     var state: ProjectState,

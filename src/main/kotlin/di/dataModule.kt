@@ -9,6 +9,7 @@ import org.example.data.datasource.authentication.AuthDataSource
 import org.example.data.datasource.authentication.MongoAuthDataSource
 import org.example.data.datasource.project.CsvProjectDataSource
 import org.example.data.datasource.project.ProjectDataSource
+import org.example.data.datasource.task.MongoTaskDataSource
 import org.example.data.datasource.state.ProjectStateDataSource
 import org.example.data.datasource.task.CsvTaskDataSource
 import org.example.data.datasource.task.TaskDataSource
@@ -42,7 +43,7 @@ val dataModule = module {
 
     single<ProjectDataSource> { CsvProjectDataSource(get(), get(), get(named("projectFile"))) }
     single<AuthDataSource> { MongoAuthDataSource(get(named("users-collection"))) }
-    single<TaskDataSource> { CsvTaskDataSource(get(), get(), get(named("taskFile"))) }
+    single<TaskDataSource> { MongoTaskDataSource(get(named("tasks-collection"))) }
     single<ProjectStateDataSource> { CsvProjectStateDataSource() }
 
     //TODO: add other data sources. Follow the same pattern as above

@@ -1,10 +1,11 @@
 package logic.usecase.task
 
 import io.mockk.Runs
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.coVerify
+import kotlinx.coroutines.test.runTest
 import org.example.logic.TaskNotFoundException
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.EditTaskUseCase
@@ -24,7 +25,7 @@ class EditTaskUseCaseTest {
     }
 
     @Test
-    fun `should throw exception when edit task but title is empty`() {
+    fun `should throw exception when edit task but title is empty`() = runTest {
         val task = createTask(
             id = "A1",
             title = "",
@@ -43,7 +44,7 @@ class EditTaskUseCaseTest {
     }
 
     @Test
-    fun `should throw exception when edit task but description is empty`() {
+    fun `should throw exception when edit task but description is empty`() = runTest {
         val task = createTask(
             id = "A1",
             title = "title",
@@ -62,14 +63,14 @@ class EditTaskUseCaseTest {
     }
 
     @Test
-    fun `should throw exception when task not found by id`() {
+    fun `should throw exception when task not found by id`() = runTest {
         val task = createTask(
             id = "A1",
             title = "",
             description = "description",
             projectId = 1,
         )
-        every {
+        coEvery {
             taskRepository.editTask(task.id, task.title, task.description, task.updatedAt)
         } throws TaskNotFoundException("Task not found")
 
@@ -84,7 +85,7 @@ class EditTaskUseCaseTest {
     }
 
     @Test
-    fun `should edit task successfully when valid data`() {
+    fun `should edit task successfully when valid data`() = runTest {
         val task = createTask(
             id = "A1",
             title = "Updated Title",
@@ -92,7 +93,7 @@ class EditTaskUseCaseTest {
             projectId = 1
         )
 
-        every {
+        coEvery {
             taskRepository.editTask(task.id, task.title, task.description, task.updatedAt)
         } just Runs
 
@@ -102,7 +103,7 @@ class EditTaskUseCaseTest {
             description = task.description,
             updatedAt = task.updatedAt
         )
-        verify {
+        coVerify {
             taskRepository.editTask(
             task.id,
             task.title,
