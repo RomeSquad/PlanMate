@@ -26,8 +26,8 @@ class GetTasksByProjectIdUseCaseTest {
     fun `should return tasks when projectId exists`() {
         val projectId = 1
         val tasks = listOf(
-            createTask("1", "Task 1", "Description 1", projectId),
-            createTask("2", "Task 2", "Description 2", projectId)
+            projectId.createTask("1", "Task 1", "Description 1"),
+            projectId.createTask("2", "Task 2", "Description 2")
         )
         every { taskRepository.getTasksByProject(projectId) } returns tasks
 
@@ -60,13 +60,13 @@ class GetTasksByProjectIdUseCaseTest {
         verify { taskRepository.getTasksByProject(projectId) }
     }
 
-    private fun createTask(id: String, title: String, description: String, projectId: Int): Task {
+    private fun Int.createTask(id: String, title: String, description: String): Task {
         return Task(
             id = id,
             title = title,
             description = description,
             state = State("1", "To-Do"),
-            projectId = projectId,
+            projectId = this,
             createdBy = "Admin",
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
