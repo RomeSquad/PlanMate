@@ -1,6 +1,7 @@
 package data.repository
 
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.example.data.datasource.changelog.MongoChangeHistoryDataSource
@@ -52,7 +53,7 @@ class ChangeHistoryRepositoryImplTest {
 
     @Test
     fun `should return change history for existing task ID`() = runBlocking {
-        val taskId = "1"
+        val taskId = 1
         val expected = FakeChangeHistoryData.filter { it.taskID == taskId }
         coEvery { changeHistoryDataSource.getByTaskId(taskId) } returns expected
 
@@ -64,7 +65,7 @@ class ChangeHistoryRepositoryImplTest {
     @Test
     fun `should return empty list for invalid task ID`() = runBlocking {
         //given
-        val taskId = "999"
+        val taskId = 999
         val expected = emptyList<ChangeHistory>()
 
         coEvery { changeHistoryDataSource.getByTaskId(taskId) } returns expected
@@ -90,7 +91,7 @@ class ChangeHistoryRepositoryImplTest {
     fun `should throw exception if data source fails to add change history`() = runBlocking {
         val badChange = ChangeHistory(
             projectID = 0,
-            taskID = "",
+            taskID = 1001,
             authorID = -1,
             changeDate = Date(),
             changeDescription = ""
@@ -112,14 +113,14 @@ class ChangeHistoryRepositoryImplTest {
         return listOf(
             ChangeHistory(
                 projectID = 123,
-                taskID = "1",
+                taskID = 1,
                 authorID = 1,
                 changeDate = fakeDate,
                 changeDescription = "Changed status"
             ),
             ChangeHistory(
                 projectID = 111111,
-                taskID = "13",
+                taskID = 13,
                 authorID = 1,
                 changeDate = fakeDate,
                 changeDescription = "something"
