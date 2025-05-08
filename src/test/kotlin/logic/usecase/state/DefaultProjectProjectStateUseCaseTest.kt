@@ -4,31 +4,31 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import org.example.logic.entity.State
-import org.example.logic.repository.StateRepository
+import org.example.logic.entity.ProjectState
+import org.example.logic.repository.ProjectStateRepository
 import org.example.logic.usecase.state.AddProjectStatesUseCase
 import org.example.logic.usecase.state.DefaultProjectStateUseCase
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class DefaultProjectStateUseCaseTest {
-    private lateinit var stateRepository: StateRepository
-    private lateinit var addStatesUseCase: AddProjectStatesUseCase
+class DefaultProjectProjectStateUseCaseTest {
+    private lateinit var projectStateRepository: ProjectStateRepository
+    private lateinit var addProjectStatesUseCase: AddProjectStatesUseCase
     private lateinit var defaultProjectStateUseCase: DefaultProjectStateUseCase
 
     @BeforeEach
     fun setup() {
-        stateRepository = mockk(relaxed = true)
-        addStatesUseCase = AddProjectStatesUseCase(stateRepository)
-        defaultProjectStateUseCase = DefaultProjectStateUseCase(stateRepository)
+        projectStateRepository = mockk(relaxed = true)
+        addProjectStatesUseCase = AddProjectStatesUseCase(projectStateRepository)
+        defaultProjectStateUseCase = DefaultProjectStateUseCase(projectStateRepository)
     }
 
     @Test
     fun `should initialize default states for a new project`() {
-        val getStates = mutableListOf<State>()
+        val getStates = mutableListOf<ProjectState>()
 
-        every { stateRepository.addState(capture(getStates)) } just Runs
+        every { projectStateRepository.addProjectState(capture(getStates)) } just Runs
 
         defaultProjectStateUseCase.initializeProjectState(2)
         assertTrue(getStates.any { it.stateName == "todo" || it.stateName == "in progress" || it.stateName == "done" })
@@ -36,9 +36,9 @@ class DefaultProjectStateUseCaseTest {
 
     @Test
     fun `should have 3 default state for a new project`() {
-        val getStates = mutableListOf<State>()
+        val getStates = mutableListOf<ProjectState>()
 
-        every { stateRepository.addState(capture(getStates)) } just Runs
+        every { projectStateRepository.addProjectState(capture(getStates)) } just Runs
 
         defaultProjectStateUseCase.initializeProjectState(3)
 

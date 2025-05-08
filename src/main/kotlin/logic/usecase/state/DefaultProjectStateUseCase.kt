@@ -1,20 +1,20 @@
 package org.example.logic.usecase.state
 
-import org.example.logic.entity.State
-import org.example.logic.repository.StateRepository
+import org.example.logic.entity.ProjectState
+import org.example.logic.repository.ProjectStateRepository
 
 class DefaultProjectStateUseCase(
-    private val stateRepository: StateRepository
+    private val stateRepository: ProjectStateRepository
 ) {
     private val defaultStateNames = listOf("todo", "in progress", "done")
     fun initializeProjectState(projectId: Int) {
 
         defaultStateNames.forEach { name ->
-            val state = State(
+            val state = ProjectState(
                 stateName = name,
                 projectId = projectId
             )
-            stateRepository.addState(state)
+            stateRepository.addProjectState(state)
         }
     }
 }

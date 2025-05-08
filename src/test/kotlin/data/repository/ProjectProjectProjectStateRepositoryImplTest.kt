@@ -1,15 +1,15 @@
 import io.mockk.*
 import org.example.data.datasource.state.ProjectStateDataSource
-import org.example.logic.entity.State
-import org.example.logic.repository.StateRepository
+import org.example.logic.entity.ProjectState
+import org.example.logic.repository.ProjectStateRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-class ProjectStateRepositoryImplTest {
+class ProjectProjectProjectStateRepositoryImplTest {
 
     private lateinit var stateProjectDataSource: ProjectStateDataSource
-    private lateinit var stateRepository: StateRepository
+    private lateinit var stateRepository: ProjectStateRepository
 
     @BeforeEach
     fun setup() {
@@ -21,29 +21,29 @@ class ProjectStateRepositoryImplTest {
     fun `getAllStates should return list of states`() {
         // Given
         val mockStates = listOf(
-            State(projectId = 1, stateName = "Cairo"),
-            State(projectId = 2, stateName = "Alex")
+            ProjectState(projectId = 1, stateName = "Cairo"),
+            ProjectState(projectId = 2, stateName = "Alex")
         )
-        every { stateProjectDataSource.getAllStatesProject() } returns mockStates
+        every { stateProjectDataSource.getAllProjectStates() } returns mockStates
 
         // When
-        val result = stateRepository.getAllStatesProject()
+        val result = stateRepository.getAllProjectStates()
 
         // Then
         assertEquals(mockStates, result)
-        verify { stateProjectDataSource.getAllStatesProject() }
+        verify { stateProjectDataSource.getAllProjectStates() }
     }
 
     @Test
     fun `addState should call dataSource addState`() {
         // Given
-        val state = State(projectId = 5, stateName = "inPrograss")
+        val state = ProjectState(projectId = 5, stateName = "inPrograss")
 
         // When
-        stateRepository.addState(state)
+        stateRepository.addProjectState(state)
 
         // Then
-        verify { stateProjectDataSource.addState(state) }
+        verify { stateProjectDataSource.addProjectState(state) }
     }
 
 
@@ -53,9 +53,9 @@ class ProjectStateRepositoryImplTest {
         val id = 2
 
         // When
-        stateRepository.deleteState(id)
+        stateRepository.deleteProjectState(id)
 
         // Then
-        verify { stateProjectDataSource.deleteState(id) }
+        verify { stateProjectDataSource.deleteProjectState(id) }
     }
 }

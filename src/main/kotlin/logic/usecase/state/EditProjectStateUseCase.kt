@@ -1,14 +1,14 @@
 package org.example.logic.usecase.state
 
-import org.example.logic.repository.StateRepository
+import org.example.logic.repository.ProjectStateRepository
 
 class EditProjectStateUseCase(
-    private val stateRepository: StateRepository
+    private val stateRepository: ProjectStateRepository
 ) {
     fun execute(projectId: Int, newStateName: String) {
         require(newStateName.isNotBlank()) { "should new state name must not be blank" }
 
-        stateRepository.editState(projectId, newStateName)
+        stateRepository.editProjectState(projectId, newStateName)
     }
 }
 

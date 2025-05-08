@@ -3,7 +3,7 @@ package logic.usecase
 import io.mockk.every
 import io.mockk.mockk
 import org.example.logic.entity.Project
-import org.example.logic.entity.State
+import org.example.logic.entity.ProjectState
 import org.example.logic.repository.ProjectRepository
 import org.example.logic.usecase.project.GetProjectByIdUseCase
 import org.junit.jupiter.api.Assertions.*
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.assertThrows
 class GetProjectByIdUseCaseTest{
     private lateinit var projectRepository: ProjectRepository
     private lateinit var getProjectByIdUseCase: GetProjectByIdUseCase
-    private val testProject = Project(1, "test", "test description", listOf(), State(12, "in progress"))
+    private val testProject = Project(1, "test", "test description", listOf(), ProjectState(12, "in progress"))
     @BeforeEach
     fun setup() {
         projectRepository = mockk()

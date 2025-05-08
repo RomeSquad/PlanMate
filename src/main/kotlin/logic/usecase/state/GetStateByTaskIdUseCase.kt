@@ -1,13 +1,13 @@
 package org.example.logic.usecase.state
 
-import org.example.logic.entity.State
-import org.example.logic.repository.StateRepository
+import org.example.logic.entity.ProjectState
+import org.example.logic.repository.ProjectStateRepository
 
 class GetStateByTaskIdUseCase(
-    private val stateRepository: StateRepository
+    private val stateRepository: ProjectStateRepository
 ) {
-    fun execute(taskId:Int):State{
+    fun execute(taskId:Int):ProjectState{
         require(taskId > 0) { "task id must be greater than 0" }
-        return stateRepository.getStateByTaskId(taskId)
+        return stateRepository.getProjectStateByTaskId(taskId)
     }
 }

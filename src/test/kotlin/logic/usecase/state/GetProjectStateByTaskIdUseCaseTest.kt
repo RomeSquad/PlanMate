@@ -2,29 +2,29 @@ package logic.usecase.state
 
 import io.mockk.every
 import io.mockk.mockk
-import org.example.logic.entity.State
-import org.example.logic.repository.StateRepository
+import org.example.logic.entity.ProjectState
+import org.example.logic.repository.ProjectStateRepository
 import org.example.logic.usecase.state.GetStateByTaskIdUseCase
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class GetStateByTaskIdUseCaseTest {
-    private lateinit var stateRepository: StateRepository
+class GetProjectStateByTaskIdUseCaseTest {
+    private lateinit var projectStateRepository: ProjectStateRepository
     private lateinit var getStateByTaskIdUseCase: GetStateByTaskIdUseCase
 
     @BeforeEach
     fun setup() {
-        stateRepository = mockk(relaxed = true)
-        getStateByTaskIdUseCase = GetStateByTaskIdUseCase(stateRepository)
+        projectStateRepository = mockk(relaxed = true)
+        getStateByTaskIdUseCase = GetStateByTaskIdUseCase(projectStateRepository)
     }
 
     @Test
     fun `should return state name of the task`() {
-        val mockState = State(projectId = 1, stateName = "todo")
+        val mockState = ProjectState(projectId = 1, stateName = "todo")
         val taskId = 1
-        every { stateRepository.getStateByTaskId(taskId) } returns mockState
+        every { projectStateRepository.getProjectStateByTaskId(taskId) } returns mockState
 
         val result = getStateByTaskIdUseCase.execute(taskId)
 

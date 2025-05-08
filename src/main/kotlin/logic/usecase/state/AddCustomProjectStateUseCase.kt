@@ -1,12 +1,12 @@
 package org.example.logic.usecase.state
 
-import org.example.logic.entity.State
+import org.example.logic.entity.ProjectState
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
-import org.example.logic.repository.StateRepository
+import org.example.logic.repository.ProjectStateRepository
 
 class AddCustomProjectStateUseCase(
-    private val stateRepository: StateRepository
+    private val stateRepository: ProjectStateRepository
 ) {
 
     fun execute(currentUser: User, stateName: String, projectId: Int) {
@@ -16,10 +16,10 @@ class AddCustomProjectStateUseCase(
             throw IllegalAccessException("Only admins can add new states.")
         }
 
-        val state = State(
+        val projectState = ProjectState(
             stateName = stateName,
             projectId = projectId
         )
-        return stateRepository.addState(state)
+        return stateRepository.addProjectState(projectState)
     }
 }

@@ -1,6 +1,6 @@
 package org.example.logic.entity
 
-data class State(
+data class ProjectState(
     val projectId: Int,
     val stateName: String,
 )

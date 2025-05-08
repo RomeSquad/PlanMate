@@ -17,12 +17,12 @@ import org.example.data.repository.ProjectRepositoryImpl
 import org.example.data.repository.TaskRepositoryImpl
 import org.example.data.utils.*
 import org.example.logic.entity.Project
-import org.example.logic.entity.State
+import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
 import org.example.logic.entity.auth.User
 import org.example.logic.repository.AuthRepository
 import org.example.logic.repository.ProjectRepository
-import org.example.logic.repository.StateRepository
+import org.example.logic.repository.ProjectStateRepository
 import org.example.logic.repository.TaskRepository
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -51,7 +51,7 @@ val dataModule = module {
     single<ProjectRepository> { ProjectRepositoryImpl(get()) }
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<TaskRepository> { TaskRepositoryImpl(get()) }
-    single<StateRepository> { ProjectStateRepositoryImpl(get()) }
+    single<ProjectStateRepository> { ProjectStateRepositoryImpl(get()) }
 
     single<MongoDatabase> {
 
@@ -69,7 +69,7 @@ val dataModule = module {
     single<MongoCollection<Task>>(named("tasks-collection")) {
         get<MongoDatabase>().getCollection<Task>("tasks")
     }
-    single<MongoCollection<State>>(named("states-collection")){
-        get<MongoDatabase>().getCollection<State>("states")
+    single<MongoCollection<ProjectState>>(named("states-collection")){
+        get<MongoDatabase>().getCollection<ProjectState>("states")
     }
 }

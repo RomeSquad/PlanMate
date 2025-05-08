@@ -1,26 +1,28 @@
 import org.example.data.datasource.state.ProjectStateDataSource
-import org.example.logic.entity.State
-import org.example.logic.repository.StateRepository
+import org.example.logic.entity.ProjectState
+import org.example.logic.repository.ProjectStateRepository
 
-class ProjectStateRepositoryImpl(private val stateProjectDataSource: ProjectStateDataSource) : StateRepository {
+class ProjectStateRepositoryImpl(
+    private val projectStateDataSource: ProjectStateDataSource
+) : ProjectStateRepository {
 
-    override fun getAllStatesProject(): List<State> {
-        return stateProjectDataSource.getAllStatesProject()
+    override fun getAllProjectStates(): List<ProjectState> {
+        return projectStateDataSource.getAllProjectStates()
     }
 
-    override fun addState(state: State) {
-        return stateProjectDataSource.addState(state)
+    override fun addProjectState(state: ProjectState) {
+        return projectStateDataSource.addProjectState(state)
     }
 
-    override fun editState(projectId: Int, newStateName: String) {
-        return stateProjectDataSource.editState(projectId, newStateName)
+    override fun editProjectState(projectId: Int, newStateName: String) {
+        return projectStateDataSource.editProjectState(projectId, newStateName)
     }
 
-    override fun deleteState(projectId: Int) {
-        return stateProjectDataSource.deleteState(projectId)
+    override fun deleteProjectState(projectId: Int) {
+        return projectStateDataSource.deleteProjectState(projectId)
     }
 
-    override fun getStateByTaskId(taskId: Int): State {
-        return stateProjectDataSource.getStateById(taskId)
+    override fun getProjectStateByTaskId(taskId: Int): ProjectState {
+        return projectStateDataSource.getStateById(taskId)
     }
 }

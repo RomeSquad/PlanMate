@@ -1,12 +1,12 @@
 package org.example.logic.usecase.state
 
-import org.example.logic.repository.StateRepository
+import org.example.logic.repository.ProjectStateRepository
 
 class DeleteProjectStatesUseCase(
-    private val stateRepository: StateRepository
+    private val stateRepository: ProjectStateRepository
 ) {
     fun execute(stateId: Int) {
-        return stateRepository.deleteState(stateId)
+        return stateRepository.deleteProjectState(stateId)
     }
 }
 

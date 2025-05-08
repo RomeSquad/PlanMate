@@ -1,11 +1,11 @@
 package org.example.data.datasource.state
 
-import org.example.logic.entity.State
+import org.example.logic.entity.ProjectState
 
 interface ProjectStateDataSource {
-    fun getAllStatesProject(): List<State>// for project
-    fun addState(state: State)
-    fun editState(projectId : Int, newStateName: String)
-    fun deleteState(projectId: Int)
-    fun getStateById (projectId: Int): State
+    fun getAllProjectStates(): List<ProjectState>// for project
+    fun addProjectState(state: ProjectState)
+    fun editProjectState(projectId : Int, newStateName: String)
+    fun deleteProjectState(projectId: Int)
+    fun getStateById (projectId: Int): ProjectState
 }

@@ -1,12 +1,12 @@
 package org.example.logic.usecase.state
 
-import org.example.logic.entity.State
-import org.example.logic.repository.StateRepository
+import org.example.logic.entity.ProjectState
+import org.example.logic.repository.ProjectStateRepository
 
 class GetAllProjectStatesUseCase(
-    private val stateRepository: StateRepository
+    private val stateRepository: ProjectStateRepository
 ) {
-    fun execute(): List<State> {
-        return stateRepository.getAllStatesProject()
+    fun execute(): List<ProjectState> {
+        return stateRepository.getAllProjectStates()
     }
 }
