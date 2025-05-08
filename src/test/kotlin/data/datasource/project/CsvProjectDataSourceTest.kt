@@ -9,7 +9,6 @@ import kotlinx.coroutines.runBlocking
 import org.example.data.datasource.project.CsvProjectDataSource
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
-import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
 import org.example.logic.entity.State
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -26,8 +25,8 @@ class CsvProjectDataSourceTest {
     private lateinit var csvFileReader: CsvFileReader
     private lateinit var csvFileWriter: CsvFileWriter
     private val projectsFile = File("project3.csv")
-    private val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
-    private val date = dateFormat.parse("Thu May 01 00:25:13 GMT+3 2025")
+    private val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'Z yyyy" , Locale.ENGLISH)
+    private val date = dateFormat.parse("Thu May 01 00:25:13 GMT+0300 2025")
     @BeforeEach
     fun setup() {
         csvFileReader = mockk()
@@ -37,17 +36,16 @@ class CsvProjectDataSourceTest {
 
     @Test
     fun getAllProjects_shouldReturnListOfProjectsFromCSV() = runBlocking {
-          val csvRows = listOf(
+          val csvRows: List<List<Any?>> = listOf(
             listOf("1","PlanMate","PlanMate Description",
-                "[[5, , 4, , Thu May 01 00:25:13 GMT+3 2025]]",
+                date,
                 "[12, in progress]"
             ),
             listOf("2","PlanMate","PlanMate Description",
-                "[[6, , 7, , Thu May 01 00:25:13 GMT+3 2025]]",
+                date,
                 "[12, in progress]"
             )
         )
-
         val expectedProjects = listOf(
             Project(
                 name = "PlanMate",
@@ -63,7 +61,7 @@ class CsvProjectDataSourceTest {
             )
         )
 
-        every { csvFileReader.readCsv(projectsFile) } returns csvRows
+        every { csvFileReader.readCsv(projectsFile) } returns csvRows as List<List<String>>
 
         val result = projectDataSource.getAllProjects()
 
