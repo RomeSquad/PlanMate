@@ -9,5 +9,6 @@ interface ProjectRepository {
     fun getProjectById(id: Int): Result<Project>
     fun getAllProjects(): Result<List<Project>>
     fun saveAllProjects(): Result<Unit>
+    fun deleteProject(id: Int): Result<Unit>
     fun  editProject(project: Project): Result<Unit>
 }
