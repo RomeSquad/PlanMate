@@ -20,7 +20,6 @@ class GetProjectByIdUseCaseTest {
         id = 1,
         name = "test",
         description = "test description",
-        changeHistory = listOf(),
         state = State("12", "in progress")
     )
 

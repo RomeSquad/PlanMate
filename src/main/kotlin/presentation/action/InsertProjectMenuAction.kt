@@ -17,15 +17,11 @@ class InsertProjectMenuAction(
         ui.displayMessage("Enter project name:")
         val projectName = inputReader.readString()
 
-        val result = projectUseCase.insertProject(CreateProjectRequest(projectName, 9, "", ""))
-        result.fold(
-            onSuccess = {
-                ui.displayMessage("Project created successfully: $it")
-            },
-            onFailure = {
-                ui.displayError("Failed to create project: ${it.message}")
-            }
-        )
-
+        runCatching {
+            val result = projectUseCase.insertProject(CreateProjectRequest(projectName, 9, "", ""))
+            ui.displayMessage("Project created successfully: ${result.id}")
+        }.onFailure {
+            ui.displayError("Failed to create project: ${it.message}")
+        }
     }
 }

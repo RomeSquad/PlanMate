@@ -22,7 +22,6 @@ class EditProjectUseCaseTest {
         id = 1,
         name = "Updated Project",
         description = "Updated Description",
-        changeHistory = emptyList(),
         state = State("1", "In progress")
     )
 

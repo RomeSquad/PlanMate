@@ -1,7 +1,9 @@
 package logic.usecase.project
 
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.Project
 import org.example.logic.entity.State
 import org.example.logic.repository.ProjectRepository
@@ -22,17 +24,17 @@ class DeleteProjectByIdUseCaseTest{
     }
 
     @Test
-    fun `when request to delete specific project by id then return success result`() {
-        every { projectRepository.deleteProject(1) } returns (Result.success(Unit))
+    fun `when request to delete specific project by id then return success result`() = runTest {
+        coEvery { projectRepository.deleteProject(1) } returns Unit
         val projectResponse = deleteProjectByIdUseCase.deleteProjectById(1)
-        assertEquals(projectResponse.isSuccess, true)
+        assertEquals(projectResponse, Unit)
     }
     @Test
-    fun `when request to delete specific project by invalid id then return result failure with exception`() {
-        every { projectRepository.deleteProject(2) } returns (Result.failure(NoSuchElementException("Project not found")))
+    fun `when request to delete specific project by invalid id then return result failure with exception`() = runTest {
+        coEvery { projectRepository.deleteProject(2) } throws NoSuchElementException("Project not found")
         val projectResponse = deleteProjectByIdUseCase.deleteProjectById(2)
         assertThrows<NoSuchElementException> {
-            projectResponse.getOrThrow()
+            projectResponse
         }
     }
 

@@ -52,18 +52,12 @@ class CsvProjectDataSourceTest {
             Project(
                 name = "PlanMate",
                 description = "PlanMate Description",
-                changeHistory = listOf(
-                    ChangeHistory("5", "", "4","inatial creation",  date)
-                ),
                 state = State("12", "in progress"),
                 id = 1
             ),
             Project(
                 name = "PlanMate",
                 description = "PlanMate Description",
-                changeHistory = listOf(
-                    ChangeHistory("6", "", "7", "inatial creation", date)
-                ),
                 state = State("12", "in progress"),
                 id = 2
             )
@@ -83,9 +77,6 @@ class CsvProjectDataSourceTest {
             Project(
                 name = "PlanMate",
                 description = "PlanMate Description",
-                changeHistory = listOf(
-                    ChangeHistory("5", "", "4", "inatial creation",date)
-                ),
                 state = State("12", "in progress"),
                 id = 1
             )

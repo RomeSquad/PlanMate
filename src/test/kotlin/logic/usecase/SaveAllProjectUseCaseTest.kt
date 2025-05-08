@@ -1,7 +1,9 @@
 package logic.usecase
 
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.example.data.repository.ProjectRepositoryImpl
 import org.example.logic.usecase.project.SaveAllProjectUseCase
 import org.junit.jupiter.api.Assertions.*
@@ -19,9 +21,9 @@ class SaveAllProjectUseCaseTest{
     }
 
     @Test
-    fun `when save all projects then return success`() {
-        every { projectRepository.saveAllProjects() } returns Result.success(Unit)
+    fun `when save all projects then return success`() = runTest {
+        coEvery { projectRepository.saveAllProjects() } returns Unit
         val response = saveAllProjectUseCase.saveProjects()
-        assertEquals(response.getOrNull(), Unit)
+        assertEquals(response, Unit)
     }
 }

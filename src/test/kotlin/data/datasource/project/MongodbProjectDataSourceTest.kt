@@ -25,8 +25,8 @@ class MongodbProjectDataSourceTest {
     fun getAllProjects_shouldReturnListOfProjects() = runBlocking {
         // Given
         val expectedProjects = listOf(
-            Project(id = 1, name = "Test1", description = "desc1", changeHistory = listOf(), state = State("1","todo")),
-            Project(id = 2, name = "Test2", description = "desc2", changeHistory = listOf(), state = State("1","todo"))
+            Project(id = 1, name = "Test1", description = "desc1", state = State("1","todo")),
+            Project(id = 2, name = "Test2", description = "desc2", state = State("1","todo"))
         )
 
         coEvery { dataSource.getAllProjects() } returns expectedProjects
@@ -42,8 +42,8 @@ class MongodbProjectDataSourceTest {
     fun saveAllProjects_shouldSaveSuccessfully() = runBlocking {
         // Given
         val projects = listOf(
-            Project(id = 1, name = "Test1", description = "desc1", changeHistory = listOf(), state = State("1","todo")),
-            Project(id = 2, name = "Test2", description = "desc2", changeHistory = listOf(), state = State("1","todo"))
+            Project(id = 1, name = "Test1", description = "desc1", state = State("1","todo")),
+            Project(id = 2, name = "Test2", description = "desc2", state = State("1","todo"))
         )
 
         // When

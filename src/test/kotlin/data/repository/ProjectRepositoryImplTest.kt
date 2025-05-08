@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import kotlin.test.assertFailsWith
 
 class ProjectRepositoryImplTest {
 
@@ -72,21 +73,21 @@ class ProjectRepositoryImplTest {
         assertEquals(Unit, result)
     }
     @Test
-    fun `when delete project by valid id then return success`() {
-        every { projectDataSource.getAllProjects() } returns Result.success(listOf(testProjectRequest.toProject(0)))
+    fun `when delete project by valid id then return success`() = runTest {
+        coEvery { fakeDataSource.getAllProjects() } returns listOf(request.toProject(0))
 
-        val result = projectRepository.deleteProject(1)
+        val result = repository.deleteProject(1)
 
         assertEquals(Result.success(Unit), result)
     }
 
 
     @Test
-    fun `when delete project by invalid id then return failure`() {
-        every { projectDataSource.getAllProjects() } returns Result.success(listOf(testProjectRequest.toProject(0)))
+    fun `when delete project by invalid id then return failure`() = runTest {
+        coEvery { fakeDataSource.getAllProjects() } returns listOf(request.toProject(0))
 
         assertThrows<NoSuchElementException> {
-            projectRepository.deleteProject(999).getOrThrow()
+            repository.deleteProject(999)
         }
     }
 
