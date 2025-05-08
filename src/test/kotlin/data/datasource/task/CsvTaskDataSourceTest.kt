@@ -6,7 +6,7 @@ import org.example.data.repository.mapper.toCsvRow
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.logic.TaskNotFoundException
-import org.example.logic.entity.State
+import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
@@ -172,7 +172,7 @@ class CsvTaskDataSourceTest {
                 "task1",
                 "title1",
                 "description1",
-                "[P1, To-Do]",
+                "[1, To-Do]",
                 "1",
                 "U1",
                 "5",
@@ -182,7 +182,7 @@ class CsvTaskDataSourceTest {
                 "task2",
                 "title2",
                 "description2",
-                "[P2, In-Progress]",
+                "[2, In-Progress]",
                 "2",
                 "U2",
                 "5",
@@ -197,8 +197,8 @@ class CsvTaskDataSourceTest {
                 id = "task1",
                 title = "title1",
                 description = "description1",
-                state = State(
-                    "P1",
+                state = ProjectState(
+                    1,
                     "To-Do"
                 ),
                 projectId = 1,
@@ -210,8 +210,8 @@ class CsvTaskDataSourceTest {
                 id = "task2",
                 title = "title2",
                 description = "description2",
-                state = State(
-                    "P2",
+                state = ProjectState(
+                    2,
                     "In-Progress"
                 ),
                 projectId = 2,

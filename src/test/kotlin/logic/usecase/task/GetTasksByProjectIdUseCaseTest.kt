@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach
 
 import org.junit.jupiter.api.Assertions.*
 import io.mockk.*
-import org.example.logic.entity.State
+import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.GetTasksByProjectIdUseCase
@@ -65,7 +65,7 @@ class GetTasksByProjectIdUseCaseTest {
             id = id,
             title = title,
             description = description,
-            state = State("1", "To-Do"),
+            state = ProjectState(1, "To-Do"),
             projectId = this,
             createdBy = "Admin",
             createdAt = System.currentTimeMillis(),
