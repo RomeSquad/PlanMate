@@ -4,7 +4,7 @@ import io.mockk.*
 import kotlinx.coroutines.test.runTest
 import org.example.data.datasource.task.TaskDataSource
 import org.example.data.repository.TaskRepositoryImpl
-import org.example.logic.entity.State
+import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
@@ -19,7 +19,7 @@ class TaskRepositoryImplTest {
         id = "task1",
         title = "title1",
         description = "desc",
-        state = State("1", "To-Do"),
+        state = ProjectState(1, "To-Do"),
         projectId = 1,
         createdBy = "U1",
         createdAt = 5,

@@ -10,7 +10,7 @@ import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
-import org.example.logic.entity.State
+import org.example.logic.entity.ProjectState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -39,8 +39,8 @@ class CsvProjectDataSourceTest{
             listOf("2", "PlanMate", "PlanMate Description","[[6, , 7, , Thu May 01 00:25:13 EEST 2025]]","[12, in progress]"),
         )
         val expectedProjects = listOf(
-            Project(name = "PlanMate", description = "PlanMate Description", changeHistory = listOf(ChangeHistory(projectID = "5", taskID = "", authorID = "4", changeDescription = "", changeDate = dateFormat.parse("Thu May 01 00:25:13 EEST 2025"))), state = State("12", "in progress"), id = 1) ,
-            Project(name = "PlanMate", description = "PlanMate Description", changeHistory = listOf(ChangeHistory(projectID = "6", taskID = "", authorID = "7", changeDescription = "", changeDate = dateFormat.parse("Thu May 01 00:25:13 EEST 2025"))), state = State("12", "in progress"), id = 2) ,
+            Project(name = "PlanMate", description = "PlanMate Description", changeHistory = listOf(ChangeHistory(projectID = "5", taskID = "", authorID = "4", changeDescription = "", changeDate = dateFormat.parse("Thu May 01 00:25:13 EEST 2025"))), state = ProjectState(12, "in progress"), id = 1) ,
+            Project(name = "PlanMate", description = "PlanMate Description", changeHistory = listOf(ChangeHistory(projectID = "6", taskID = "", authorID = "7", changeDescription = "", changeDate = dateFormat.parse("Thu May 01 00:25:13 EEST 2025"))), state = ProjectState(12, "in progress"), id = 2) ,
         )
         every { csvFileReader.readCsv(projectsFile) } returns csvRows
 
@@ -58,8 +58,8 @@ class CsvProjectDataSourceTest{
             listOf("2", "PlanMate", "PlanMate Description","[[6, , 7, , Thu May 01 00:25:13 EEST 2025]]","[12, in progress]"),
         )
         val expectedProjects = listOf(
-            Project(name = "PlanMate", description = "PlanMate Description", changeHistory = listOf(ChangeHistory(projectID = "5", taskID = "", authorID = "4", changeDescription = "", changeDate = dateFormat.parse("Thu May 01 00:25:13 EEST 2025"))), state = State("12", "in progress"), id = 1) ,
-            Project(name = "PlanMate", description = "PlanMate Description", changeHistory = listOf(ChangeHistory(projectID = "6", taskID = "", authorID = "7", changeDescription = "", changeDate = dateFormat.parse("Thu May 01 00:25:13 EEST 2025"))), state = State("12", "in progress"), id = 2) ,
+            Project(name = "PlanMate", description = "PlanMate Description", changeHistory = listOf(ChangeHistory(projectID = "5", taskID = "", authorID = "4", changeDescription = "", changeDate = dateFormat.parse("Thu May 01 00:25:13 EEST 2025"))), state = ProjectState(12, "in progress"), id = 1) ,
+            Project(name = "PlanMate", description = "PlanMate Description", changeHistory = listOf(ChangeHistory(projectID = "6", taskID = "", authorID = "7", changeDescription = "", changeDate = dateFormat.parse("Thu May 01 00:25:13 EEST 2025"))), state = ProjectState(12, "in progress"), id = 2) ,
         )
         every { csvFileWriter.writeCsv(projectsFile, any()) } just Runs
 

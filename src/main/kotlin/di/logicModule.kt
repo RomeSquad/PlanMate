@@ -6,12 +6,12 @@ import org.example.logic.usecase.auth.LoginUseCase
 import org.example.logic.usecase.project.GetProjectByIdUseCase
 import org.example.logic.usecase.project.InsertProjectUseCase
 import org.example.logic.usecase.project.SaveAllProjectUseCase
-import org.example.logic.usecase.state.AddCustomStateUseCase
-import org.example.logic.usecase.state.AddStatesUseCase
+import org.example.logic.usecase.state.AddCustomProjectStateUseCase
+import org.example.logic.usecase.state.AddProjectStatesUseCase
 import org.example.logic.usecase.state.DefaultProjectStateUseCase
-import org.example.logic.usecase.state.DeleteStatesUseCase
-import org.example.logic.usecase.state.EditStateUseCase
-import org.example.logic.usecase.state.GetAllStatesUseCase
+import org.example.logic.usecase.state.DeleteProjectStatesUseCase
+import org.example.logic.usecase.state.EditProjectStateUseCase
+import org.example.logic.usecase.state.GetAllProjectStatesUseCase
 import org.example.logic.usecase.task.*
 import org.koin.dsl.module
 
@@ -31,10 +31,10 @@ val logicModule = module {
     single { EditTaskUseCase(get()) }
     single { GetTaskByIdUseCase(get()) }
 
-    single { AddCustomStateUseCase(get()) }
-    single{ AddStatesUseCase(get()) }
+    single { AddCustomProjectStateUseCase(get()) }
+    single{ AddProjectStatesUseCase(get()) }
     single { DefaultProjectStateUseCase(get()) }
-    single { DeleteStatesUseCase(get()) }
-    single { EditStateUseCase(get()) }
-    single { GetAllStatesUseCase(get()) }
+    single { DeleteProjectStatesUseCase(get()) }
+    single { EditProjectStateUseCase(get()) }
+    single { GetAllProjectStatesUseCase(get()) }
 }
