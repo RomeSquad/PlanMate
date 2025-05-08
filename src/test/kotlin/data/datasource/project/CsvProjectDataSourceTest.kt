@@ -39,8 +39,8 @@ class CsvProjectDataSourceTest{
             listOf("2", "PlanMate", "PlanMate Description","[[6, , 7, , Thu May 01 00:25:13 EEST 2025]]","[12, in progress]"),
         )
         val expectedProjects = listOf(
-            Project(name = "PlanMate", description = "PlanMate Description", changeHistory = listOf(ChangeHistory(projectID = "5", taskID = "", authorID = "4", changeDescription = "", changeDate = dateFormat.parse("Thu May 01 00:25:13 EEST 2025"))), state = State("12", "in progress"), id = 1) ,
-            Project(name = "PlanMate", description = "PlanMate Description", changeHistory = listOf(ChangeHistory(projectID = "6", taskID = "", authorID = "7", changeDescription = "", changeDate = dateFormat.parse("Thu May 01 00:25:13 EEST 2025"))), state = State("12", "in progress"), id = 2) ,
+            Project(name = "PlanMate", description = "PlanMate Description", state = State("12", "in progress"), id = 1) ,
+            Project(name = "PlanMate", description = "PlanMate Description", state = State("12", "in progress"), id = 2) ,
         )
         every { csvFileReader.readCsv(projectsFile) } returns csvRows
 
@@ -58,8 +58,8 @@ class CsvProjectDataSourceTest{
             listOf("2", "PlanMate", "PlanMate Description","[[6, , 7, , Thu May 01 00:25:13 EEST 2025]]","[12, in progress]"),
         )
         val expectedProjects = listOf(
-            Project(name = "PlanMate", description = "PlanMate Description", changeHistory = listOf(ChangeHistory(projectID = "5", taskID = "", authorID = "4", changeDescription = "", changeDate = dateFormat.parse("Thu May 01 00:25:13 EEST 2025"))), state = State("12", "in progress"), id = 1) ,
-            Project(name = "PlanMate", description = "PlanMate Description", changeHistory = listOf(ChangeHistory(projectID = "6", taskID = "", authorID = "7", changeDescription = "", changeDate = dateFormat.parse("Thu May 01 00:25:13 EEST 2025"))), state = State("12", "in progress"), id = 2) ,
+            Project(name = "PlanMate", description = "PlanMate Description", state = State("12", "in progress"), id = 1) ,
+            Project(name = "PlanMate", description = "PlanMate Description", state = State("12", "in progress"), id = 2) ,
         )
         every { csvFileWriter.writeCsv(projectsFile, any()) } just Runs
 
