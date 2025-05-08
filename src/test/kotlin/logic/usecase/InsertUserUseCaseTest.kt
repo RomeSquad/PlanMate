@@ -8,7 +8,6 @@ import org.example.logic.entity.auth.UserRole
 import org.example.logic.repository.AuthRepository
 import org.example.logic.usecase.auth.InsertUserUseCase
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import kotlin.test.Test
 
 class InsertUserUseCaseTest {

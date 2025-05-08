@@ -2,6 +2,9 @@ package org.example.data.repository
 
 import kotlinx.coroutines.runBlocking
 import org.example.data.datasource.authentication.AuthDataSource
+import org.example.logic.InvalidUserInputException
+import org.example.logic.UserAlreadyExistsException
+import org.example.logic.UserNotFoundException
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.repository.AuthRepository
@@ -26,7 +29,7 @@ class AuthRepositoryImpl(
         val hashedPassword = hashPassword(password)
 
         if (users.any { it.username == username }) {
-            throw Exception("Username already exists")
+            throw UserAlreadyExistsException("Username $username already exists")
         }
 
         val newUser = User(userId = users.size + 1, username = username, password = hashedPassword, userRole = userRole)
@@ -43,7 +46,8 @@ class AuthRepositoryImpl(
         val hashedPassword = hashPassword(password)
 
         val user =
-            users.find { it.username == username && it.password == hashedPassword } ?: throw Exception("User not found")
+            users.find { it.username == username && it.password == hashedPassword }
+                ?: throw UserNotFoundException("User not found")
         return user
 
     }
@@ -54,11 +58,11 @@ class AuthRepositoryImpl(
 
 
     private fun checkUserNameAndPassword(username: String, password: String) {
-        if (username.isEmpty() || password.isEmpty()) throw Exception("Username or password cannot be empty")
+        if (username.isEmpty() || password.isEmpty()) throw InvalidUserInputException("Username or password cannot be empty")
     }
 
     private fun validPassword(password: String) {
-        if (password.length <= 6) throw Exception("Password must be at least 6 characters")
+        if (password.length <= 6) throw InvalidUserInputException("Password must be at least 6 characters")
     }
 
 }

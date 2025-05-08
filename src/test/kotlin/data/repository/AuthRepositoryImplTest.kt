@@ -5,6 +5,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.example.data.datasource.authentication.AuthDataSource
 import org.example.data.repository.AuthRepositoryImpl
+import org.example.logic.UserAlreadyExistsException
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.junit.jupiter.api.Assertions
@@ -101,10 +102,10 @@ class AuthRepositoryImplTest {
 
         authRepository = AuthRepositoryImpl(authDataSource)
         // When/Then
-        val exception = assertThrows<Exception> {
+        val exception = assertThrows<UserAlreadyExistsException> {
             authRepository.insertUser(username, password, userRole)
         }
-        Assertions.assertEquals("Username already exists", exception.message)
+        Assertions.assertEquals("Username $username already exists", exception.message)
     }
 
     @Test

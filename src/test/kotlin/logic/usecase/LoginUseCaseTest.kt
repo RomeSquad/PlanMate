@@ -8,7 +8,6 @@ import org.example.logic.entity.auth.UserRole
 import org.example.logic.repository.AuthRepository
 import org.example.logic.usecase.auth.LoginUseCase
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import kotlin.test.Test
 
 class LoginUseCaseTest {
@@ -35,6 +34,6 @@ class LoginUseCaseTest {
         val result = loginUseCase.login(username, password)
 
         // Then
-        assertEquals(expectedUser,result)
+        assertEquals(expectedUser, result)
     }
 }
