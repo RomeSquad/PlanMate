@@ -77,7 +77,7 @@ class ProjectRepositoryImplTest {
         every { projectDataSource.getAllProjects() } returns Result.success(listOf(testProjectRequest.toProject(0)))
 
         assertThrows<NoSuchElementException> {
-            projectRepository.deleteProject(999)
+            projectRepository.deleteProject(999).getOrThrow()
         }
     }
 
