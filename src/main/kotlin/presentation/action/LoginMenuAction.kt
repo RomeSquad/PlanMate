@@ -22,15 +22,12 @@ class LoginMenuAction(
         ui.displayMessage("Enter  password:")
         val password = inputReader.readString()
 
-        try {
-            val result = loginUseCase.login(username, password)
-            if (result.userRole == UserRole.ADMIN)
-                menu.setActions(getKoin().get((named("adminMenuActions"))))
-            else if (result.userRole == UserRole.MATE)
-                menu.setActions(getKoin().get((named("mateMenuActions"))))
-        } catch (e: Exception) {
-            ui.displayError("Error: ${e.message}")
-        }
+
+        val result = loginUseCase.login(username, password)
+        if (result.userRole == UserRole.ADMIN)
+            menu.setActions(getKoin().get((named("adminMenuActions"))))
+        else if (result.userRole == UserRole.MATE)
+            menu.setActions(getKoin().get((named("mateMenuActions"))))
 
 
     }

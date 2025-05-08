@@ -1,8 +1,8 @@
 package org.example.presentation.action
 
 import org.example.logic.entity.auth.UserRole
-import org.example.presentation.menus.Menu
 import org.example.logic.usecase.auth.InsertUserUseCase
+import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
 import presentation.io.InputReader
 import presentation.io.UiDisplayer
@@ -32,12 +32,9 @@ class InsertUserMenuAction(
             }
         }
 
-        try {
-            val result = insertUserUseCase.insertUser(username, password, userRole)
-            ui.displayMessage("User inserted successfully")
-        } catch (e: Exception) {
-            ui.displayError("Error: ${e.message}")
-        }
+
+        insertUserUseCase.insertUser(username, password, userRole)
+        ui.displayMessage("User inserted successfully")
 
 
     }
