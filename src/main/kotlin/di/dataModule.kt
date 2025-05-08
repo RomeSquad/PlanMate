@@ -1,16 +1,15 @@
 package org.example.di
 
-import CsvStateDataSource
+import CsvStateProjectDataSource
 import StateRepositoryImpl
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import org.example.data.datasource.authentication.AuthDataSource
-import org.example.data.datasource.authentication.CsvAuthDataSource
 import org.example.data.datasource.authentication.MongoAuthDataSource
 import org.example.data.datasource.project.CsvProjectDataSource
 import org.example.data.datasource.project.ProjectDataSource
-import org.example.data.datasource.state.StateDataSource
+import org.example.data.datasource.state.StateProjectDataSource
 import org.example.data.datasource.task.CsvTaskDataSource
 import org.example.data.datasource.task.TaskDataSource
 import org.example.data.repository.AuthRepositoryImpl
@@ -28,7 +27,6 @@ import org.example.logic.repository.TaskRepository
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File
-import java.net.URLEncoder
 
 
 val dataModule = module {
@@ -45,7 +43,7 @@ val dataModule = module {
     single<ProjectDataSource> { CsvProjectDataSource(get(), get(), get(named("projectFile"))) }
     single<AuthDataSource> { MongoAuthDataSource(get(named("users-collection"))) }
     single<TaskDataSource> { CsvTaskDataSource(get(), get(), get(named("taskFile"))) }
-    single<StateDataSource> { CsvStateDataSource() }
+    single<StateProjectDataSource> { CsvStateProjectDataSource() }
 
     //TODO: add other data sources. Follow the same pattern as above
 

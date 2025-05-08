@@ -20,7 +20,7 @@ class StateRepositoryImpl(private val stateProjectDataSource: StateProjectDataSo
         return stateProjectDataSource.deleteState(projectId)
     }
 
-    override fun getStateById(projectId: Int): State {
-        return stateProjectDataSource.getStateById(projectId)
+    override fun getStateByTaskId(taskId: Int): State {
+        return stateProjectDataSource.getStateById(taskId)
     }
 }
