@@ -7,10 +7,6 @@ class ShowTaskHistoryUseCase(
     private val repository: ChangeHistoryRepository
 ) {
     suspend fun execute(taskId: Int): List<ChangeHistory> {
-        try {
-            return repository.getHistoryByTaskID(taskId)
-        } catch (e: Exception) {
-            throw IllegalArgumentException("Invalid Task ID: ${e.message}")
-        }
+        return repository.getHistoryByTaskID(taskId)
     }
 }
