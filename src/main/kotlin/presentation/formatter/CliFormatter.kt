@@ -140,6 +140,13 @@ class CliFormatter : Formatter {
         return output.toString()
     }
 
+    fun tableLayout(messages: List<List<String>>) : String {
+        val output = StringBuilder()
+        messages.map {
+            output.append(horizontalLayout(it))
+        }
+        return output.toString()
+    }
 
 
     companion object {
