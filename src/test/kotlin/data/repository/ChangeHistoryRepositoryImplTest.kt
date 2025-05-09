@@ -1,7 +1,6 @@
 package data.repository
 
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.example.data.datasource.changelog.MongoChangeHistoryDataSource
@@ -17,7 +16,7 @@ class ChangeHistoryRepositoryImplTest {
 
     private lateinit var changeHistoryDataSource: MongoChangeHistoryDataSource
     private lateinit var changeHistoryRepository: ChangeHistoryRepository
-    private val FakeChangeHistoryData = getFakeChangeHistoryData()
+    private val fakeChangeHistoryData = getFakeChangeHistoryData()
 
     @BeforeEach
     fun setup() {
@@ -30,7 +29,7 @@ class ChangeHistoryRepositoryImplTest {
 
         //given
         val projectID = 123
-        val expected = FakeChangeHistoryData.filter { it.projectID == projectID }
+        val expected = fakeChangeHistoryData.filter { it.projectID == projectID }
         coEvery { changeHistoryDataSource.getByProjectId(projectID) } returns expected
 
         //when
@@ -54,7 +53,7 @@ class ChangeHistoryRepositoryImplTest {
     @Test
     fun `should return change history for existing task ID`() = runBlocking {
         val taskId = 1
-        val expected = FakeChangeHistoryData.filter { it.taskID == taskId }
+        val expected = fakeChangeHistoryData.filter { it.taskID == taskId }
         coEvery { changeHistoryDataSource.getByTaskId(taskId) } returns expected
 
         val result = changeHistoryRepository.getHistoryByTaskID(taskId)
