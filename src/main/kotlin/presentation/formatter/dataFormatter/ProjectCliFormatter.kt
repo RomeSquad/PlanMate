@@ -1,5 +1,6 @@
 package org.example.presentation.formatter.dataFormatter
 
+import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
 import org.example.presentation.formatter.CliFormatter
 
@@ -10,19 +11,18 @@ fun Project.format(): String {
         "ID: $id",
         "Name: $name",
         "Description: $description",
-        "State: $state",
-        "Change History: $changeHistory"
+        "State: $state"
     )
 }
 
-fun Project.changeHistoryFormat(): String {
+fun changeHistoryFormat(project: Project , changeHistory : List<ChangeHistory>): String {
     val cliFormatter = CliFormatter()
     return String.format(
         "%-10s | %-20s | %-20s \n%-30s \n",
-        "ID: $id",
-        "Name: $name",
-        "State: $state",
-        "Description: $description"
+        "ID: ${project.id}",
+        "Name: ${project.name}",
+        "State: ${project.state}",
+        "Description: ${project.description}"
     ) + cliFormatter.verticalLayout(changeHistory.map { it.format() }.toList())
 }
 
