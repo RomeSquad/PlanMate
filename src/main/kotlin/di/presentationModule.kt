@@ -1,50 +1,101 @@
 package org.example.di
 
-import org.example.presentation.action.EditProjectMenuAction
-import org.example.presentation.action.InsertProjectMenuAction
-import org.example.presentation.action.InsertUserMenuAction
-import org.example.presentation.action.LoginMenuAction
+import org.example.presentation.CLIMenu
+import org.example.presentation.auithentication.LoginManagementUI
+import org.example.presentation.auithentication.MainMenuUI
+import org.example.presentation.project.*
+import org.example.presentation.projectstates.*
+import org.example.presentation.task.*
+import org.example.presentation.user.admin.*
+import org.example.presentation.user.mate.MateManagementUI
+import org.example.presentation.utils.io.ConsoleWriter
+import org.example.presentation.utils.io.UiDisplayer
+import org.example.presentation.utils.menus.Menu
 import org.koin.dsl.module
-import org.example.presentation.menus.Menu
-import org.example.presentation.menus.MenuAction
-import org.koin.core.qualifier.named
 import presentation.App
-import presentation.io.ConsoleInputReader
-import presentation.io.ConsoleWriter
+import org.example.presentation.utils.io.ConsoleInputReader
 import presentation.io.InputReader
-import presentation.io.UiDisplayer
 
 
 val presentationModule = module {
-
-    single<InputReader> { ConsoleInputReader() }
     single<UiDisplayer> { ConsoleWriter() }
-
+    single<InputReader> { ConsoleInputReader() }
     single<Menu> { Menu() }
+    single { "" }
 
-    single(named("mainMenuActions")) {
-        listOf<MenuAction>(
-            LoginMenuAction(get(), menu = get()),
+    single {
+        LoginManagementUI(
+            get(), get(),
         )
-    }
-
-
-    single(named("mateMenuActions")) {
-        listOf<MenuAction>(
-            LoginMenuAction(get(), "logout", menu = get()),
+    } // LoginUseCase, MainMenuUI, UiDisplayer, InputReader
+    single { MainMenuUI(get(), get()) } // AdminManagementUI, MateManagementUI, UiDisplayer, InputReader
+    single {
+        AdminManagementUI(
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
         )
-    }
+    } // ProjectManagementUI, CreateUserUi, DeleteUserUi, EditUserUI, ViewAllUserUI, UiDisplayer, InputReader
+    single { MateManagementUI(get()) } // TaskManagementUI, UiDisplayer, InputReader
+    single { CreateUserUi(get()) } // CreateUserUseCase, Menu, UiDisplayer
+    single { DeleteUserUi(get()) } // DeleteUserUseCase, Menu, UiDisplayer
+    single { EditUserUI(get(), get()) } // GetUserByUsernameUseCase, EditUserUseCase, Menu, UiDisplayer
+    single { ViewAllUserUI(get()) } // GetAllUsersUseCase, Menu, UiDisplayer
 
-    single(named("adminMenuActions")) {
-        listOf<MenuAction>(
-            InsertProjectMenuAction(projectUseCase = get(), menu = get()),
-            EditProjectMenuAction(editProjectUseCase = get(), menu = get()),
-            InsertUserMenuAction(insertUserUseCase = get(), menu = get()),
-            LoginMenuAction(get(), "logout", menu = get()),
+    single {
+        ProjectManagementUI(
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
         )
-    }
+    } // CreateProjectUi, DeleteProjectUi, EditProjectUi, ListProjectUi, TaskManagementUI, ProjectStateManagementUI, SaveAllProjectUseCase, Menu, UiDisplayer
+    single {
+        CreateProjectUi(
+            get(),
+            get()
+        )
+    } // InsertProjectUseCase, DefaultProjectStateUseCase, Menu, UiDisplayer
+    single { GetProjectByIdUI(get()) } // GetProjectByIdUseCase, Menu, UiDisplayer
+    single { DeleteProjectUi(get()) } // DeleteProjectByIdUseCase, Menu, UiDisplayer
+    single { EditProjectUi(get()) } // EditProjectUseCase
+    single { ListProjectUi(get()) } // GetAllProjectsUseCase, Menu, UiDisplayer
 
+    single {
+        ProjectStateManagementUI(
+            get(),
+            get(),
+            get(),
+            get(),
+        )
+    } // AddStateToProjectUI, EditProjectStateUI, DeleteStateToProjectUI, GetAllStatesPerProjectUI, Menu, UiDisplayer
+    single { AddStateToProjectUI(get()) } // AddStateToProjectUseCase, Menu, UiDisplayer
+    single { EditProjectStateUI(get()) } // EditProjectStateUseCase, Menu, UiDisplayer
+    single { DeleteStateToProjectUI(get()) } // DeleteStateToProjectUseCase, Menu, UiDisplayer
+    single { GetAllStatesPerProjectUI(get()) } //GetAllStatesPerProjectUseCase, Menu, UiDisplayer
+    single {
+        TaskManagementUI(
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+        )
+    } // CreateTaskUI, DeleteTaskUI, EditTaskUI, GetAllTasksUI, GetTaskByIdUI, GetTasksByProjectIdUI, Menu, UiDisplayer
+    single { CreateTaskUI(get(), get()) } // CreateTaskUseCase, Menu, UiDisplayer, InputReader
+    single { DeleteTaskUI(get()) } // DeleteTaskUseCase, Menu, UiDisplayer
+    single { EditTaskUI(get()) } // EditTaskUseCase, Menu, UiDisplayer
+    single { GetAllTasksUI(get()) } // GetAllTasksUseCase, Menu, UiDisplayer
+    single { GetTaskByIdUI(get()) } // GetTaskByIdUseCase, Menu, UiDisplayer
+    single { GetTasksByProjectIdUI(get()) } // GetTasksByProjectIdUseCase, Menu, UiDisplayer
 
-
-    single { App(get(), get(), get()) }
+    single { App(get(), get(), get(), get()) } // UiDisplayer, InputReader, Menu, LoginManagementUI
+    single { CLIMenu(get(), get()) }
 }
