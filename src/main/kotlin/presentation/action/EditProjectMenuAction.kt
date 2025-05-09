@@ -30,6 +30,10 @@ class EditProjectMenuAction(
             id = id,
             name = name,
             description = description,
+            state = ProjectState(
+                projectId = id,
+                stateName = "InProgress"
+            )
 
         )
 

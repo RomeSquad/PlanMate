@@ -3,10 +3,10 @@ package logic.usecase.task
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import logic.usecase.project.EditProjectUseCase
 import org.example.logic.entity.Project
-import org.example.logic.entity.State
+import org.example.logic.entity.ProjectState
 import org.example.logic.repository.ProjectRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,7 +22,11 @@ class EditProjectUseCaseTest {
         id = 1,
         name = "Updated Project",
         description = "Updated Description",
-
+        state = ProjectState(
+            projectId = 15,
+            stateName = "pending"
+        )
+    )
 
     @BeforeEach
     fun setup() {
@@ -31,7 +35,7 @@ class EditProjectUseCaseTest {
     }
 
     @Test
-    fun `when edit valid project then call repository`() = runBlocking {
+    fun `when edit valid project then call repository`() = runTest {
         // When
         editProjectUseCase.execute(sampleProject)
 
@@ -40,7 +44,7 @@ class EditProjectUseCaseTest {
     }
 
     @Test
-    fun `when edit fails then throw exception`() = runBlocking {
+    fun `when edit fails then throw exception`() = runTest {
         // Given
         val error = Exception("edit failed")
         coEvery { projectRepository.editProject(sampleProject) } throws error

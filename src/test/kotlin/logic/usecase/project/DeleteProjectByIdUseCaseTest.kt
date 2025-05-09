@@ -1,12 +1,11 @@
 package logic.usecase.project
 
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
-
+import kotlinx.coroutines.test.runTest
 import org.example.logic.repository.ProjectRepository
 import org.example.logic.usecase.project.DeleteProjectByIdUseCase
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -29,9 +28,9 @@ class DeleteProjectByIdUseCaseTest{
     @Test
     fun `when request to delete specific project by invalid id then return result failure with exception`() = runTest {
         coEvery { projectRepository.deleteProject(2) } throws NoSuchElementException("Project not found")
-        val projectResponse = deleteProjectByIdUseCase.deleteProjectById(2)
+
         assertThrows<NoSuchElementException> {
-            projectResponse
+           deleteProjectByIdUseCase.deleteProjectById(2)
         }
     }
 

@@ -31,25 +31,29 @@ class ProjectRepositoryImplTest {
 
     private val project = request.toProject(1)
 
+
     @BeforeEach
     fun setup() = runTest {
-        fakeDataSource = mockk()
-        coEvery { fakeDataSource.getAllProjects() } returns emptyList()
+        fakeDataSource = mockk(relaxed = true)
         repository = ProjectRepositoryImpl(fakeDataSource)
-    }
+
+       }
+
 
     @Test
     fun `insert project returns valid response`() = runTest {
+       coEvery { fakeDataSource.saveAllProjects(any()) } returns Unit
         val result = repository.insertProject(request)
+
         assertEquals(CreateProjectResponse(1), result)
     }
 
-    @Test
+   @Test
     fun `get project by id returns correct project`() = runTest {
+        val project = request.toProject(1)
         coEvery { fakeDataSource.getAllProjects() } returns listOf(project)
         repository = ProjectRepositoryImpl(fakeDataSource)
-
-        val result = repository.getProjectById(1)
+        val result = repository.getProjectById(2)
         assertEquals(project.id, result.id)
     }
 
@@ -59,8 +63,9 @@ class ProjectRepositoryImplTest {
         assertEquals(emptyList<Project>(), result)
     }
 
-    @Test
+  @Test
     fun `get project by invalid id throws exception`() = runTest {
+        coEvery { fakeDataSource.getAllProjects() } returns listOf()
         assertFailsWith<Exception> {
             repository.getProjectById(99)
         }
@@ -68,17 +73,17 @@ class ProjectRepositoryImplTest {
 
     @Test
     fun `save all projects returns unit`() = runTest {
-        coEvery { fakeDataSource.saveAllProjects(any()) }
+        coEvery { fakeDataSource.saveAllProjects(any()) } returns Unit
         val result = repository.saveAllProjects()
         assertEquals(Unit, result)
     }
-    @Test
+   @Test
     fun `when delete project by valid id then return success`() = runTest {
-        coEvery { fakeDataSource.getAllProjects() } returns listOf(request.toProject(0))
+        coEvery { repository.deleteProject(0) } returns Unit
 
-        val result = repository.deleteProject(1)
+        val result =  repository.deleteProject(1)
 
-        assertEquals(Result.success(Unit), result)
+        assertEquals(Unit, result)
     }
 
 

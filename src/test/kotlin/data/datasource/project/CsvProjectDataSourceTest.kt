@@ -1,11 +1,9 @@
 package data.datasource.project
 
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.verify
+
+import io.mockk.*
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.example.data.datasource.project.CsvProjectDataSource
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
@@ -33,23 +31,35 @@ class CsvProjectDataSourceTest {
         csvFileWriter = mockk()
         projectDataSource = CsvProjectDataSource(csvFileReader, csvFileWriter, projectsFile)
     }
-
     @Test
     fun getAllProjects_shouldReturnListOfProjectsFromCSV() = runBlocking {
-          val csvRows: List<List<Any?>> = listOf(
+        val csvRows = listOf(
             listOf("1","PlanMate","PlanMate Description",
-                date,
+                "[[5, , 4, , Thu May 01 00:25:13 GMT+3 2025]]",
                 "[12, in progress]"
             ),
             listOf("2","PlanMate","PlanMate Description",
-                date,
+                "[[6, , 7, , Thu May 01 00:25:13 GMT+3 2025]]",
                 "[12, in progress]"
             )
         )
+
         val expectedProjects = listOf(
+            Project(
+                name = "PlanMate",
+                description = "PlanMate Description",
+                                state = ProjectState(12, "pending"),
+                id = 1
+            ),
+            Project(
+                name = "PlanMate",
+                description = "PlanMate Description",
+                state = ProjectState(12, "pending"),
+                id = 2
+            )
+        )
 
-
-        every { csvFileReader.readCsv(projectsFile) } returns csvRows as List<List<String>>
+        every { csvFileReader.readCsv(projectsFile) } returns csvRows
 
         val result = projectDataSource.getAllProjects()
 
@@ -58,14 +68,24 @@ class CsvProjectDataSourceTest {
     }
 
     @Test
+    fun saveAllProjects_shouldWriteProjectsToCSV() = runTest {
+        val projects = listOf(
+            Project(
+                id = 4,
+                name = "PlanMate",
+                description = "PlanMate Description",
+                state = ProjectState(
+                    projectId = 15,
+                    stateName = "pending"
 
+            )
         )
-
-        every { csvFileWriter.writeCsv(projectsFile, any()) } just Runs
+        )
+        coEvery { csvFileWriter.writeCsv(projectsFile, any() as List<List<String>>? ?) } just Runs
 
         val result = projectDataSource.saveAllProjects(projects)
 
         assertEquals(Unit,result)
-        verify { csvFileWriter.writeCsv(projectsFile, any()) }
+        coVerify { csvFileWriter.writeCsv(projectsFile, any()) }
     }
 }
