@@ -1,7 +1,7 @@
-package org.example.presentation.formatter.dataFormatter
+package org.example.presentation.utils.formatter.dataFormatter
 
 import org.example.logic.entity.Project
-import org.example.presentation.formatter.CliFormatter
+import org.example.presentation.utils.formatter.CliFormatter
 
 
 fun Project.format(): String {

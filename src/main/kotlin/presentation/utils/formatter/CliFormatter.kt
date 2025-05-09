@@ -1,8 +1,4 @@
-package org.example.presentation.formatter
-
-import org.koin.core.logger.MESSAGE
-import javax.swing.border.Border
-import kotlin.math.roundToInt
+package org.example.presentation.utils.formatter
 
 
 class CliFormatter : Formatter {

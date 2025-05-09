@@ -1,4 +1,4 @@
-package org.example.presentation.formatter.dataFormatter
+package org.example.presentation.utils.formatter.dataFormatter
 
 import org.example.logic.entity.ProjectState
 
