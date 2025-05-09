@@ -1,45 +1,29 @@
 package presentation
 
-import org.example.presentation.menus.Menu
+import org.example.presentation.CLIMenu
+import org.example.presentation.utils.io.UiDisplayer
+import org.example.presentation.utils.menus.Menu
 import presentation.io.InputReader
-import presentation.io.UiDisplayer
+
 
 class App(
     private val uiDisplayer: UiDisplayer,
     private val inputReader: InputReader,
-    private val menu: Menu
-    ) {
-
+    private val menu: Menu,
+    private val cliMenu: CLIMenu
+) {
     suspend fun start() {
-
-        do {
-            processUserMenuSelection()
-        } while (shouldContinue())
-        uiDisplayer.displayMessage("Goodbye")
-    }
-
-
-    private suspend fun processUserMenuSelection() {
+        menu.setActions(listOf(cliMenu))
         try {
-            displayMenuAndExecuteAction()
+            cliMenu.execute(uiDisplayer, inputReader)
         } catch (e: IllegalArgumentException) {
-            uiDisplayer.displayError("Invalid input provided")
+            uiDisplayer.displayMessage("❌ Invalid input provided${e.message}")
+            uiDisplayer.displayMessage("🔄 Press Enter to continue...")
+            inputReader.readString("")
         } catch (e: Exception) {
-            uiDisplayer.displayError(e.message)
+            uiDisplayer.displayMessage("❌ Error: ${e.message ?: "Unexpected error"}")
+            uiDisplayer.displayMessage("🔄 Press Enter to continue...")
+            inputReader.readString("")
         }
     }
-
-    private suspend fun displayMenuAndExecuteAction() {
-        uiDisplayer.displayMenu(menu.getActionsList())
-        val input = inputReader.readIntOrNull() ?: throw IllegalArgumentException("Invalid input")
-        val selectedAction = menu.getAction(input)
-        selectedAction.execute(uiDisplayer, inputReader)
-    }
-
-    private fun shouldContinue(): Boolean {
-        uiDisplayer.displayPrompt("Do you want to perform another action? (y/n): ")
-        return inputReader.readString().equals("y", ignoreCase = true)
-    }
-
-
 }

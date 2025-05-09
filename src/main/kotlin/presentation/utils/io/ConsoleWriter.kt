@@ -1,6 +1,6 @@
-package presentation.io
+package org.example.presentation.utils.io
 
-import org.example.presentation.menus.MenuAction
+import org.example.presentation.utils.menus.MenuAction
 
 class ConsoleWriter : UiDisplayer {
     override fun displayMenu(options: List<MenuAction>) {
@@ -18,9 +18,5 @@ class ConsoleWriter : UiDisplayer {
         val yellow = "\u001B[33m"
         val reset = "\u001B[0m"
         print("$yellow$prompt$reset")
-    }
-
-    fun displaySeparator(ui: UiDisplayer) {
-        println("------------------------------------------------------------")
     }
 }
