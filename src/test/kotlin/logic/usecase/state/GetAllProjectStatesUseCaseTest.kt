@@ -26,9 +26,9 @@ class GetAllProjectStatesUseCaseTest {
             ProjectState(projectId = 1, stateName = "todo"),
             ProjectState(projectId = 2, stateName = "pending")
         )
-        coEvery { projectStateRepository.getAllProjectStates() } returns allStates
+        coEvery { projectStateRepository.getAllProjectStates(projectId = 1) } returns allStates
 
-        val result = getAllProjectStatesUseCase.execute()
+        val result = getAllProjectStatesUseCase.execute(projectId = 1)
 
         assertEquals("todo", result[0].stateName)
     }

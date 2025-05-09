@@ -25,14 +25,14 @@ class ProjectProjectProjectStateRepositoryImplTest {
             ProjectState(projectId = 1, stateName = "Cairo"),
             ProjectState(projectId = 2, stateName = "Alex")
         )
-        coEvery { stateProjectDataSource.getAllProjectStates() } returns mockStates
+        coEvery { stateProjectDataSource.getAllProjectStates(projectId = 1) } returns mockStates
 
         // When
-        val result = stateRepository.getAllProjectStates()
+        val result = stateRepository.getAllProjectStates(projectId = 1)
 
         // Then
         assertEquals(mockStates, result)
-        coVerify { stateProjectDataSource.getAllProjectStates() }
+        coVerify { stateProjectDataSource.getAllProjectStates(projectId = 1) }
     }
 
     @Test

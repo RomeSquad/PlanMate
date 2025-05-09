@@ -9,5 +9,5 @@ interface ProjectStateRepository {
 
     suspend fun getProjectStateByTaskId (taskId: Int): ProjectState
 
-    suspend fun getAllProjectStates(): List<ProjectState>
+    suspend fun getAllProjectStates(projectId: Int): List<ProjectState>
 }

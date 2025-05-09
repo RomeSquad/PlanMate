@@ -6,8 +6,8 @@ class ProjectStateRepositoryImpl(
     private val projectStateDataSource: ProjectStateDataSource
 ) : ProjectStateRepository {
 
-    override suspend fun getAllProjectStates(): List<ProjectState> {
-        return projectStateDataSource.getAllProjectStates()
+    override suspend fun getAllProjectStates(projectId: Int): List<ProjectState> {
+        return projectStateDataSource.getAllProjectStates(projectId )
     }
 
     override suspend fun addProjectState(state: ProjectState) {
