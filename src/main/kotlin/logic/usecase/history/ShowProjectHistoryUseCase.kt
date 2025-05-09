@@ -7,7 +7,11 @@ class ShowProjectHistoryUseCase(
     private val repository: ChangeHistoryRepository
 ) {
     suspend fun execute(projectId: Int): List<ChangeHistory> {
-        return repository.getHistoryByProjectID(projectId)
+        try {
+            return repository.getHistoryByProjectID(projectId)
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Invalid Project ID: ${e.message}")
+        }
     }
 
 }
