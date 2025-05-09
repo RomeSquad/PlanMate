@@ -6,7 +6,6 @@ import org.example.presentation.formatter.CliFormatter
 import org.example.presentation.formatter.dataFormatter.format
 import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
-import presentation.formatter.dataFormatter.*
 import org.koin.core.qualifier.named
 import org.koin.java.KoinJavaComponent.getKoin
 import presentation.io.InputReader
