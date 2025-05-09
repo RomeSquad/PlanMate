@@ -1,9 +1,7 @@
 package logic.usecase.state
 
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
+import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.ProjectState
 import org.example.logic.repository.ProjectStateRepository
 import org.example.logic.usecase.state.AddProjectStatesUseCase
@@ -25,20 +23,20 @@ class DefaultProjectProjectStateUseCaseTest {
     }
 
     @Test
-    fun `should initialize default states for a new project`() {
+    fun `should initialize default states for a new project`()= runTest {
         val getStates = mutableListOf<ProjectState>()
 
-        every { projectStateRepository.addProjectState(capture(getStates)) } just Runs
+        coEvery { projectStateRepository.addProjectState(capture(getStates)) } just Runs
 
         defaultProjectStateUseCase.initializeProjectState(2)
         assertTrue(getStates.any { it.stateName == "todo" || it.stateName == "in progress" || it.stateName == "done" })
     }
 
     @Test
-    fun `should have 3 default state for a new project`() {
+    fun `should have 3 default state for a new project`()= runTest {
         val getStates = mutableListOf<ProjectState>()
 
-        every { projectStateRepository.addProjectState(capture(getStates)) } just Runs
+        coEvery { projectStateRepository.addProjectState(capture(getStates)) } just Runs
 
         defaultProjectStateUseCase.initializeProjectState(3)
 

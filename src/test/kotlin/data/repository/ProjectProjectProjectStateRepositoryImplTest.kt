@@ -1,4 +1,5 @@
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.example.data.datasource.state.ProjectStateDataSource
 import org.example.logic.entity.ProjectState
 import org.example.logic.repository.ProjectStateRepository
@@ -18,24 +19,24 @@ class ProjectProjectProjectStateRepositoryImplTest {
     }
 
     @Test
-    fun `getAllStates should return list of states`() {
+    fun `getAllStates should return list of states`() = runTest{
         // Given
         val mockStates = listOf(
             ProjectState(projectId = 1, stateName = "Cairo"),
             ProjectState(projectId = 2, stateName = "Alex")
         )
-        every { stateProjectDataSource.getAllProjectStates() } returns mockStates
+        coEvery { stateProjectDataSource.getAllProjectStates() } returns mockStates
 
         // When
         val result = stateRepository.getAllProjectStates()
 
         // Then
         assertEquals(mockStates, result)
-        verify { stateProjectDataSource.getAllProjectStates() }
+        coVerify { stateProjectDataSource.getAllProjectStates() }
     }
 
     @Test
-    fun `addState should call dataSource addState`() {
+    fun `addState should call dataSource addState`()= runTest {
         // Given
         val state = ProjectState(projectId = 5, stateName = "inPrograss")
 
@@ -43,12 +44,12 @@ class ProjectProjectProjectStateRepositoryImplTest {
         stateRepository.addProjectState(state)
 
         // Then
-        verify { stateProjectDataSource.addProjectState(state) }
+        coVerify { stateProjectDataSource.addProjectState(state) }
     }
 
 
     @Test
-    fun `deleteState should call dataSource deleteState`() {
+    fun `deleteState should call dataSource deleteState`()= runTest {
         // Given
         val id = 2
 
@@ -56,6 +57,6 @@ class ProjectProjectProjectStateRepositoryImplTest {
         stateRepository.deleteProjectState(id)
 
         // Then
-        verify { stateProjectDataSource.deleteProjectState(id) }
+        coVerify { stateProjectDataSource.deleteProjectState(id) }
     }
 }

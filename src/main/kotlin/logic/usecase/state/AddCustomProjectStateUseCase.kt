@@ -9,7 +9,7 @@ class AddCustomProjectStateUseCase(
     private val stateRepository: ProjectStateRepository
 ) {
 
-    fun execute(currentUser: User, stateName: String, projectId: Int) {
+    suspend fun execute(currentUser: User, stateName: String, projectId: Int) {
         require(stateName.isNotBlank()) { "state name must not be blank" }
 
         if (currentUser.userRole != UserRole.ADMIN) {

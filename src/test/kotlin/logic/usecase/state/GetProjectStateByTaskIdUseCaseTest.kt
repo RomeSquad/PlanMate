@@ -1,7 +1,8 @@
 package logic.usecase.state
 
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.ProjectState
 import org.example.logic.repository.ProjectStateRepository
 import org.example.logic.usecase.state.GetStateByTaskIdUseCase
@@ -21,10 +22,10 @@ class GetProjectStateByTaskIdUseCaseTest {
     }
 
     @Test
-    fun `should return state name of the task`() {
+    fun `should return state name of the task`() = runTest {
         val mockState = ProjectState(projectId = 1, stateName = "todo")
         val taskId = 1
-        every { projectStateRepository.getProjectStateByTaskId(taskId) } returns mockState
+        coEvery { projectStateRepository.getProjectStateByTaskId(taskId) } returns mockState
 
         val result = getStateByTaskIdUseCase.execute(taskId)
 
@@ -32,7 +33,7 @@ class GetProjectStateByTaskIdUseCaseTest {
     }
 
     @Test
-    fun ` should throw exception when task id equal to zero`() {
+    fun ` should throw exception when task id equal to zero`() = runTest {
         assertThrows<IllegalArgumentException> {
             getStateByTaskIdUseCase.execute(0)
         }

@@ -1,6 +1,7 @@
 package logic.usecase.state
 
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.example.logic.repository.ProjectStateRepository
 import org.example.logic.usecase.state.EditProjectStateUseCase
 import org.junit.jupiter.api.BeforeEach
@@ -20,22 +21,22 @@ class EditProjectProjectStateUseCaseTest {
 
 
     @Test
-    fun ` should throw exception when new state name is blank`() {
+    fun ` should throw exception when new state name is blank`() = runTest {
         assertThrows<IllegalArgumentException> {
             editProjectStateUseCase.execute(1, "")
         }
     }
 
     @Test
-    fun ` should edit state successfully`() {
+    fun ` should edit state successfully`() = runTest {
         val projectId = 1
         val newStateName = "code review"
 
-        every { projectStateRepository.editProjectState(projectId, newStateName) } just Runs
+        coEvery { projectStateRepository.editProjectState(projectId, newStateName) } just Runs
 
         editProjectStateUseCase.execute(1, "code review")
 
-        verify(exactly = 1) { editProjectStateUseCase.execute(projectId, newStateName) }
+        coVerify(exactly = 1) { editProjectStateUseCase.execute(projectId, newStateName) }
     }
 
 }

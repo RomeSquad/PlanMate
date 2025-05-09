@@ -1,6 +1,7 @@
 package logic.usecase.state
 
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
@@ -22,7 +23,7 @@ class AddCustomProjectProjectStateUseCaseTest {
     }
 
     @Test
-    fun `should add custom state if user is admin `() {
+    fun `should add custom state if user is admin `() = runTest {
         val currentUser = User(
             userId = 1,
             username = "Zinah",
@@ -33,15 +34,15 @@ class AddCustomProjectProjectStateUseCaseTest {
         val stateName = "pending"
         val expectedState = ProjectState(projectId = projectId, stateName = stateName)
 
-        every { projectStateRepository.addProjectState(expectedState) } just Runs
+        coEvery { projectStateRepository.addProjectState(expectedState) } just Runs
 
         addCustomProjectStateUseCase.execute(currentUser, stateName, projectId)
 
-        verify(exactly = 1) { projectStateRepository.addProjectState(expectedState) }
+        coVerify(exactly = 1) { projectStateRepository.addProjectState(expectedState) }
     }
 
     @Test
-    fun `should throw an exception when user role is mate`() {
+    fun `should throw an exception when user role is mate`() = runTest {
         val currentUser = User(userId = 1, username = "Zinah", password = "1234", userRole = UserRole.MATE)
         val stateName = "pending"
         val projectId = 1
@@ -51,7 +52,7 @@ class AddCustomProjectProjectStateUseCaseTest {
     }
 
     @Test
-    fun ` should throw an exception when state name is blank`() {
+    fun ` should throw an exception when state name is blank`() = runTest {
         val currentUser = User(userId = 1, username = "Zinah", password = "1234", userRole = UserRole.ADMIN)
         assertThrows<IllegalArgumentException> {
             addCustomProjectStateUseCase.execute(currentUser, "", 1)

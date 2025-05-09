@@ -1,6 +1,7 @@
 package logic.usecase.state
 
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.example.logic.repository.ProjectStateRepository
 import org.example.logic.usecase.state.DeleteProjectStatesUseCase
 import org.junit.jupiter.api.BeforeEach
@@ -17,11 +18,11 @@ class DeleteProjectStatesUseCaseTest {
     }
 
     @Test
-    fun ` should throw exception when state name is blank`() {
-        every { projectStateRepository.deleteProjectState(2) } just Runs
+    fun ` should throw exception when state name is blank`() = runTest {
+        coEvery { projectStateRepository.deleteProjectState(2) } just Runs
 
         deleteProjectStatesUseCase.execute(2)
 
-        verify(exactly = 1) { projectStateRepository.deleteProjectState(2) }
+        coVerify(exactly = 1) { projectStateRepository.deleteProjectState(2) }
     }
 }

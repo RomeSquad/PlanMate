@@ -5,7 +5,7 @@ import java.io.File
 class CsvProjectStateDataSource : ProjectStateDataSource {
     private val csvFile = File("state.csv")
 
-    override fun getAllProjectStates(): List<ProjectState> {
+    override suspend fun getAllProjectStates(): List<ProjectState> {
         val allStates = mutableListOf<ProjectState>()
 
         if (!csvFile.exists()) {
@@ -23,7 +23,7 @@ class CsvProjectStateDataSource : ProjectStateDataSource {
         return allStates
     }
 
-    private fun parseOneLine(line: String): ProjectState {
+    private  fun parseOneLine(line: String): ProjectState {
         val stateIndex = line.split(",")
         return ProjectState(
             projectId = stateIndex[0].toInt(),
@@ -31,9 +31,9 @@ class CsvProjectStateDataSource : ProjectStateDataSource {
         )
     }
 
-    override fun addProjectState(state: ProjectState) {
+    override suspend fun addProjectState(state: ProjectState) {
         val result = getAllProjectStates()
-            .filter { it.stateName == state.stateName && it.projectId==state.projectId}
+            .filter { it.stateName == state.stateName && it.projectId == state.projectId }
             .count()
         return if (result != 0) {
             throw Exception("this state is already exist!")
@@ -42,7 +42,7 @@ class CsvProjectStateDataSource : ProjectStateDataSource {
         }
     }
 
-    override fun editProjectState(projectId: Int, newStateName: String) {
+    override suspend fun editProjectState(projectId: Int, newStateName: String) {
         val allStates = getAllProjectStates().toMutableList()
         val index = allStates.indexOfFirst { it.projectId == projectId }
 
@@ -52,18 +52,18 @@ class CsvProjectStateDataSource : ProjectStateDataSource {
         }
     }
 
-    override fun deleteProjectState(projectId: Int) {
+    override suspend fun deleteProjectState(projectId: Int) {
         val updatedStates = getAllProjectStates().filterNot { it.projectId == projectId }
         return saveAllStates(updatedStates)
 
     }
 
-    override fun getStateById(projectId: Int): ProjectState {
+    override suspend fun getStateById(projectId: Int): ProjectState {
         return getAllProjectStates().first { it.projectId == projectId }
 
     }
 
-    private fun saveAllStates(states: List<ProjectState>) {
+    private  fun saveAllStates(states: List<ProjectState>) {
         csvFile.writeText("")
         states.forEach { state ->
             csvFile.appendText("${state.projectId},${state.stateName}\n")
