@@ -5,7 +5,7 @@ import java.io.File
 class CsvProjectStateDataSource : ProjectStateDataSource {
     private val csvFile = File("state.csv")
 
-    override suspend fun getAllProjectStates(): List<ProjectState> {
+    override suspend fun getAllProjectStates(projectId: Int): List<ProjectState> {
         val allStates = mutableListOf<ProjectState>()
 
         if (!csvFile.exists()) {
@@ -20,8 +20,9 @@ class CsvProjectStateDataSource : ProjectStateDataSource {
             }
         }
 
-        return allStates
+        return allStates.filter { it.projectId ==projectId }
     }
+
 
     private  fun parseOneLine(line: String): ProjectState {
         val stateIndex = line.split(",")
@@ -32,7 +33,7 @@ class CsvProjectStateDataSource : ProjectStateDataSource {
     }
 
     override suspend fun addProjectState(state: ProjectState) {
-        val result = getAllProjectStates()
+        val result = getAllProjectStates(projectId = state.projectId)
             .filter { it.stateName == state.stateName && it.projectId == state.projectId }
             .count()
         return if (result != 0) {
@@ -43,7 +44,7 @@ class CsvProjectStateDataSource : ProjectStateDataSource {
     }
 
     override suspend fun editProjectState(projectId: Int, newStateName: String) {
-        val allStates = getAllProjectStates().toMutableList()
+        val allStates = getAllProjectStates(projectId).toMutableList()
         val index = allStates.indexOfFirst { it.projectId == projectId }
 
         if (index != -1) {
@@ -53,13 +54,13 @@ class CsvProjectStateDataSource : ProjectStateDataSource {
     }
 
     override suspend fun deleteProjectState(projectId: Int) {
-        val updatedStates = getAllProjectStates().filterNot { it.projectId == projectId }
+        val updatedStates = getAllProjectStates(projectId).filterNot { it.projectId == projectId }
         return saveAllStates(updatedStates)
 
     }
 
     override suspend fun getStateById(projectId: Int): ProjectState {
-        return getAllProjectStates().first { it.projectId == projectId }
+        return getAllProjectStates(projectId).first { it.projectId == projectId }
 
     }
 

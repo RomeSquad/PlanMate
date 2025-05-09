@@ -1,6 +1,5 @@
 package org.example.di
 
-import CsvProjectStateDataSource
 import ProjectStateRepositoryImpl
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
@@ -9,9 +8,9 @@ import org.example.data.datasource.authentication.AuthDataSource
 import org.example.data.datasource.authentication.MongoAuthDataSource
 import org.example.data.datasource.project.CsvProjectDataSource
 import org.example.data.datasource.project.ProjectDataSource
+import org.example.data.datasource.projectState.MongoProjectStateDataSource
 import org.example.data.datasource.task.MongoTaskDataSource
 import org.example.data.datasource.state.ProjectStateDataSource
-import org.example.data.datasource.task.CsvTaskDataSource
 import org.example.data.datasource.task.TaskDataSource
 import org.example.data.repository.AuthRepositoryImpl
 import org.example.data.repository.ProjectRepositoryImpl
@@ -44,7 +43,7 @@ val dataModule = module {
     single<ProjectDataSource> { CsvProjectDataSource(get(), get(), get(named("projectFile"))) }
     single<AuthDataSource> { MongoAuthDataSource(get(named("users-collection"))) }
     single<TaskDataSource> { MongoTaskDataSource(get(named("tasks-collection"))) }
-    single<ProjectStateDataSource> { CsvProjectStateDataSource() }
+    single<ProjectStateDataSource> { MongoProjectStateDataSource(get(named("states-collection"))) }
 
     //TODO: add other data sources. Follow the same pattern as above
 
