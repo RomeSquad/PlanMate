@@ -60,7 +60,10 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun editUser(user: User) {
-
+        val existingUser = users.find { it.username == user.username } ?: throw Exception("User not found")
+        users.remove(existingUser)
+        users.add(user)
+        authDataSource.saveAllUsers(users)
     }
 
     override suspend fun getUserByUserName(username: String): User? {
