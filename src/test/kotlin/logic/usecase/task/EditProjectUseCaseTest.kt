@@ -22,7 +22,7 @@ class EditProjectUseCaseTest {
         id = 1,
         name = "Updated Project",
         description = "Updated Description",
-        state = org.example.logic.entity.ProjectState("1", "In progress")
+        state = org.example.logic.entity.ProjectState(1, "In progress")
     )
 
     @BeforeEach
