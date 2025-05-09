@@ -1,6 +1,8 @@
+import com.mongodb.client.model.Filters
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.example.data.datasource.changelog.MongoChangeHistoryDataSource
 import org.example.logic.entity.ChangeHistory
@@ -67,7 +69,26 @@ class MongoChangeHistoryDataSourceTest {
         // then
         assertEquals(expected, result)
     }
+    @Test
+    fun `should return empty list if no change history found by projectId`() = runBlocking {
+        val projectId = 999
 
+        coEvery { mongoCollection.find(Filters.eq("projectID", projectId)).toList() } returns emptyList()
+
+        val result = dataSource.getByProjectId(projectId)
+
+        assertEquals(emptyList(), result)
+    }
+    @Test
+    fun `should return empty list if no change history found by taskId`() = runBlocking {
+        val taskId = 999
+
+        coEvery { mongoCollection.find(Filters.eq("taskID", taskId)).toList() } returns emptyList()
+
+        val result = dataSource.getByTaskId(taskId)
+
+        assertEquals(emptyList(), result)
+    }
 
     private fun listOfFakeChangeHistoryData(): List<ChangeHistory> {
         return listOf(
