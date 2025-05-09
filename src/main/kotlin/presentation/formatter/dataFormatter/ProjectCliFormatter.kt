@@ -1,8 +1,6 @@
 package org.example.presentation.formatter.dataFormatter
 
-import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
-import org.example.logic.entity.State
 import org.example.presentation.formatter.CliFormatter
 
 

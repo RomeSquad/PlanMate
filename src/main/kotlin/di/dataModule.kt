@@ -1,7 +1,7 @@
 package org.example.di
 
-import CsvStateDataSource
-import StateRepositoryImpl
+import CsvProjectStateDataSource
+import ProjectStateRepositoryImpl
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
@@ -12,7 +12,8 @@ import org.example.data.datasource.changelog.ChangeHistoryDataSource
 import org.example.data.datasource.changelog.MongoChangeHistoryDataSource
 import org.example.data.datasource.project.CsvProjectDataSource
 import org.example.data.datasource.project.ProjectDataSource
-import org.example.data.datasource.state.StateDataSource
+import org.example.data.datasource.task.MongoTaskDataSource
+import org.example.data.datasource.state.ProjectStateDataSource
 import org.example.data.datasource.task.CsvTaskDataSource
 import org.example.data.datasource.task.TaskDataSource
 import org.example.data.repository.AuthRepositoryImpl
@@ -21,12 +22,12 @@ import org.example.data.repository.TaskRepositoryImpl
 import org.example.data.utils.*
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
-import org.example.logic.entity.State
+import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
 import org.example.logic.entity.auth.User
 import org.example.logic.repository.AuthRepository
 import org.example.logic.repository.ProjectRepository
-import org.example.logic.repository.StateRepository
+import org.example.logic.repository.ProjectStateRepository
 import org.example.logic.repository.TaskRepository
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -47,8 +48,8 @@ val dataModule = module {
 
     single<ProjectDataSource> { CsvProjectDataSource(get(), get(), get(named("projectFile"))) }
     single<AuthDataSource> { MongoAuthDataSource(get(named("users-collection"))) }
-    single<TaskDataSource> { CsvTaskDataSource(get(), get(), get(named("taskFile"))) }
-    single<StateDataSource> { CsvStateDataSource() }
+    single<TaskDataSource> { MongoTaskDataSource(get(named("tasks-collection"))) }
+    single<ProjectStateDataSource> { CsvProjectStateDataSource() }
     single<ChangeHistoryDataSource> { MongoChangeHistoryDataSource(get(named("change-history-collection"))) }
 
 
@@ -58,7 +59,7 @@ val dataModule = module {
     single<ProjectRepository> { ProjectRepositoryImpl(get()) }
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<TaskRepository> { TaskRepositoryImpl(get()) }
-    single<StateRepository> { StateRepositoryImpl(get()) }
+    single<ProjectStateRepository> { ProjectStateRepositoryImpl(get()) }
 
     single<MongoDatabase> {
 
@@ -76,8 +77,8 @@ val dataModule = module {
     single<MongoCollection<Task>>(named("tasks-collection")) {
         get<MongoDatabase>().getCollection<Task>("tasks")
     }
-    single<MongoCollection<State>>(named("states-collection")){
-        get<MongoDatabase>().getCollection<State>("states")
+    single<MongoCollection<ProjectState>>(named("states-collection")){
+        get<MongoDatabase>().getCollection<ProjectState>("states")
     }
     single<MongoCollection<ChangeHistory>>(named("change-history-collection")){
         get<MongoDatabase>().getCollection<ChangeHistory>("change-history")

@@ -1,7 +1,7 @@
 package org.example.presentation.action
 
 import org.example.logic.entity.Project
-import org.example.logic.entity.State
+import org.example.logic.entity.ProjectState
 import logic.usecase.project.EditProjectUseCase
 import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
@@ -30,7 +30,7 @@ class EditProjectMenuAction(
             id = id,
             name = name,
             description = description,
-            state = State(projectId = id.toString(), stateName = "In progress")
+            state = ProjectState(projectId = id.toString(), stateName = "In progress")
         )
 
         editProjectUseCase.execute(updatedProject)

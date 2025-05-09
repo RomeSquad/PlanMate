@@ -38,12 +38,10 @@ val logicModule = module {
     single { AddCustomStateUseCase(get()) }
     single{ AddStatesUseCase(get()) }
     single { DefaultProjectStateUseCase(get()) }
-    single { DeleteStatesUseCase(get()) }
-    single { EditStateUseCase(get()) }
-    single { GetAllStatesUseCase(get()) }
-
+    single { DeleteProjectStatesUseCase(get()) }
+    single { EditProjectStateUseCase(get()) }
+    single { GetAllProjectStatesUseCase(get()) }
     single { AddChangeHistoryUseCase(get()) }
     single { ShowTaskHistoryUseCase(get()) }
     single { ShowProjectHistoryUseCase(get()) }
-
 }

@@ -1,12 +1,10 @@
 package org.example.logic.entity
 
-import java.util.Date
-
 data class Project(
     val id: Int,
     val name: String,
     val description: String,
-    val state: State
+    val state: ProjectState
 )
 
 data class CreateProjectRequest(
@@ -25,8 +23,8 @@ fun CreateProjectRequest.toProject(lastId: Int) =
         id = lastId + 1,
         name = name,
         description = description,
-        state = State(
-            projectId = (lastId + 1).toString(),
+        state = ProjectState(
+            projectId = (lastId + 1),
             stateName = "InProgress"
         )
     )

@@ -3,7 +3,7 @@ package org.example.data.repository.mapper
 import org.example.data.utils.ParserImpl
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
-import org.example.logic.entity.State
+import org.example.logic.entity.ProjectState
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -20,7 +20,7 @@ fun Project.toCsvRow(): List<String> {
 
 fun ChangeHistory.toCsvCell() = listOf(projectID, taskID, authorID, changeDescription, changeDate).toString()
 
-fun State.toCsvCell() = listOf(projectId, stateName).toString()
+fun ProjectState.toCsvCell() = listOf(projectId, stateName).toString()
 val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
 
 
@@ -39,11 +39,11 @@ fun List<String>.fromCsvRowToProject(): Project {
 
 
 
-fun String.parseState(): State {
+fun String.parseState(): ProjectState {
     val parser = ParserImpl()
     val state = parser.parseStringList(this)
-    return State(
-        projectId = state[0].trim(),
+    return ProjectState(
+        projectId = state[0].trim().toInt(),
         stateName = state[1].trim()
     )
 }

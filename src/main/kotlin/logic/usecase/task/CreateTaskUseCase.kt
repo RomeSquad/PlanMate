@@ -6,7 +6,7 @@ import org.example.logic.repository.TaskRepository
 class CreateTaskUseCase(
     private val taskRepository: TaskRepository
 ) {
-    fun createTask(task: Task) {
+    suspend fun createTask(task: Task) {
         if (task.title.isEmpty()) {
             throw IllegalArgumentException("Title must not be empty")
         }
