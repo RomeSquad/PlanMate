@@ -1,6 +1,8 @@
 package org.example.di
 
 import org.example.presentation.CLIMenu
+import org.example.presentation.action.history.ShowProjectHistoryMenuAction
+import org.example.presentation.action.history.ShowTaskHistoryMenuAction
 import org.example.presentation.auithentication.LoginManagementUI
 import org.example.presentation.auithentication.MainMenuUI
 import org.example.presentation.project.*
@@ -54,6 +56,7 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get(),
         )
     } // CreateProjectUi, DeleteProjectUi, EditProjectUi, ListProjectUi, TaskManagementUI, ProjectStateManagementUI, SaveAllProjectUseCase, Menu, UiDisplayer
     single {
@@ -87,6 +90,8 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get()
+
         )
     } // CreateTaskUI, DeleteTaskUI, EditTaskUI, GetAllTasksUI, GetTaskByIdUI, GetTasksByProjectIdUI, Menu, UiDisplayer
     single { CreateTaskUI(get(), get()) } // CreateTaskUseCase, Menu, UiDisplayer, InputReader
@@ -95,6 +100,9 @@ val presentationModule = module {
     single { GetAllTasksUI(get()) } // GetAllTasksUseCase, Menu, UiDisplayer
     single { GetTaskByIdUI(get()) } // GetTaskByIdUseCase, Menu, UiDisplayer
     single { GetTasksByProjectIdUI(get()) } // GetTasksByProjectIdUseCase, Menu, UiDisplayer
+
+    single{ ShowTaskHistoryMenuAction(get()) }
+    single { ShowProjectHistoryMenuAction(get()) }
 
     single { App(get(), get(), get(), get()) } // UiDisplayer, InputReader, Menu, LoginManagementUI
     single { CLIMenu(get(), get()) }

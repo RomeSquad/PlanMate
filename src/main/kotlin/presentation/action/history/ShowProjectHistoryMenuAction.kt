@@ -1,15 +1,12 @@
 package org.example.presentation.action.history
 
-import org.example.logic.entity.auth.UserRole
 import org.example.logic.usecase.history.ShowProjectHistoryUseCase
-import org.example.presentation.formatter.CliFormatter
-import org.example.presentation.formatter.dataFormatter.format
-import org.example.presentation.menus.Menu
-import org.example.presentation.menus.MenuAction
-import org.koin.core.qualifier.named
-import org.koin.java.KoinJavaComponent.getKoin
+import org.example.presentation.utils.formatter.CliFormatter
+import org.example.presentation.utils.formatter.dataFormatter.format
+import org.example.presentation.utils.io.UiDisplayer
+import org.example.presentation.utils.menus.Menu
+import org.example.presentation.utils.menus.MenuAction
 import presentation.io.InputReader
-import presentation.io.UiDisplayer
 
 class ShowProjectHistoryMenuAction(
     private val showProjectHistoryUseCase: ShowProjectHistoryUseCase
@@ -26,7 +23,7 @@ class ShowProjectHistoryMenuAction(
         try {
             ui.displayMessage(description)
             ui.displayMessage("🔹 Enter Project ID:")
-            val idInput = inputReader.readString().trim()
+            val idInput = inputReader.readString("Project ID:").trim()
             if (idInput.isBlank()) {
                 throw IllegalArgumentException("Project ID must not be blank")
             }
@@ -48,7 +45,7 @@ class ShowProjectHistoryMenuAction(
             ui.displayMessage("❌ An unexpected error occurred: ${e.message ?: "Failed to retrieve project"}")
         } finally {
             ui.displayMessage("🔄 Press Enter to continue...")
-            inputReader.readString()
+            inputReader.readString("")
         }
     }
 }

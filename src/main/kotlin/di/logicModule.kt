@@ -1,17 +1,12 @@
 package org.example.di
 
 import logic.usecase.project.EditProjectUseCase
-import org.example.logic.usecase.auth.InsertUserUseCase
-import org.example.logic.usecase.auth.LoginUseCase
-import org.example.logic.usecase.project.GetProjectByIdUseCase
-import org.example.logic.usecase.project.InsertProjectUseCase
-import org.example.logic.usecase.project.SaveAllProjectUseCase
-import org.example.logic.usecase.state.AddCustomProjectStateUseCase
-import org.example.logic.usecase.state.AddProjectStatesUseCase
-import org.example.logic.usecase.state.DefaultProjectStateUseCase
-import org.example.logic.usecase.state.DeleteProjectStatesUseCase
-import org.example.logic.usecase.state.EditProjectStateUseCase
-import org.example.logic.usecase.state.GetAllProjectStatesUseCase
+import org.example.logic.usecase.auth.*
+import org.example.logic.usecase.history.AddChangeHistoryUseCase
+import org.example.logic.usecase.history.ShowProjectHistoryUseCase
+import org.example.logic.usecase.history.ShowTaskHistoryUseCase
+import org.example.logic.usecase.project.*
+import org.example.logic.usecase.state.*
 import org.example.logic.usecase.task.*
 import org.koin.dsl.module
 

@@ -39,7 +39,6 @@ class EditProjectUi(
                 id = id,
                 name = name,
                 description = description,
-                changeHistory = listOf(), // Preserve existing history if needed
                 state = ProjectState(projectId = id, stateName = "In progress")
             )
 

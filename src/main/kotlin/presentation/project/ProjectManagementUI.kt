@@ -1,6 +1,7 @@
 package org.example.presentation.project
 
 import org.example.logic.usecase.project.SaveAllProjectUseCase
+import org.example.presentation.action.history.ShowProjectHistoryMenuAction
 import org.example.presentation.projectstates.ProjectStateManagementUI
 import org.example.presentation.task.TaskManagementUI
 import org.example.presentation.utils.io.UiDisplayer
@@ -15,6 +16,7 @@ class ProjectManagementUI(
     private val editProjectUi: EditProjectUi,
     private val listProjectUi: ListProjectUi,
     private val getProjectByIdUI: GetProjectByIdUI,
+    private val showProjectHistoryMenuAction: ShowProjectHistoryMenuAction,
     private val taskManagementUi: TaskManagementUI,
     private val projectStateManagementUI: ProjectStateManagementUI,
     private val saveAllProjectUseCase: SaveAllProjectUseCase
@@ -32,9 +34,10 @@ class ProjectManagementUI(
         "✏️ 3. Edit Project",
         "📜 4. List All Projects",
         "🔍 5. Get Project by ID",
-        "📋 6. Manage Tasks",
-        "📋 7. Manage Project States",
-        "⬅️ 8. Back to Main Menu"
+        "📜 6. Show Project History",
+        "📋 7. Manage Tasks",
+        "📋 8. Manage Project States",
+        "⬅️ 9. Back to Main Menu"
     )
 
 
@@ -51,9 +54,10 @@ class ProjectManagementUI(
                 3 -> editProjectUi.execute(ui, inputReader)
                 4 -> listProjectUi.execute(ui, inputReader)
                 5 -> getProjectByIdUI.execute(ui, inputReader)
-                6 -> taskManagementUi.execute(ui, inputReader)
-                7 -> projectStateManagementUI.execute(ui, inputReader)
-                8 -> {
+                6 -> showProjectHistoryMenuAction.execute(ui, inputReader)
+                7 -> taskManagementUi.execute(ui, inputReader)
+                8 -> projectStateManagementUI.execute(ui, inputReader)
+                9 -> {
                     saveAllProjectUseCase.saveProjects().fold(
                         onSuccess = { ui.displayMessage("✅ All projects saved successfully!") },
                         onFailure = { ui.displayMessage("❌ Failed to save projects: ${it.message}") }
