@@ -1,4 +1,4 @@
-package presentation.formatter
+package presentation.utils.formatter
 
 import org.example.presentation.utils.formatter.CliFormatter
 import kotlin.test.Test
