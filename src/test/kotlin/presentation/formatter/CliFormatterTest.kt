@@ -1,7 +1,6 @@
 package presentation.formatter
 
-import org.example.presentation.formatter.CliFormatter
-import org.junit.jupiter.api.Assertions.*
+import org.example.presentation.utils.formatter.CliFormatter
 import kotlin.test.Test
 
 class CliFormatterTest {
