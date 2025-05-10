@@ -3,9 +3,9 @@ package org.example.logic.usecase.auth
 import org.example.logic.repository.AuthRepository
 
 class DeleteUserUseCase(
-    private val authenticationRepository: AuthRepository
+    private val authRepository: AuthRepository
 ) {
     suspend fun deleteUser(username: String): Boolean {
-        return authenticationRepository.deleteUser(username)
+        return authRepository.deleteUser(username)
     }
 }

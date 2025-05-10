@@ -11,7 +11,6 @@ import presentation.io.InputReader
 
 class CreateTaskUI(
     private val createTaskUseCase: CreateTaskUseCase,
-//    private val createChangeHistoryUseCase: AddChangeHistoryUseCase,
     private val currentUserId: String = "",
 ) : MenuAction {
     override val description: String = """
@@ -72,13 +71,6 @@ class CreateTaskUI(
 
             createTaskUseCase.createTask(task)
             ui.displayMessage("✅ Task '$title' created successfully!")
-//            createChangeHistoryUseCase.execute(
-//                projectId = projectId,
-//                taskId = 1,
-//                authorId = 3,
-//                changeDate = Date(),
-//                changeDescription = "Task created",
-//            )
             ui.displayMessage("🔄 Press Enter to continue...")
             inputReader.readString("")
         } catch (e: IllegalArgumentException) {

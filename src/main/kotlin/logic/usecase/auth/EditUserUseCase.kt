@@ -1,18 +1,21 @@
 package org.example.logic.usecase.auth
 
+import org.example.logic.EmptyNameException
+import org.example.logic.EmptyPasswordException
+import org.example.logic.EntityNotChangedException
 import org.example.logic.entity.auth.User
 import org.example.logic.repository.AuthRepository
 
 
 class EditUserUseCase(
-    private val authenticationRepository: AuthRepository
+    private val authRepository: AuthRepository
 ) {
     suspend fun editUser(newUser: User, oldUser: User) {
         validateUserInputs(
             newUser = newUser,
             oldUser = oldUser
         )
-        authenticationRepository.editUser(user = newUser)
+        authRepository.editUser(user = newUser)
     }
 
     private fun validateUserInputs(newUser: User, oldUser: User) {
@@ -24,6 +27,3 @@ class EditUserUseCase(
 
 }
 
-class EntityNotChangedException : Exception("Entity not changed")
-class EmptyNameException : Exception("Name cannot be empty")
-class EmptyPasswordException : Exception("Password cannot be empty")

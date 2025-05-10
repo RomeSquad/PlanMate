@@ -11,7 +11,7 @@ class GetProjectByIdUI(
 ) : MenuAction {
     override val description: String = """
         ╔════════════════════════════╗
-        ║   Get Project by ID        ║
+        ║      Get Project by ID     ║
         ╚════════════════════════════╝
         """.trimIndent()
     override val menu: Menu = Menu()

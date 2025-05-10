@@ -14,7 +14,7 @@ class EditProjectUi(
 ) : MenuAction {
     override val description: String = """
         ╔════════════════════════════╗
-        ║      Edit a Project        ║
+        ║       Edit a Project       ║
         ╚════════════════════════════╝
         """.trimIndent()
     override val menu: Menu = Menu()

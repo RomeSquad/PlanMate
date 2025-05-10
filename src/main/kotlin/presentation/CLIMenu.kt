@@ -14,8 +14,8 @@ class CLIMenu(
 ) : MenuAction {
     override val description: String = """
         ╔════════════════════════════════════╗
-        ║  🌟 PlanMate: Create New User 🌟   ║
-        ║  🚀 Empower Your Task Journey! 🚀  ║
+        ║     PlanMate: Create New User      ║
+        ║     Empower Your Task Journey!     ║
         ╚════════════════════════════════════╝
         """.trimIndent()
     override val menu: Menu = Menu()

@@ -57,7 +57,6 @@ val dataModule = module {
     single<ProjectStateRepository> { ProjectStateRepositoryImpl(get()) }
     single<ChangeHistoryRepository> { ChangeHistoryRepositoryImpl(get()) }
 
-
     single<MongoDatabase> {
 
         val uri = "mongodb+srv://rome:rome@plan-mate.rxaopvb.mongodb.net/?retryWrites=true&w=majority&appName=plan-mate"

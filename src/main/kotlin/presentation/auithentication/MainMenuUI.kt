@@ -15,7 +15,7 @@ class MainMenuUI(
 ) : MenuAction {
     override val description: String = """
         ╔══════════════════════════╗
-        ║      Main Menu           ║
+        ║        Main Menu         ║
         ╚══════════════════════════╝
         """.trimIndent()
     override val menu: Menu = Menu()

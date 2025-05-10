@@ -17,7 +17,7 @@ class App(
         try {
             cliMenu.execute(uiDisplayer, inputReader)
         } catch (e: IllegalArgumentException) {
-            uiDisplayer.displayMessage("❌ Invalid input provided${e.message}")
+            uiDisplayer.displayMessage("❌ Invalid input provided ${e.message}")
             uiDisplayer.displayMessage("🔄 Press Enter to continue...")
             inputReader.readString("")
         } catch (e: Exception) {

@@ -25,184 +25,184 @@ val presentationModule = module {
 
     single {
         LoginManagementUI(
-            get(), // LoginUseCase
-            get()  // MainMenuUI
+            get(),
+            get()
         )
     }
     single {
         MainMenuUI(
-            get(), // AdminManagementUI
-            get()  // MateManagementUI
+            get(),
+            get()
         )
     }
     single {
         AdminManagementUI(
-            get(), // ProjectManagementUI
-            get(), // CreateUserUi
-            get(), // DeleteUserUi
-            get(), // EditUserUI
-            get()  // ViewAllUserUI
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
         )
     }
     single {
         MateManagementUI(
-            get() // TaskManagementUI
+            get()
         )
     }
     single {
         CreateUserUi(
-            get() // CreateUserUseCase
+            get()
         )
     }
     single {
         DeleteUserUi(
-            get() // DeleteUserUseCase
+            get()
         )
     }
     single {
         EditUserUI(
-            get(), // GetUserByUsernameUseCase
-            get()  // EditUserUseCase
+            get(),
+            get()
         )
     }
     single {
         ViewAllUserUI(
-            get() // GetAllUsersUseCase
+            get()
         )
     }
 
     single {
         ProjectManagementUI(
-            get(), // CreateProjectUi
-            get(), // DeleteProjectUi
-            get(), // EditProjectUi
-            get(), // ListProjectUi
-            get(), // TaskManagementUI
-            get(), // ProjectStateManagementUI
-            get(),  // SaveAllProjectUseCase
-            get() // GetProjectByIdUI
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
         )
     }
     single {
         CreateProjectUi(
-            get(), // InsertProjectUseCase
-            get()  // DefaultProjectStateUseCase
+            get(),
+            get()
         )
     }
     single {
         GetProjectByIdUI(
-            get() // GetProjectByIdUseCase
+            get()
         )
     }
     single {
         DeleteProjectUi(
-            get() // DeleteProjectByIdUseCase
+            get()
         )
     }
     single {
         EditProjectUi(
-            get() // EditProjectUseCase
+            get()
         )
     }
     single {
         ListProjectUi(
-            get() // GetAllProjectsUseCase
+            get()
         )
     }
 
     single {
         ProjectStateManagementUI(
-            get(), // AddStateToProjectUI
-            get(), // EditProjectStateUI
-            get(), // DeleteStateToProjectUI
-            get()  // GetAllStatesPerProjectUI
+            get(),
+            get(),
+            get(),
+            get()
         )
     }
     single {
         AddStateToProjectUI(
-            get() // AddStateToProjectUseCase
+            get()
         )
     }
     single {
         EditProjectStateUI(
-            get() // EditProjectStateUseCase
+            get()
         )
     }
     single {
         DeleteStateToProjectUI(
-            get() // DeleteStateToProjectUseCase
+            get()
         )
     }
     single {
         GetAllStatesPerProjectUI(
-            get() // GetAllStatesPerProjectUseCase
+            get()
         )
     }
 
     single {
         TaskManagementUI(
-            get(), // CreateTaskUI
-            get(), // DeleteTaskUI
-            get(), // EditTaskUI
-            get(), // GetAllTasksUI
-            get(), // GetTaskByIdUI
-            get()  // GetTasksByProjectIdUI
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
         )
     }
     single {
         CreateTaskUI(
-            get() // CreateTaskUseCase
+            get()
         )
     }
     single {
         DeleteTaskUI(
-            get() // DeleteTaskUseCase
+            get()
         )
     }
     single {
         EditTaskUI(
-            get() // EditTaskUseCase
+            get()
         )
     }
     single {
         GetAllTasksUI(
-            get() // GetAllTasksUseCase
+            get()
         )
     }
     single {
         GetTaskByIdUI(
-            get() // GetTaskByIdUseCase
+            get()
         )
     }
     single {
         GetTasksByProjectIdUI(
-            get() // GetTasksByProjectIdUseCase
+            get()
         )
     }
 
     single {
         ShowTaskHistoryUI(
-            get() // TaskHistoryUseCase or similar
+            get()
         )
     }
     single {
         ShowProjectHistoryUI(
-            get() // ProjectHistoryUseCase or similar
+            get()
         )
     }
 
     single {
         App(
             get(),
-            get(), // MainMenuUI
-            get(), // LoginManagementUI
-            get(), // ProjectManagementUI
+            get(),
+            get(),
+            get(),
         )
     }
     single {
         CLIMenu(
-            get(), // App
-            get(), // MainMenuUI
+            get(),
+            get(), 
         )
     }
 }
