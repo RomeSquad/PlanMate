@@ -14,7 +14,7 @@ import org.junit.jupiter.api.assertThrows
 class GetProjectByIdUseCaseTest{
     private lateinit var projectRepository: ProjectRepository
     private lateinit var getProjectByIdUseCase: GetProjectByIdUseCase
-    private val testProject = Project(1, "test", "test description", listOf(), ProjectState(12, "in progress"))
+    private val testProject = Project(1, "test", "test description", ProjectState(12, "in progress"))
     @BeforeEach
     fun setup() {
         projectRepository = mockk()
