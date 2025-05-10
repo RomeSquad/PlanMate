@@ -4,13 +4,13 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import org.example.logic.EmptyNameException
+import org.example.logic.EmptyPasswordException
+import org.example.logic.EntityNotChangedException
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.repository.AuthRepository
 import org.example.logic.usecase.auth.EditUserUseCase
-import org.example.logic.usecase.auth.EmptyNameException
-import org.example.logic.usecase.auth.EmptyPasswordException
-import org.example.logic.usecase.auth.EntityNotChangedException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
