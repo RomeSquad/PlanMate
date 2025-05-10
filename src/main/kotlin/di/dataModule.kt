@@ -6,17 +6,16 @@ import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import org.example.data.datasource.authentication.AuthDataSource
-import org.example.data.datasource.authentication.CsvAuthDataSource
 import org.example.data.datasource.authentication.MongoAuthDataSource
 import org.example.data.datasource.changelog.ChangeHistoryDataSource
 import org.example.data.datasource.changelog.MongoChangeHistoryDataSource
 import org.example.data.datasource.project.CsvProjectDataSource
 import org.example.data.datasource.project.ProjectDataSource
-import org.example.data.datasource.task.MongoTaskDataSource
 import org.example.data.datasource.state.ProjectStateDataSource
-import org.example.data.datasource.task.CsvTaskDataSource
+import org.example.data.datasource.task.MongoTaskDataSource
 import org.example.data.datasource.task.TaskDataSource
 import org.example.data.repository.AuthRepositoryImpl
+import org.example.data.repository.ChangeHistoryRepositoryImpl
 import org.example.data.repository.ProjectRepositoryImpl
 import org.example.data.repository.TaskRepositoryImpl
 import org.example.data.utils.*
@@ -25,14 +24,10 @@ import org.example.logic.entity.Project
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
 import org.example.logic.entity.auth.User
-import org.example.logic.repository.AuthRepository
-import org.example.logic.repository.ProjectRepository
-import org.example.logic.repository.ProjectStateRepository
-import org.example.logic.repository.TaskRepository
+import org.example.logic.repository.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File
-import java.net.URLEncoder
 
 
 val dataModule = module {
@@ -60,6 +55,7 @@ val dataModule = module {
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<TaskRepository> { TaskRepositoryImpl(get()) }
     single<ProjectStateRepository> { ProjectStateRepositoryImpl(get()) }
+    single<ChangeHistoryRepository> { ChangeHistoryRepositoryImpl(get()) }
 
     single<MongoDatabase> {
 
