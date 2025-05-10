@@ -11,7 +11,6 @@ class TaskManagementUI(
     private val deleteTaskUi: DeleteTaskUI,
     private val editTaskUi: EditTaskUI,
     private val getTaskByIdUi: GetTaskByIdUI,
-    private val showTaskHistoryMenuAction: ShowTaskHistoryUI,
     private val getTasksByProjectIdUi: GetTasksByProjectIdUI,
     private val getAllTasksUi: GetAllTasksUI,
 ) : MenuAction {
@@ -46,7 +45,6 @@ class TaskManagementUI(
                 3 -> editTaskUi.execute(ui, inputReader)
                 4 -> getTaskByIdUi.execute(ui, inputReader)
                 5 -> getTasksByProjectIdUi.execute(ui, inputReader)
-                6 -> showTaskHistoryMenuAction.execute(ui, inputReader)
                 7 -> getAllTasksUi.execute(ui, inputReader)
                 8 -> return
                 else -> ui.displayMessage("❌ Invalid option. Please select a number between 1 and 7.")

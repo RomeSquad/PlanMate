@@ -18,91 +18,191 @@ import org.koin.dsl.module
 import presentation.App
 import presentation.io.InputReader
 
-
 val presentationModule = module {
     single<UiDisplayer> { ConsoleWriter() }
     single<InputReader> { ConsoleInputReader() }
     single<Menu> { Menu() }
-    single { "" }
 
     single {
         LoginManagementUI(
-            get(), get(),
+            get(), // LoginUseCase
+            get()  // MainMenuUI
         )
-    } // LoginUseCase, MainMenuUI, UiDisplayer, InputReader
-    single { MainMenuUI(get(), get()) } // AdminManagementUI, MateManagementUI, UiDisplayer, InputReader
+    }
+    single {
+        MainMenuUI(
+            get(), // AdminManagementUI
+            get()  // MateManagementUI
+        )
+    }
     single {
         AdminManagementUI(
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
+            get(), // ProjectManagementUI
+            get(), // CreateUserUi
+            get(), // DeleteUserUi
+            get(), // EditUserUI
+            get()  // ViewAllUserUI
         )
-    } // ProjectManagementUI, CreateUserUi, DeleteUserUi, EditUserUI, ViewAllUserUI, UiDisplayer, InputReader
-    single { MateManagementUI(get()) } // TaskManagementUI, UiDisplayer, InputReader
-    single { CreateUserUi(get()) } // CreateUserUseCase, Menu, UiDisplayer
-    single { DeleteUserUi(get()) } // DeleteUserUseCase, Menu, UiDisplayer
-    single { EditUserUI(get(), get()) } // GetUserByUsernameUseCase, EditUserUseCase, Menu, UiDisplayer
-    single { ViewAllUserUI(get()) } // GetAllUsersUseCase, Menu, UiDisplayer
+    }
+    single {
+        MateManagementUI(
+            get() // TaskManagementUI
+        )
+    }
+    single {
+        CreateUserUi(
+            get() // CreateUserUseCase
+        )
+    }
+    single {
+        DeleteUserUi(
+            get() // DeleteUserUseCase
+        )
+    }
+    single {
+        EditUserUI(
+            get(), // GetUserByUsernameUseCase
+            get()  // EditUserUseCase
+        )
+    }
+    single {
+        ViewAllUserUI(
+            get() // GetAllUsersUseCase
+        )
+    }
 
     single {
         ProjectManagementUI(
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
+            get(), // CreateProjectUi
+            get(), // DeleteProjectUi
+            get(), // EditProjectUi
+            get(), // ListProjectUi
+            get(), // TaskManagementUI
+            get(), // ProjectStateManagementUI
+            get(),  // SaveAllProjectUseCase
+            get() // GetProjectByIdUI
         )
-    } // CreateProjectUi, DeleteProjectUi, EditProjectUi, ListProjectUi, TaskManagementUI, ProjectStateManagementUI, SaveAllProjectUseCase, Menu, UiDisplayer
+    }
     single {
         CreateProjectUi(
-            get(),
-            get()
+            get(), // InsertProjectUseCase
+            get()  // DefaultProjectStateUseCase
         )
-    } // InsertProjectUseCase, DefaultProjectStateUseCase, Menu, UiDisplayer
-    single { GetProjectByIdUI(get()) } // GetProjectByIdUseCase, Menu, UiDisplayer
-    single { DeleteProjectUi(get()) } // DeleteProjectByIdUseCase, Menu, UiDisplayer
-    single { EditProjectUi(get()) } // EditProjectUseCase
-    single { ListProjectUi(get()) } // GetAllProjectsUseCase, Menu, UiDisplayer
+    }
+    single {
+        GetProjectByIdUI(
+            get() // GetProjectByIdUseCase
+        )
+    }
+    single {
+        DeleteProjectUi(
+            get() // DeleteProjectByIdUseCase
+        )
+    }
+    single {
+        EditProjectUi(
+            get() // EditProjectUseCase
+        )
+    }
+    single {
+        ListProjectUi(
+            get() // GetAllProjectsUseCase
+        )
+    }
 
     single {
         ProjectStateManagementUI(
-            get(),
-            get(),
-            get(),
-            get(),
+            get(), // AddStateToProjectUI
+            get(), // EditProjectStateUI
+            get(), // DeleteStateToProjectUI
+            get()  // GetAllStatesPerProjectUI
         )
-    } // AddStateToProjectUI, EditProjectStateUI, DeleteStateToProjectUI, GetAllStatesPerProjectUI, Menu, UiDisplayer
-    single { AddStateToProjectUI(get()) } // AddStateToProjectUseCase, Menu, UiDisplayer
-    single { EditProjectStateUI(get()) } // EditProjectStateUseCase, Menu, UiDisplayer
-    single { DeleteStateToProjectUI(get()) } // DeleteStateToProjectUseCase, Menu, UiDisplayer
-    single { GetAllStatesPerProjectUI(get()) } //GetAllStatesPerProjectUseCase, Menu, UiDisplayer
+    }
+    single {
+        AddStateToProjectUI(
+            get() // AddStateToProjectUseCase
+        )
+    }
+    single {
+        EditProjectStateUI(
+            get() // EditProjectStateUseCase
+        )
+    }
+    single {
+        DeleteStateToProjectUI(
+            get() // DeleteStateToProjectUseCase
+        )
+    }
+    single {
+        GetAllStatesPerProjectUI(
+            get() // GetAllStatesPerProjectUseCase
+        )
+    }
+
     single {
         TaskManagementUI(
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
+            get(), // CreateTaskUI
+            get(), // DeleteTaskUI
+            get(), // EditTaskUI
+            get(), // GetAllTasksUI
+            get(), // GetTaskByIdUI
+            get()  // GetTasksByProjectIdUI
         )
-    } // CreateTaskUI, DeleteTaskUI, EditTaskUI, GetAllTasksUI, GetTaskByIdUI, GetTasksByProjectIdUI, Menu, UiDisplayer
-    single { CreateTaskUI(get(), get()) } // CreateTaskUseCase, Menu, UiDisplayer, InputReader
-    single { DeleteTaskUI(get()) } // DeleteTaskUseCase, Menu, UiDisplayer
-    single { EditTaskUI(get()) } // EditTaskUseCase, Menu, UiDisplayer
-    single { GetAllTasksUI(get()) } // GetAllTasksUseCase, Menu, UiDisplayer
-    single { GetTaskByIdUI(get()) } // GetTaskByIdUseCase, Menu, UiDisplayer
-    single { GetTasksByProjectIdUI(get()) } // GetTasksByProjectIdUseCase, Menu, UiDisplayer
+    }
+    single {
+        CreateTaskUI(
+            get() // CreateTaskUseCase
+        )
+    }
+    single {
+        DeleteTaskUI(
+            get() // DeleteTaskUseCase
+        )
+    }
+    single {
+        EditTaskUI(
+            get() // EditTaskUseCase
+        )
+    }
+    single {
+        GetAllTasksUI(
+            get() // GetAllTasksUseCase
+        )
+    }
+    single {
+        GetTaskByIdUI(
+            get() // GetTaskByIdUseCase
+        )
+    }
+    single {
+        GetTasksByProjectIdUI(
+            get() // GetTasksByProjectIdUseCase
+        )
+    }
 
-    single{ ShowTaskHistoryUI(get()) }
-    single { ShowProjectHistoryUI(get()) }
+    single {
+        ShowTaskHistoryUI(
+            get() // TaskHistoryUseCase or similar
+        )
+    }
+    single {
+        ShowProjectHistoryUI(
+            get() // ProjectHistoryUseCase or similar
+        )
+    }
 
-    single { App(get(), get(), get(), get()) } // UiDisplayer, InputReader, Menu, LoginManagementUI
-    single { CLIMenu(get(), get()) }
+    single {
+        App(
+            get(),
+            get(), // MainMenuUI
+            get(), // LoginManagementUI
+            get(), // ProjectManagementUI
+        )
+    }
+    single {
+        CLIMenu(
+            get(), // App
+            get(), // MainMenuUI
+        )
+    }
 }
