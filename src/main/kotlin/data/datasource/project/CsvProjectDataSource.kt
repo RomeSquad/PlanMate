@@ -13,17 +13,17 @@ class CsvProjectDataSource(
     private val projectsFile : File
 ) : ProjectDataSource {
 
-    override fun getAllProjects(): Result<List<Project>> {
+    override suspend fun getAllProjects(): List<Project> {
         val data = csvFileReader.readCsv(projectsFile)
         val projects = data.map { it.fromCsvRowToProject() }
-        return Result.success(projects)
+        return projects
     }
 
-    override fun saveAllProjects(projects: List<Project>): Result<Unit> {
+    override suspend fun saveAllProjects(projects: List<Project>) {
         projects.forEach { project ->
             val csvRow = project.toCsvRow()
             csvFileWriter.writeCsv(projectsFile, listOf(csvRow))
         }
-        return Result.success(Unit)
+
     }
 }

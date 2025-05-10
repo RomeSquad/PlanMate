@@ -1,11 +1,13 @@
 package data.repository
 
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.example.data.datasource.project.ProjectDataSource
 import org.example.data.repository.ProjectRepositoryImpl
 import org.example.logic.entity.CreateProjectRequest
 import org.example.logic.entity.CreateProjectResponse
+import org.example.logic.entity.Project
 import org.example.logic.entity.toProject
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -13,71 +15,84 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import kotlin.test.assertFailsWith
 
 class ProjectRepositoryImplTest {
-    private lateinit var projectRepository: ProjectRepositoryImpl
-    private lateinit var projectDataSource: ProjectDataSource
-    private val testProjectRequest = CreateProjectRequest(
+
+    private lateinit var repository: ProjectRepositoryImpl
+    private lateinit var fakeDataSource: ProjectDataSource
+
+    private val request = CreateProjectRequest(
         userId = 1,
         userName = "Mohamed",
         name = "test",
-        description = "test description",
+        description = "desc"
     )
-    private val testProjectResponse = CreateProjectResponse(
-        id = 1,
-    )
+
+    private val project = request.toProject(1)
+
 
     @BeforeEach
-    fun setup() {
-        projectDataSource = mockk()
-        every { projectDataSource.getAllProjects() } returns Result.success(emptyList())
-       projectRepository = ProjectRepositoryImpl(projectDataSource)
+    fun setup() = runTest {
+        fakeDataSource = mockk(relaxed = true)
+        repository = ProjectRepositoryImpl(fakeDataSource)
+
+       }
+
+
+    @Test
+    fun `insert project returns valid response`() = runTest {
+       coEvery { fakeDataSource.saveAllProjects(any()) } returns Unit
+        val result = repository.insertProject(request)
+
+        assertEquals(CreateProjectResponse(1), result)
+    }
+
+   @Test
+    fun `get project by id returns correct project`() = runTest {
+        val project = request.toProject(1)
+        coEvery { fakeDataSource.getAllProjects() } returns listOf(project)
+        repository = ProjectRepositoryImpl(fakeDataSource)
+        val result = repository.getProjectById(2)
+        assertEquals(project.id, result.id)
     }
 
     @Test
-    fun `when insert valid project request then return valid project response`() {
-        val projectResponse = projectRepository.insertProject(testProjectRequest)
-        assertEquals(projectResponse.getOrNull(), testProjectResponse)
+    fun `get all projects returns list`() = runTest {
+        val result = repository.getAllProjects()
+        assertEquals(emptyList<Project>(), result)
     }
-    @Test
-    fun `when request specific project by id then return valid project`() {
-        every { projectDataSource.getAllProjects() } returns Result.success(listOf(testProjectRequest.toProject(0)))
-        val projectResponse = projectRepository.getProjectById(1)
-        assertEquals(projectResponse.getOrNull()?.id, testProjectRequest.toProject(0).id)
-    }
-    @Test
-    fun `when request all projects then return valid projects`() {
-        val projectResponse = projectRepository.getAllProjects()
-        assertEquals(projectResponse.getOrNull(), emptyList<CreateProjectRequest>())
-    }
-    @Test
-    fun `when request specific project by invalid id then return exception`() {
-        assertThrows(Exception::class.java) {
-            projectRepository.getProjectById(2).getOrThrow()
+
+  @Test
+    fun `get project by invalid id throws exception`() = runTest {
+        coEvery { fakeDataSource.getAllProjects() } returns listOf()
+        assertFailsWith<Exception> {
+            repository.getProjectById(99)
         }
     }
+
     @Test
-    fun `when save all projects then return success`() {
-        every { projectDataSource.saveAllProjects(any()) } returns Result.success(Unit)
-        val projectResponse = projectRepository.saveAllProjects()
-        assertEquals(projectResponse.getOrNull(), Unit)
+    fun `save all projects returns unit`() = runTest {
+        coEvery { fakeDataSource.saveAllProjects(any()) } returns Unit
+        val result = repository.saveAllProjects()
+        assertEquals(Unit, result)
     }
-    @Test
-    fun `when delete project by valid id then return success`() {
-        every { projectDataSource.getAllProjects() } returns Result.success(listOf(testProjectRequest.toProject(0)))
+   @Test
+    fun `when delete project by valid id then return success`() = runTest {
+        coEvery { repository.deleteProject(0) } returns Unit
 
-        val result = projectRepository.deleteProject(1)
+        val result =  repository.deleteProject(1)
 
-        assertEquals(Result.success(Unit), result)
+        assertEquals(Unit, result)
     }
 
 
     @Test
-    fun `when delete project by invalid id then return failure`() {
-        every { projectDataSource.getAllProjects() } returns Result.success(listOf(testProjectRequest.toProject(0)))
+    fun `when delete project by invalid id then return failure`() = runTest {
+        coEvery { fakeDataSource.getAllProjects() } returns listOf(request.toProject(0))
 
         assertThrows<NoSuchElementException> {
-            projectRepository.deleteProject(999).getOrThrow()
+            repository.deleteProject(999)
         }
     }
 
