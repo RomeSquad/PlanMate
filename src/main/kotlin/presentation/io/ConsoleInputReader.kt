@@ -1,9 +1,14 @@
 package presentation.io
 
-class ConsoleInputReader : InputReader {
-    override fun readString(): String = readlnOrNull()?:throw IllegalArgumentException("Input cannot be null")
+import org.example.presentation.io.InputReader
 
-    override fun readIntOrNull(): Int? = readlnOrNull()?.toIntOrNull()
+class ConsoleInputReader : InputReader {
+
+    override fun readString(string: String): String =
+        readlnOrNull() ?: throw IllegalArgumentException("Input cannot be null")
+
+    override fun readIntOrNull(string: String, ints: IntRange): Int? =
+        readlnOrNull()?.toIntOrNull()?.takeIf { it in ints }
 
     override fun readDoubleOrNull(): Double? = readlnOrNull()?.toDoubleOrNull()
 }

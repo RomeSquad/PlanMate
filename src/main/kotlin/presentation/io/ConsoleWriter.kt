@@ -1,4 +1,4 @@
-package presentation.io
+package org.example.presentation.io
 
 import org.example.presentation.menus.MenuAction
 
@@ -18,9 +18,5 @@ class ConsoleWriter : UiDisplayer {
         val yellow = "\u001B[33m"
         val reset = "\u001B[0m"
         print("$yellow$prompt$reset")
-    }
-
-    fun displaySeparator(ui: UiDisplayer) {
-        println("------------------------------------------------------------")
     }
 }

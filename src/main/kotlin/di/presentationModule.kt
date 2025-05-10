@@ -1,18 +1,17 @@
 package org.example.di
 
-import org.example.presentation.action.EditProjectMenuAction
-import org.example.presentation.action.InsertProjectMenuAction
-import org.example.presentation.action.InsertUserMenuAction
-import org.example.presentation.action.LoginMenuAction
-import org.koin.dsl.module
+import org.example.presentation.CLIMenu
+import org.example.presentation.auth.LoginManagementUI
+import org.example.presentation.auth.MainMenuUI
+import org.example.presentation.io.ConsoleWriter
+import org.example.presentation.io.InputReader
+import org.example.presentation.io.UiDisplayer
 import org.example.presentation.menus.Menu
-import org.example.presentation.menus.MenuAction
-import org.koin.core.qualifier.named
+import org.example.presentation.user.admin.*
+import org.example.presentation.user.mate.MateManagementUI
+import org.koin.dsl.module
 import presentation.App
 import presentation.io.ConsoleInputReader
-import presentation.io.ConsoleWriter
-import presentation.io.InputReader
-import presentation.io.UiDisplayer
 
 
 val presentationModule = module {
@@ -21,30 +20,30 @@ val presentationModule = module {
     single<UiDisplayer> { ConsoleWriter() }
 
     single<Menu> { Menu() }
+    single { "" }
 
-    single(named("mainMenuActions")) {
-        listOf<MenuAction>(
-            LoginMenuAction(get(), menu = get()),
+    single {
+        LoginManagementUI(
+            get(), get(),
         )
     }
-
-
-    single(named("mateMenuActions")) {
-        listOf<MenuAction>(
-            LoginMenuAction(get(), "logout", menu = get()),
+    single { MainMenuUI(get(), get()) } // AdminManagementUI, MateManagementUI, UiDisplayer, InputReader
+    single {
+        AdminManagementUI(
+            get(),
+            get(),
+            get(),
+            get(),
+//            get(),
         )
-    }
+    } // ProjectManagementUI, CreateUserUi, DeleteUserUi, EditUserUI, ViewAllUserUI, UiDisplayer, InputReader
+    single { MateManagementUI() } // TaskManagementUI, UiDisplayer, InputReader
+    single { CreateUserUi(get()) } // CreateUserUseCase, Menu, UiDisplayer
+    single { DeleteUserUi(get()) } // DeleteUserUseCase, Menu, UiDisplayer
+    single { EditUserUI(get(), get()) } // GetUserByUsernameUseCase, EditUserUseCase, Menu, UiDisplayer
+    single { ViewAllUserUI(get()) } // GetAllUsersUseCase, Menu, UiDisplayer
 
-    single(named("adminMenuActions")) {
-        listOf<MenuAction>(
-            InsertProjectMenuAction(projectUseCase = get(), menu = get()),
-            EditProjectMenuAction(editProjectUseCase = get(), menu = get()),
-            InsertUserMenuAction(insertUserUseCase = get(), menu = get()),
-            LoginMenuAction(get(), "logout", menu = get()),
-        )
-    }
+    single { App(get(), get(), get(), get()) } // UiDisplayer, InputReader, Menu, LoginManagementUI
+    single { CLIMenu(get(), get()) }
 
-
-
-    single { App(get(), get(), get()) }
 }

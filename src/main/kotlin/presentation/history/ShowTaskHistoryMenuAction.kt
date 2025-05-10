@@ -1,23 +1,20 @@
-package org.example.presentation.action.history
+package org.example.presentation.history
 
-import org.example.logic.entity.auth.UserRole
-import org.example.logic.usecase.history.ShowProjectHistoryUseCase
+import org.example.logic.usecase.history.ShowTaskHistoryUseCase
 import org.example.presentation.formatter.CliFormatter
 import org.example.presentation.formatter.dataFormatter.format
+import org.example.presentation.io.InputReader
+import org.example.presentation.io.UiDisplayer
 import org.example.presentation.menus.Menu
 import org.example.presentation.menus.MenuAction
-import org.koin.core.qualifier.named
-import org.koin.java.KoinJavaComponent.getKoin
-import presentation.io.InputReader
-import presentation.io.UiDisplayer
 
-class ShowProjectHistoryMenuAction(
-    private val showProjectHistoryUseCase: ShowProjectHistoryUseCase
+class ShowTaskHistoryMenuAction(
+    private val showTaskHistoryUseCase: ShowTaskHistoryUseCase
 ) : MenuAction {
 
     override val description: String = """
         ╔════════════════════════════════════╗
-        ║      Get Project History by ID     ║
+        ║        Get Task History by ID      ║
         ╚════════════════════════════════════╝
         """.trimIndent()
     override val menu: Menu = Menu()
@@ -26,14 +23,14 @@ class ShowProjectHistoryMenuAction(
         try {
             ui.displayMessage(description)
             ui.displayMessage("🔹 Enter Project ID:")
-            val idInput = inputReader.readString().trim()
+            val idInput = inputReader.readString("").trim()
             if (idInput.isBlank()) {
                 throw IllegalArgumentException("Project ID must not be blank")
             }
             val id = idInput.toIntOrNull()
                 ?: throw IllegalArgumentException("Project ID must be a valid number")
 
-            val result = showProjectHistoryUseCase.execute(id)
+            val result = showTaskHistoryUseCase.execute(id)
             if (result.isEmpty()) {
                 ui.displayMessage("❌ No history found for project ID: $id")
                 return
@@ -48,8 +45,7 @@ class ShowProjectHistoryMenuAction(
             ui.displayMessage("❌ An unexpected error occurred: ${e.message ?: "Failed to retrieve project"}")
         } finally {
             ui.displayMessage("🔄 Press Enter to continue...")
-            inputReader.readString()
+            inputReader.readString("")
         }
     }
 }
-

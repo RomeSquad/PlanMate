@@ -52,6 +52,23 @@ class AuthRepositoryImpl(
         return authDataSource.getAllUsers()
     }
 
+    override suspend fun deleteUser(username: String): Boolean {
+        val user = users.find { it.username == username } ?: throw Exception("User not found")
+        users.remove(user)
+        authDataSource.saveAllUsers(users)
+        return true
+    }
+
+    override suspend fun editUser(user: User) {
+        val existingUser = users.find { it.username == user.username } ?: throw Exception("User not found")
+        users.remove(existingUser)
+        users.add(user)
+        authDataSource.saveAllUsers(users)
+    }
+
+    override suspend fun getUserByUserName(username: String): User? {
+        return users.find { it.username == username }
+    }
 
     private fun checkUserNameAndPassword(username: String, password: String) {
         if (username.isEmpty() || password.isEmpty()) throw Exception("Username or password cannot be empty")

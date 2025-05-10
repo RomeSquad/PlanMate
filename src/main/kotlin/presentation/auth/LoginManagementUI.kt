@@ -1,0 +1,64 @@
+package org.example.presentation.auth
+
+import org.example.logic.usecase.auth.LoginUseCase
+import org.example.presentation.io.InputReader
+import org.example.presentation.io.UiDisplayer
+import org.example.presentation.menus.Menu
+import org.example.presentation.menus.MenuAction
+
+class LoginManagementUI(
+    private val loginUseCase: LoginUseCase,
+    private val mainMenuUI: MainMenuUI,
+) : MenuAction {
+    override val description: String = """
+        ╔══════════════════════════╗
+        ║       Login Menu         ║
+        ╚══════════════════════════╝
+        """.trimIndent()
+    override val menu: Menu = Menu()
+
+    override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
+        while (true) {
+            ui.displayMessage(description)
+            ui.displayMessage("🔑 1. Login\n🚪 2. Exit")
+            ui.displayMessage("🔹 Choose an option (1-2):")
+            val choice = inputReader.readString("Choice: ").trim().toIntOrNull()
+
+            when (choice) {
+                1 -> {
+                    try {
+                        ui.displayMessage("🔹 Enter Username:")
+                        val username = inputReader.readString("Username: ").trim()
+                        ui.displayMessage("🔹 Enter Password:")
+                        val password = inputReader.readString("Password: ").trim()
+
+                        val user = loginUseCase.login(username, password)
+                        Session.currentUser = user
+                        ui.displayMessage("✅ Login successful! Welcome, ${user.username} (${user.userRole}).")
+                        ui.displayMessage("🔄 Press Enter to continue...")
+                        inputReader.readString("")
+                        mainMenuUI.execute(ui, inputReader)
+                        return
+                    } catch (e: InvalidCredentialsException) {
+                        ui.displayMessage("❌ Invalid username or password${e.message}.")
+                    } catch (e: Exception) {
+                        ui.displayMessage("❌ An unexpected error occurred: ${e.message}")
+                    }
+                }
+
+                2 -> {
+                    ui.displayMessage("🚪 Exiting...")
+                    return
+                }
+
+                else -> {
+                    ui.displayMessage("❌ Invalid option. Please select 1 or 2.")
+                }
+            }
+            ui.displayMessage("🔄 Press Enter to continue...")
+            inputReader.readString("")
+        }
+    }
+}
+
+class InvalidCredentialsException(message: String = "Invalid credentials") : Exception(message)

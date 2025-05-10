@@ -1,7 +1,7 @@
 package org.example.presentation.menus
 
-import presentation.io.InputReader
-import presentation.io.UiDisplayer
+import org.example.presentation.io.InputReader
+import org.example.presentation.io.UiDisplayer
 
 interface MenuAction {
     val description: String
