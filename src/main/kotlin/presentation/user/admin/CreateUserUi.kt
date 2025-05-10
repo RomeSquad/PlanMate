@@ -1,14 +1,14 @@
 package org.example.presentation.user.admin
 
 import org.example.logic.entity.auth.UserRole
-import org.example.logic.usecase.auth.LoginUseCase
+import org.example.logic.usecase.auth.InsertUserUseCase
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
 import presentation.io.InputReader
 
 class CreateUserUi(
-    private val loginUserUseCase: LoginUseCase
+    private val insertUserUseCase: InsertUserUseCase
 ) : MenuAction {
     override val description: String = """
         ╔══════════════════════════╗
@@ -49,7 +49,7 @@ class CreateUserUi(
                 return
             }
 
-            val user = loginUserUseCase.login(username, password)
+            val user = insertUserUseCase.insertUser(username, password, userRole)
             ui.displayMessage("✅ User '$username' created successfully with ID '${user.userId}'!")
             ui.displayMessage("🔄 Press Enter to continue...")
             inputReader.readString("")
