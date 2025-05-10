@@ -1,21 +1,21 @@
 package org.example.di
 
 import org.example.presentation.CLIMenu
-import org.example.presentation.action.history.ShowProjectHistoryUI
-import org.example.presentation.action.history.ShowTaskHistoryUI
 import org.example.presentation.auithentication.LoginManagementUI
 import org.example.presentation.auithentication.MainMenuUI
+import org.example.presentation.history.ShowProjectHistoryUI
+import org.example.presentation.history.ShowTaskHistoryUI
 import org.example.presentation.project.*
 import org.example.presentation.projectstates.*
 import org.example.presentation.task.*
 import org.example.presentation.user.admin.*
 import org.example.presentation.user.mate.MateManagementUI
+import org.example.presentation.utils.io.ConsoleInputReader
 import org.example.presentation.utils.io.ConsoleWriter
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.koin.dsl.module
 import presentation.App
-import org.example.presentation.utils.io.ConsoleInputReader
 import presentation.io.InputReader
 
 
@@ -90,8 +90,7 @@ val presentationModule = module {
             get(),
             get(),
             get(),
-            get()
-
+            get(),
         )
     } // CreateTaskUI, DeleteTaskUI, EditTaskUI, GetAllTasksUI, GetTaskByIdUI, GetTasksByProjectIdUI, Menu, UiDisplayer
     single { CreateTaskUI(get(), get()) } // CreateTaskUseCase, Menu, UiDisplayer, InputReader

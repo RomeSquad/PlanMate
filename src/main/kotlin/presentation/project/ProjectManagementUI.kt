@@ -1,7 +1,7 @@
 package org.example.presentation.project
 
 import org.example.logic.usecase.project.SaveAllProjectUseCase
-import org.example.presentation.action.history.ShowProjectHistoryUI
+import org.example.presentation.history.ShowProjectHistoryUI
 import org.example.presentation.projectstates.ProjectStateManagementUI
 import org.example.presentation.task.TaskManagementUI
 import org.example.presentation.utils.io.UiDisplayer
