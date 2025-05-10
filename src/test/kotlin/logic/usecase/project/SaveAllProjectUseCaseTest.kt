@@ -1,10 +1,10 @@
-package logic.usecase
+package logic.usecase.project
 
 import io.mockk.every
 import io.mockk.mockk
 import org.example.data.repository.ProjectRepositoryImpl
 import org.example.logic.usecase.project.SaveAllProjectUseCase
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -22,6 +22,6 @@ class SaveAllProjectUseCaseTest{
     fun `when save all projects then return success`() {
         every { projectRepository.saveAllProjects() } returns Result.success(Unit)
         val response = saveAllProjectUseCase.saveProjects()
-        assertEquals(response.getOrNull(), Unit)
+        Assertions.assertEquals(response.getOrNull(), Unit)
     }
 }

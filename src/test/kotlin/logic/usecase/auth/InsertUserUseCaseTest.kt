@@ -1,4 +1,4 @@
-package logic.usecase
+package logic.usecase.auth
 
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -7,8 +7,7 @@ import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.repository.AuthRepository
 import org.example.logic.usecase.auth.InsertUserUseCase
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions
 import kotlin.test.Test
 
 class InsertUserUseCaseTest {
@@ -35,6 +34,6 @@ class InsertUserUseCaseTest {
 
         // Then
 
-        assertEquals(expectedUser, result)
+        Assertions.assertEquals(expectedUser, result)
     }
 }

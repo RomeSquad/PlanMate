@@ -1,4 +1,4 @@
-package logic.usecase
+package logic.usecase.project
 
 import io.mockk.every
 import io.mockk.mockk
@@ -6,7 +6,7 @@ import org.example.logic.entity.Project
 import org.example.logic.entity.ProjectState
 import org.example.logic.repository.ProjectRepository
 import org.example.logic.usecase.project.GetProjectByIdUseCase
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -25,7 +25,7 @@ class GetProjectByIdUseCaseTest{
     fun `when request specific project by id then return valid project`() {
         every { projectRepository.getProjectById(1) } returns (Result.success(testProject))
         val projectResponse = getProjectByIdUseCase.getProjectById(1)
-        assertEquals(projectResponse.getOrNull(), testProject)
+        Assertions.assertEquals(projectResponse.getOrNull(), testProject)
     }
     @Test
     fun `when request specific project by invalid id then return result failure with exception`() {
