@@ -1,7 +1,7 @@
 package org.example.presentation.project
 
 import org.example.logic.usecase.project.SaveAllProjectUseCase
-import org.example.presentation.action.history.ShowProjectHistoryMenuAction
+import org.example.presentation.action.history.ShowProjectHistoryUI
 import org.example.presentation.projectstates.ProjectStateManagementUI
 import org.example.presentation.task.TaskManagementUI
 import org.example.presentation.utils.io.UiDisplayer
@@ -16,7 +16,7 @@ class ProjectManagementUI(
     private val editProjectUi: EditProjectUi,
     private val listProjectUi: ListProjectUi,
     private val getProjectByIdUI: GetProjectByIdUI,
-    private val showProjectHistoryMenuAction: ShowProjectHistoryMenuAction,
+    private val showProjectHistoryUI: ShowProjectHistoryUI,
     private val taskManagementUi: TaskManagementUI,
     private val projectStateManagementUI: ProjectStateManagementUI,
     private val saveAllProjectUseCase: SaveAllProjectUseCase
@@ -54,7 +54,7 @@ class ProjectManagementUI(
                 3 -> editProjectUi.execute(ui, inputReader)
                 4 -> listProjectUi.execute(ui, inputReader)
                 5 -> getProjectByIdUI.execute(ui, inputReader)
-                6 -> showProjectHistoryMenuAction.execute(ui, inputReader)
+                6 -> showProjectHistoryUI.execute(ui, inputReader)
                 7 -> taskManagementUi.execute(ui, inputReader)
                 8 -> projectStateManagementUI.execute(ui, inputReader)
                 9 -> {

@@ -8,7 +8,7 @@ import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
 import presentation.io.InputReader
 
-class ShowProjectHistoryMenuAction(
+class ShowProjectHistoryUI(
     private val showProjectHistoryUseCase: ShowProjectHistoryUseCase
 ) : MenuAction {
 

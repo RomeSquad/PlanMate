@@ -1,6 +1,6 @@
 package org.example.presentation.task
 
-import org.example.presentation.action.history.ShowTaskHistoryMenuAction
+import org.example.presentation.action.history.ShowTaskHistoryUI
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
@@ -11,7 +11,7 @@ class TaskManagementUI(
     private val deleteTaskUi: DeleteTaskUI,
     private val editTaskUi: EditTaskUI,
     private val getTaskByIdUi: GetTaskByIdUI,
-    private val showTaskHistoryMenuAction: ShowTaskHistoryMenuAction,
+    private val showTaskHistoryMenuAction: ShowTaskHistoryUI,
     private val getTasksByProjectIdUi: GetTasksByProjectIdUI,
     private val getAllTasksUi: GetAllTasksUI,
 ) : MenuAction {
