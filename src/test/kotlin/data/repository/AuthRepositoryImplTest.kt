@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-
 class AuthRepositoryImplTest {
     private lateinit var authRepository: AuthRepositoryImpl
     private lateinit var authDataSource: AuthDataSource
@@ -34,7 +33,7 @@ class AuthRepositoryImplTest {
         val expectedUser = User(
             userId = 1,
             username = username,
-            password = "hashed_password_123", // Mocked hashed password
+            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
             userRole = userRole
         )
         coEvery { authDataSource.saveAllUsers(any()) } returns Unit
@@ -57,7 +56,7 @@ class AuthRepositoryImplTest {
         val existingUser = User(
             userId = 1,
             username = username,
-            password = "hashed_password_123",
+            password = "5f4dcc3b5aa765d61d8327deb882cf99",
             userRole = UserRole.ADMIN
         )
         coEvery { authDataSource.getAllUsers() } returns listOf(existingUser)
@@ -101,7 +100,7 @@ class AuthRepositoryImplTest {
     @Test
     fun `should throw exception when insertUser with password shorter than 6 characters`() = runTest {
         // Given
-        val username = "problèmes de connexion"
+        val username = "amr"
         val password = "pass"
         val userRole = UserRole.ADMIN
 
@@ -110,6 +109,43 @@ class AuthRepositoryImplTest {
             authRepository.insertUser(username, password, userRole)
         }
         Assertions.assertEquals("Password must be at least 6 characters", exception.message)
+    }
+
+    @Test
+    fun `should throw exception when insertUser with password of 5 characters`() = runTest {
+        // Given
+        val username = "amr"
+        val password = "12345" // 5 characters, should be invalid
+        val userRole = UserRole.MATE
+
+        // When/Then
+        val exception = assertThrows<Exception> {
+            authRepository.insertUser(username, password, userRole)
+        }
+        Assertions.assertEquals("Password must be at least 6 characters", exception.message)
+    }
+
+    @Test
+    fun `should return user info when insertUser with username containing special characters`() = runTest {
+        // Given
+        val username = "amr@123"
+        val password = "password123"
+        val userRole = UserRole.ADMIN
+        val expectedUser = User(
+            userId = 1,
+            username = username,
+            password = "5f4dcc3b5aa765d61d8327deb882cf99",
+            userRole = userRole
+        )
+        coEvery { authDataSource.saveAllUsers(any()) } returns Unit
+
+        // When
+        val result = authRepository.insertUser(username, password, userRole)
+
+        // Then
+        Assertions.assertEquals(expectedUser.userId, result.userId)
+        Assertions.assertEquals(expectedUser.username, result.username)
+        Assertions.assertEquals(expectedUser.userRole, result.userRole)
     }
     // endregion
 
@@ -122,7 +158,7 @@ class AuthRepositoryImplTest {
         val expectedUser = User(
             userId = 1,
             username = username,
-            password = "5f4dcc3b5aa765d61d8327deb882cf99",
+            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password"
             userRole = UserRole.MATE
         )
         coEvery { authDataSource.getAllUsers() } returns listOf(expectedUser)
@@ -133,6 +169,27 @@ class AuthRepositoryImplTest {
 
         // Then
         Assertions.assertEquals(expectedUser, result)
+    }
+
+    @Test
+    fun `should throw exception when login with incorrect password`() = runTest {
+        // Given
+        val username = "amr"
+        val password = "wrongpassword"
+        val existingUser = User(
+            userId = 1,
+            username = username,
+            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password"
+            userRole = UserRole.MATE
+        )
+        coEvery { authDataSource.getAllUsers() } returns listOf(existingUser)
+        authRepository = AuthRepositoryImpl(authDataSource)
+
+        // When/Then
+        val exception = assertThrows<Exception> {
+            authRepository.loginUser(username, password)
+        }
+        Assertions.assertEquals("User not found", exception.message)
     }
 
     @Test
@@ -195,8 +252,13 @@ class AuthRepositoryImplTest {
     fun `should return list when call getAllUsers of users`() = runTest {
         // Given
         val users = listOf(
-            User(userId = 1, username = "amr", password = "hashed_password_123", userRole = UserRole.MATE),
-            User(userId = 2, username = "nasser", password = "hashed_password_456", userRole = UserRole.ADMIN)
+            User(userId = 1, username = "amr", password = "5f4dcc3b5aa765d61d8327deb882cf99", userRole = UserRole.MATE),
+            User(
+                userId = 2,
+                username = "nasser",
+                password = "e99a18c428cb38d5f260853678922e03",
+                userRole = UserRole.ADMIN
+            )
         )
         coEvery { authDataSource.getAllUsers() } returns users
         authRepository = AuthRepositoryImpl(authDataSource)
@@ -217,7 +279,7 @@ class AuthRepositoryImplTest {
         val user = User(
             userId = 1,
             username = username,
-            password = "hashed_password_123",
+            password = "5f4dcc3b5aa765d61d8327deb882cf99",
             userRole = UserRole.MATE
         )
         coEvery { authDataSource.getAllUsers() } returns listOf(user)
@@ -254,13 +316,13 @@ class AuthRepositoryImplTest {
         val existingUser = User(
             userId = 1,
             username = username,
-            password = "hashed_password_123",
+            password = "5f4dcc3b5aa765d61d8327deb882cf99",
             userRole = UserRole.MATE
         )
         val updatedUser = User(
             userId = 1,
             username = username,
-            password = "hashed_password_456",
+            password = "e99a18c428cb38d5f260853678922e03", // Different hash
             userRole = UserRole.ADMIN
         )
         coEvery { authDataSource.getAllUsers() } returns listOf(existingUser)
@@ -281,7 +343,7 @@ class AuthRepositoryImplTest {
         val user = User(
             userId = 1,
             username = "amr",
-            password = "hashed_password_123",
+            password = "5f4dcc3b5aa765d61d8327deb882cf99",
             userRole = UserRole.MATE
         )
         coEvery { authDataSource.getAllUsers() } returns emptyList()
@@ -303,7 +365,7 @@ class AuthRepositoryImplTest {
         val expectedUser = User(
             userId = 1,
             username = username,
-            password = "hashed_password_123",
+            password = "5f4dcc3b5aa765d61d8327deb882cf99",
             userRole = UserRole.MATE
         )
         coEvery { authDataSource.getAllUsers() } returns listOf(expectedUser)
@@ -328,6 +390,30 @@ class AuthRepositoryImplTest {
 
         // Then
         Assertions.assertNull(result)
+    }
+    // endregion
+
+    // region initialization
+    @Test
+    fun `should initialize users list with data from data source`() = runTest {
+        // Given
+        val users = listOf(
+            User(userId = 1, username = "amr", password = "5f4dcc3b5aa765d61d8327deb882cf99", userRole = UserRole.MATE),
+            User(
+                userId = 2,
+                username = "nasser",
+                password = "e99a18c428cb38d5f260853678922e03",
+                userRole = UserRole.ADMIN
+            )
+        )
+        coEvery { authDataSource.getAllUsers() } returns users
+        authRepository = AuthRepositoryImpl(authDataSource)
+
+        // When
+        val result = authRepository.getAllUsers()
+
+        // Then
+        Assertions.assertEquals(users, result)
     }
     // endregion
 }
