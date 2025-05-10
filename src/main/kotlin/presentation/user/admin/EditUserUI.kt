@@ -1,9 +1,13 @@
 package org.example.presentation.user.admin
 
 
+import org.example.logic.EmptyNameException
+import org.example.logic.EmptyPasswordException
+import org.example.logic.EntityNotChangedException
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
-import org.example.logic.usecase.auth.*
+import org.example.logic.usecase.auth.EditUserUseCase
+import org.example.logic.usecase.auth.GetUserByUsernameUseCase
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
