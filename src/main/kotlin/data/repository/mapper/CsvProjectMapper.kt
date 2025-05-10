@@ -14,6 +14,7 @@ fun Project.toCsvRow(): List<String> {
         id.toString(),
         name,
         description,
+        "\"${changeHistory.map { it.toCsvCell() }}\"",
         "\"${state.toCsvCell()}\""
     )
 }
@@ -31,13 +32,26 @@ fun List<String>.fromCsvRowToProject(): Project {
         id = this[0].toInt(),
         name = this[1],
         description = this[2],
-        state = this[4].parseState()
+        state = this[3].parseState()
 
 
     )
 }
 
-
+fun String.parseChangeHistory(): List<ChangeHistory> {
+    val parser = ParserImpl()
+    val change = split("],[")
+    return change.map {
+        val changeHistory = parser.parseStringList(it)
+        ChangeHistory(
+            projectID = changeHistory[0].trim().removeSurrounding("[", "]"),
+            taskID = changeHistory[1].trim(),
+            authorID = changeHistory[2].trim(),
+            changeDescription = changeHistory[3].trim(),
+            changeDate = dateFormat.parse(changeHistory[4].trim().removeSurrounding("[", "]"))
+        )
+    }
+}
 
 fun String.parseState(): ProjectState {
     val parser = ParserImpl()
