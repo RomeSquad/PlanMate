@@ -8,8 +8,8 @@ import org.example.presentation.utils.menus.MenuAction
 import presentation.io.InputReader
 
 class CreateUserUi(
-    private val loginUserUseCase: LoginUseCase,
-    ) : MenuAction {
+    private val loginUserUseCase: LoginUseCase
+) : MenuAction {
     override val description: String = """
         ╔══════════════════════════╗
         ║    Create a New User     ║
@@ -32,7 +32,7 @@ class CreateUserUi(
             }
 
             ui.displayMessage("🔹 Select User Role:")
-            ui.displayMessage("1. ADMIN\n2. USER")
+            ui.displayMessage("1. ADMIN\n2. MATE")
             val roleChoice = inputReader.readString("Role (1-2): ").trim().toIntOrNull()
             val userRole = when (roleChoice) {
                 1 -> UserRole.ADMIN
