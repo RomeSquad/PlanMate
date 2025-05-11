@@ -31,7 +31,7 @@ class GetAllTasksUI(
                     ui.displayMessage(
                         """
                         Task ${index + 1}:
-                        ID: ${task.id}
+                        ID: ${task.taskId}
                         Title: ${task.title}
                         Description: ${task.description}
                         State: ${task.state.stateName}

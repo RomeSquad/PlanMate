@@ -22,21 +22,21 @@ class ProjectRepositoryImpl(
     }
 
     override suspend fun insertProject(projectRequest: CreateProjectRequest): CreateProjectResponse {
-        val newProject = projectRequest.toProject(getLatestProjectId())
+        val newProject = projectRequest.toProject()
         projects.add(newProject)
         projectDataSource.saveAllProjects(projects)
-        return CreateProjectResponse(newProject.id)
+        return CreateProjectResponse(newProject.projectId)
     }
 
     override suspend fun editProject(project: Project) {
-        val index = projects.indexOfFirst { it.id == project.id }
-        if (index == -1) throw Exception("Project with id ${project.id} not found")
+        val index = projects.indexOfFirst { it.projectId == project.projectId }
+        if (index == -1) throw Exception("Project with id ${project.projectId} not found")
         projects[index] = project
         projectDataSource.saveAllProjects(projects)
     }
 
-    override suspend fun getProjectById(id: Int): Project {
-        return projects.firstOrNull { it.id == id }
+    override suspend fun getProjectById(id: UUID): Project {
+        return projects.firstOrNull { it.projectId == id }
             ?: throw Exception("Project with id $id not found")
     }
 
@@ -48,8 +48,8 @@ class ProjectRepositoryImpl(
         projectDataSource.saveAllProjects(projects)
     }
 
-    override suspend fun deleteProject(id: Int) {
-        return projects.removeIf { it.id == id }.let {
+    override suspend fun deleteProject(id: UUID) {
+        return projects.removeIf { it.projectId == id }.let {
             if (!it) {
                 throw (NoSuchElementException("Project with id $id not found"))
             }
@@ -57,6 +57,6 @@ class ProjectRepositoryImpl(
     }
 
 
-    private fun getLatestProjectId() = projects.lastOrNull()?.id ?: 0
+    private fun getLatestProjectId() : UUID = UUID.randomUUID()
 
 }

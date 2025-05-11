@@ -10,12 +10,16 @@ import org.example.logic.entity.ProjectState
 import org.example.logic.repository.ProjectStateRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.UUID
 import kotlin.test.assertEquals
 
 class ProjectStateRepositoryImplTest {
 
     private lateinit var stateProjectDataSource: ProjectStateDataSource
     private lateinit var stateRepository: ProjectStateRepository
+
+    private val projectId1 = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
+    private val projectId2 = UUID.fromString("123e4567-e89b-12d3-a456-426614174001")
 
     @BeforeEach
     fun setup() {
@@ -27,8 +31,8 @@ class ProjectStateRepositoryImplTest {
     fun `getAllStates should return list of states`() = runTest {
         // Given
         val mockStates = listOf(
-            ProjectState(projectId = 1, stateName = "Cairo"),
-            ProjectState(projectId = 2, stateName = "Alex")
+            ProjectState(projectId = projectId1, stateName = "Cairo"),
+            ProjectState(projectId = projectId2, stateName = "Alex")
         )
         coEvery { stateProjectDataSource.getAllProjectStates() } returns mockStates
 
@@ -43,7 +47,7 @@ class ProjectStateRepositoryImplTest {
     @Test
     fun `addState should call dataSource addState`() = runTest {
         // Given
-        val state = ProjectState(projectId = 5, stateName = "inProgress")
+        val state = ProjectState(projectId = projectId1, stateName = "inProgress")
 
         // When
         stateRepository.addProjectState(state)
@@ -55,7 +59,7 @@ class ProjectStateRepositoryImplTest {
     @Test
     fun `deleteState should call dataSource deleteState`() = runTest {
         // Given
-        val id = 2
+        val id = projectId1
 
         // When
         stateRepository.deleteProjectState(id)
@@ -67,7 +71,7 @@ class ProjectStateRepositoryImplTest {
     @Test
     fun `editState should call dataSource editState`() = runTest {
         // Given
-        val projectId = 1
+        val projectId = projectId1
         val newStateName = "UpdatedState"
 
         // When
@@ -80,7 +84,7 @@ class ProjectStateRepositoryImplTest {
     @Test
     fun `getStateById should return state from dataSource`() = runTest {
         // Given
-        val projectId = 1
+        val projectId = projectId1
         val mockState = ProjectState(projectId = projectId, stateName = "Cairo")
         coEvery { stateProjectDataSource.getStateById(projectId) } returns mockState
 

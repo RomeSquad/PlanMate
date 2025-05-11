@@ -41,7 +41,7 @@ class ListProjectUi(
                 ui.displayMessage(
                     """
                     ╔══════════════════════════╗
-                    ║ Project ID: ${project.id} ║
+                    ║ Project ID: ${project.projectId} ║
                     ║ Project Name: ${project.name} ║
                     ║ Project Description: ${project.description} ║
                     ║ Project State: ${project.state.stateName} ║

@@ -3,7 +3,7 @@ package org.example.logic.entity
 import java.util.UUID
 
 data class Project(
-    val id: UUID,
+    val projectId: UUID,
     val name: String,
     val description: String,
     val state: ProjectState
@@ -23,7 +23,7 @@ data class CreateProjectResponse(
 fun CreateProjectRequest.toProject() : Project {
     val id = UUID.randomUUID()
     return Project(
-        id = id,
+        projectId = id,
         name = name,
         description = description,
         state = ProjectState(

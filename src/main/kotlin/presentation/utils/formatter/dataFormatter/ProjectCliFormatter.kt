@@ -8,7 +8,7 @@ import org.example.presentation.utils.formatter.CliFormatter
 fun Project.format(): String {
     return String.format(
         "%-10s | %-20s | %-20s | %-30s | %-15s | %-15s | %-10s | %-10s",
-        "ID: $id",
+        "ID: $projectId",
         "Name: $name",
         "Description: $description",
         "State: $state"
@@ -19,7 +19,7 @@ fun changeHistoryFormat(project: Project, changeHistory: List<ChangeHistory>): S
     val cliFormatter = CliFormatter()
     return String.format(
         "%-10s | %-20s | %-20s \n%-30s \n",
-        "ID: ${project.id}",
+        "ID: ${project.projectId}",
         "Name: ${project.name}",
         "State: ${project.state}",
         "Description: ${project.description}"
@@ -29,7 +29,7 @@ fun changeHistoryFormat(project: Project, changeHistory: List<ChangeHistory>): S
 fun Project.swimlaneFormat(): String {
     return String.format(
         "%-10s | %-20s | %-20s \n%-30s \n%-15s",
-        "ID: $id",
+        "ID: $projectId",
         "Name: $name",
         "State: $state",
         "Description: $description"
