@@ -6,8 +6,6 @@ import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import logic.request.auth.CreateUserRequest
-import org.example.data.datasource.mapper.fromCsvRowToUser
-import org.example.data.datasource.mapper.toCsvRow
 import org.example.data.datasource.mapper.toUser
 import org.example.logic.entity.auth.User
 import org.example.logic.exception.UserNameAlreadyExistsException
@@ -21,8 +19,6 @@ class MongoAuthDataSource(
     override suspend fun getAllUsers(): List<User> {
         return userMongoCollection.find().toList()
     }
-
-
 
     override suspend fun insertUser(request: CreateUserRequest): User {
         isUserNameExists(request.username)
@@ -78,7 +74,7 @@ class MongoAuthDataSource(
     }
 
     private suspend fun isUserNameExists(username: String) {
-        if(userMongoCollection.find(Filters.eq("username", username)).firstOrNull() != null) {
+        if (userMongoCollection.find(Filters.eq("username", username)).firstOrNull() != null) {
             throw UserNameAlreadyExistsException()
         }
     }
