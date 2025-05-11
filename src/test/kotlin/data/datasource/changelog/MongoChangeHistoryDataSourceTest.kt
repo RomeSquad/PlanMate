@@ -69,6 +69,7 @@ class MongoChangeHistoryDataSourceTest {
         // then
         assertEquals(expected, result)
     }
+
     @Test
     fun `should return empty list if no change history found by projectId`() = runBlocking {
         val projectId = 999
@@ -79,6 +80,7 @@ class MongoChangeHistoryDataSourceTest {
 
         assertEquals(emptyList(), result)
     }
+
     @Test
     fun `should return empty list if no change history found by taskId`() = runBlocking {
         val taskId = 999

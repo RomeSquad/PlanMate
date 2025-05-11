@@ -2,11 +2,17 @@ package org.example.logic.usecase.history
 
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.repository.ChangeHistoryRepository
-import java.util.Date
+import java.util.*
 
 class AddChangeHistoryUseCase(private val repository: ChangeHistoryRepository) {
 
-    suspend fun execute(projectId: Int, taskId: Int, authorId: Int, changeDate: Date, changeDescription: String): ChangeHistory {
+    suspend fun execute(
+        projectId: Int,
+        taskId: Int,
+        authorId: Int,
+        changeDate: Date,
+        changeDescription: String
+    ): ChangeHistory {
         try {
             val changeHistory = ChangeHistory(
                 projectID = projectId,

@@ -6,7 +6,7 @@ import org.example.presentation.utils.formatter.dataFormatter.format
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import presentation.io.InputReader
+import org.example.presentation.utils.io.InputReader
 
 class ShowProjectHistoryUI(
     private val showProjectHistoryUseCase: ShowProjectHistoryUseCase
