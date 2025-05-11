@@ -1,11 +1,12 @@
 package org.example.presentation.user.admin
 
 
-import org.example.logic.EmptyNameException
-import org.example.logic.EmptyPasswordException
-import org.example.logic.EntityNotChangedException
+
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
+import org.example.logic.exception.EmptyNameException
+import org.example.logic.exception.EmptyPasswordException
+import org.example.logic.exception.EntityNotChangedException
 import org.example.logic.usecase.auth.EditUserUseCase
 import org.example.logic.usecase.auth.GetUserByUsernameUseCase
 import org.example.presentation.utils.io.UiDisplayer

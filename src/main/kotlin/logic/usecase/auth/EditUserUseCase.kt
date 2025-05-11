@@ -1,9 +1,10 @@
 package org.example.logic.usecase.auth
 
-import org.example.logic.EmptyNameException
-import org.example.logic.EmptyPasswordException
-import org.example.logic.EntityNotChangedException
+
 import org.example.logic.entity.auth.User
+import org.example.logic.exception.EmptyNameException
+import org.example.logic.exception.EmptyPasswordException
+import org.example.logic.exception.EntityNotChangedException
 import org.example.logic.repository.AuthRepository
 
 
