@@ -2,16 +2,12 @@ package org.example.di
 
 import ProjectStateRepositoryImpl
 import com.mongodb.ConnectionString
-import com.mongodb.KotlinCodecProvider
 import com.mongodb.MongoClientSettings
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
-import com.mongodb.reactivestreams.client.MongoClients
 import data.datasource.projectState.ProjectStateDataSource
 import org.bson.UuidRepresentation
-import org.bson.codecs.configuration.CodecRegistries.fromProviders
-import org.bson.codecs.configuration.CodecRegistries.fromRegistries
 import org.example.data.datasource.authentication.AuthDataSource
 import org.example.data.datasource.authentication.MongoAuthDataSource
 import org.example.data.datasource.changelog.ChangeHistoryDataSource
@@ -25,13 +21,23 @@ import org.example.data.repository.AuthRepositoryImpl
 import org.example.data.repository.ChangeHistoryRepositoryImpl
 import org.example.data.repository.ProjectRepositoryImpl
 import org.example.data.repository.TaskRepositoryImpl
-import org.example.data.utils.*
+import org.example.data.utils.CsvFileReader
+import org.example.data.utils.CsvFileReaderImpl
+import org.example.data.utils.CsvFileWriter
+import org.example.data.utils.CsvFileWriterImpl
+import org.example.data.utils.FileValidator
+import org.example.data.utils.Parser
+import org.example.data.utils.ParserImpl
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
 import org.example.logic.entity.auth.User
-import org.example.logic.repository.*
+import org.example.logic.repository.AuthRepository
+import org.example.logic.repository.ChangeHistoryRepository
+import org.example.logic.repository.ProjectRepository
+import org.example.logic.repository.ProjectStateRepository
+import org.example.logic.repository.TaskRepository
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File
@@ -65,7 +71,8 @@ val dataModule = module {
     single<ChangeHistoryRepository> { ChangeHistoryRepositoryImpl(get()) }
 
     single<MongoDatabase> {
-        val uri = "mongodb+srv://rome:rome@plan-mate.rxaopvb.mongodb.net/?retryWrites=true&w=majority&appName=plan-mate"
+        val uri =
+            "mongodb+srv://rome:rome@plan-mate.rxaopvb.mongodb.net/?retryWrites=true&w=majority&appName=plan-mate"
 
         val connectionString = ConnectionString(uri)
 
