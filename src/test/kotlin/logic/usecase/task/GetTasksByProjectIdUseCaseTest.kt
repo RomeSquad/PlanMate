@@ -1,16 +1,18 @@
 package logic.usecase.task
 
-import org.junit.jupiter.api.BeforeEach
-
-import org.junit.jupiter.api.Assertions.*
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.GetTasksByProjectIdUseCase
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class GetTasksByProjectIdUseCaseTest {
 
@@ -37,6 +39,7 @@ class GetTasksByProjectIdUseCaseTest {
         assertEquals(tasks, result)
         coVerify { taskRepository.getTasksByProject(projectId) }
     }
+
     @Test
     fun `should throw IllegalArgumentException when projectId is invalid`() = runTest {
         val projectId = 0

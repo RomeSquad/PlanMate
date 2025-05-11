@@ -3,13 +3,13 @@ package logic.usecase.task
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
 
-fun createTask (
+fun createTask(
     id: String? = "",
     title: String,
     description: String,
     projectId: Int = 1
 ): Task {
-    return Task (
+    return Task(
         id = id.toString(),
         title = title,
         description = description,

@@ -1,10 +1,6 @@
 package logic.usecase.task
 
-import io.mockk.Runs
-import io.mockk.coEvery
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.coVerify
+import io.mockk.*
 import kotlinx.coroutines.test.runTest
 import org.example.logic.TaskNotFoundException
 import org.example.logic.repository.TaskRepository
@@ -105,10 +101,10 @@ class EditTaskUseCaseTest {
         )
         coVerify {
             taskRepository.editTask(
-            task.id,
-            task.title,
-            task.description,
-            task.updatedAt
+                task.id,
+                task.title,
+                task.description,
+                task.updatedAt
             )
         }
     }

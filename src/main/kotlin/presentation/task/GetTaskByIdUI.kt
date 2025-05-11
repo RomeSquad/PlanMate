@@ -1,10 +1,10 @@
 package org.example.presentation.task
 
 import org.example.logic.usecase.task.GetTaskByIdUseCase
+import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import presentation.io.InputReader
 
 class GetTaskByIdUI(
     private val getTaskByIdUseCase: GetTaskByIdUseCase,

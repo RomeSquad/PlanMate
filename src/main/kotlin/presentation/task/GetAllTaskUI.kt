@@ -4,7 +4,7 @@ import org.example.logic.usecase.task.GetAllTasksUseCase
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import presentation.io.InputReader
+import org.example.presentation.utils.io.InputReader
 import java.text.SimpleDateFormat
 import java.util.*
 

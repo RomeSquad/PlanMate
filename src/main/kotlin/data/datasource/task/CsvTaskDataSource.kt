@@ -1,18 +1,18 @@
 package org.example.data.datasource.task
 
-import org.example.data.utils.CsvFileReader
-import org.example.data.utils.CsvFileWriter
 import org.example.data.repository.mapper.fromCsvRowToTask
 import org.example.data.repository.mapper.toCsvRow
+import org.example.data.utils.CsvFileReader
+import org.example.data.utils.CsvFileWriter
 import org.example.logic.TaskNotFoundException
 import org.example.logic.entity.Task
 import java.io.File
 
-class CsvTaskDataSource (
+class CsvTaskDataSource(
     private val csvFileReader: CsvFileReader,
     private val csvFileWriter: CsvFileWriter,
     private val taskFile: File
-): TaskDataSource {
+) : TaskDataSource {
 
     override suspend fun createTask(task: Task) {
         val row = task.toCsvRow()
@@ -46,8 +46,8 @@ class CsvTaskDataSource (
         val allTasks = getAllTasks().toMutableList()
         val removed = allTasks.removeIf {
             it.projectId == projectId
-            &&
-            it.id == taskId
+                    &&
+                    it.id == taskId
         }
 
         if (!removed) {

@@ -15,7 +15,7 @@ import org.example.logic.entity.Task
 
 class MongoTaskDataSource(
     val mongo: MongoCollection<Task>
-): TaskDataSource {
+) : TaskDataSource {
     override suspend fun createTask(task: Task) {
         mongo.insertOne(task)
     }

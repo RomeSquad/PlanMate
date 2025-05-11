@@ -6,8 +6,8 @@ import org.example.data.datasource.task.TaskDataSource
 import org.example.data.repository.TaskRepositoryImpl
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.*
 import kotlin.test.BeforeTest
 
 class TaskRepositoryImplTest {

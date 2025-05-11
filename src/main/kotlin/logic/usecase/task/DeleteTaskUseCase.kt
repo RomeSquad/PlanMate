@@ -2,7 +2,7 @@ package org.example.logic.usecase.task
 
 import org.example.logic.repository.TaskRepository
 
-class DeleteTaskUseCase (
+class DeleteTaskUseCase(
     private val taskRepository: TaskRepository
 ) {
     suspend fun deleteTask(projectId: Int, taskId: String) {

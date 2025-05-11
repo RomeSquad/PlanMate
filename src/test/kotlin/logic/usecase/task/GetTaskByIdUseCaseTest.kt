@@ -1,13 +1,13 @@
 package logic.usecase.task
 
 import io.mockk.coEvery
-import io.mockk.mockk
 import io.mockk.coVerify
+import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.example.logic.TaskNotFoundException
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.GetTaskByIdUseCase
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

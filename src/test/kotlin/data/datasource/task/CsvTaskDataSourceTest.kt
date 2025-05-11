@@ -125,7 +125,7 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
 
         assertThrows<TaskNotFoundException> {
-            csvTaskDataSource.deleteTask(3,"task3")
+            csvTaskDataSource.deleteTask(3, "task3")
         }
         coVerify { csvFileReader.readCsv(tasksFile) }
     }
@@ -137,7 +137,7 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
         coEvery { csvFileWriter.writeCsv(tasksFile, any()) } just Runs
 
-        csvTaskDataSource.deleteTask(1,"task1")
+        csvTaskDataSource.deleteTask(1, "task1")
 
         val remainTasks = tasksData.filterNot { it.projectId == 1 && it.id == "task1" }
         remainTasks.forEach {
@@ -151,7 +151,7 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
 
         assertThrows<TaskNotFoundException> {
-            csvTaskDataSource.deleteTask(1,"task3")
+            csvTaskDataSource.deleteTask(1, "task3")
         }
         coVerify { csvFileReader.readCsv(tasksFile) }
     }
@@ -162,13 +162,13 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
 
         assertThrows<TaskNotFoundException> {
-            csvTaskDataSource.deleteTask(3,"task1")
+            csvTaskDataSource.deleteTask(3, "task1")
         }
         coVerify { csvFileReader.readCsv(tasksFile) }
     }
 
     private fun csvRowsData(): List<List<String>> {
-        return listOf (
+        return listOf(
             listOf(
                 "task1",
                 "title1",
