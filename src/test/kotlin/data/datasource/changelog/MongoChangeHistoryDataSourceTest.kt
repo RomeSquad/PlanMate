@@ -27,8 +27,7 @@ class MongoChangeHistoryDataSourceTest {
         // Given
         val history = fakeChangeHistoryData()
 
-        // Mock insertOne to just succeed
-        coEvery { mongoCollection.insertOne(history) } returns mockk() // لا يهم القيمة الراجعة
+        coEvery { mongoCollection.insertOne(history) } returns mockk()
 
         // When
         val result = dataSource.addChangeHistory(history)
