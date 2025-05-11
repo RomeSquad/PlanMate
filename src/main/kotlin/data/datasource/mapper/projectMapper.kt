@@ -1,4 +1,4 @@
-package org.example.data.repository.mapper
+package org.example.data.datasource.mapper
 import org.example.data.utils.ParserImpl
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
