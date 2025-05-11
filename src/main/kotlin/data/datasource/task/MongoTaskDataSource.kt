@@ -10,8 +10,8 @@ import org.example.data.utils.TaskConstants.TASK_DESCRIPTION
 import org.example.data.utils.TaskConstants.TASK_ID
 import org.example.data.utils.TaskConstants.TASK_TITLE
 import org.example.data.utils.TaskConstants.TASK_UPDATED_AT
-import org.example.logic.TaskNotFoundException
 import org.example.logic.entity.Task
+import org.example.logic.exception.TaskNotFoundException
 
 class MongoTaskDataSource(
     val mongo: MongoCollection<Task>

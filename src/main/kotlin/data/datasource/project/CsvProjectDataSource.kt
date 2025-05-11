@@ -1,7 +1,7 @@
 package org.example.data.datasource.project
 
-import org.example.data.repository.mapper.fromCsvRowToProject
-import org.example.data.repository.mapper.toCsvRow
+import org.example.data.datasource.mapper.fromCsvRowToProject
+import org.example.data.datasource.mapper.toCsvRow
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.logic.entity.Project
