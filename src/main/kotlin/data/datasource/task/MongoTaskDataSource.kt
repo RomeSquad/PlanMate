@@ -12,6 +12,7 @@ import org.example.data.utils.TaskConstants.TASK_TITLE
 import org.example.data.utils.TaskConstants.TASK_UPDATED_AT
 import org.example.logic.entity.Task
 import org.example.logic.exception.TaskNotFoundException
+import java.util.UUID
 
 class MongoTaskDataSource(
     val mongo: MongoCollection<Task>
@@ -21,7 +22,7 @@ class MongoTaskDataSource(
     }
 
     override suspend fun editTask(
-        taskId: String,
+        taskId: UUID,
         title: String,
         description: String,
         updatedAt: Long
@@ -44,7 +45,7 @@ class MongoTaskDataSource(
         }
     }
 
-    override suspend fun deleteTask(projectId: Int, taskId: String) {
+    override suspend fun deleteTask(projectId: UUID, taskId: UUID) {
         val filter = Filters.and(
             Filters.eq(TASK_ID, taskId),
             Filters.eq(PROJECT_ID, projectId)
@@ -58,11 +59,11 @@ class MongoTaskDataSource(
         }
     }
 
-    override suspend fun getTaskByIdFromFile(taskId: String): Task {
+    override suspend fun getTaskByIdFromFile(taskId: UUID): Task {
         return mongo.find(Filters.eq(TASK_ID, taskId)).first()
     }
 
-    override suspend fun getTasksByProjectId(projectId: Int): List<Task> {
+    override suspend fun getTasksByProjectId(projectId: UUID): List<Task> {
         return mongo.find(Filters.eq(PROJECT_ID, projectId)).toList()
     }
 
