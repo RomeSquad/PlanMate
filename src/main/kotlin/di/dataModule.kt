@@ -1,10 +1,17 @@
 package org.example.di
 
 import ProjectStateRepositoryImpl
+import com.mongodb.ConnectionString
+import com.mongodb.KotlinCodecProvider
+import com.mongodb.MongoClientSettings
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import com.mongodb.reactivestreams.client.MongoClients
 import data.datasource.projectState.ProjectStateDataSource
+import org.bson.UuidRepresentation
+import org.bson.codecs.configuration.CodecRegistries.fromProviders
+import org.bson.codecs.configuration.CodecRegistries.fromRegistries
 import org.example.data.datasource.authentication.AuthDataSource
 import org.example.data.datasource.authentication.MongoAuthDataSource
 import org.example.data.datasource.changelog.ChangeHistoryDataSource
@@ -58,11 +65,17 @@ val dataModule = module {
     single<ChangeHistoryRepository> { ChangeHistoryRepositoryImpl(get()) }
 
     single<MongoDatabase> {
-
         val uri = "mongodb+srv://rome:rome@plan-mate.rxaopvb.mongodb.net/?retryWrites=true&w=majority&appName=plan-mate"
 
-        val mongoClient: MongoClient = MongoClient.create(uri)
-        mongoClient.getDatabase("plan-mate")
+        val connectionString = ConnectionString(uri)
+
+        val settings = MongoClientSettings.builder()
+            .applyConnectionString(connectionString)
+            .uuidRepresentation(UuidRepresentation.STANDARD)
+            .build()
+
+        val client = MongoClient.create(settings)
+        client.getDatabase("plan-mate")
     }
     single<MongoCollection<User>>(named("users-collection")) {
         get<MongoDatabase>().getCollection<User>("users")
