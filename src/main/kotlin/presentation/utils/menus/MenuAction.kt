@@ -1,13 +1,13 @@
 package org.example.presentation.utils.menus
 
-import presentation.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
+import org.example.presentation.utils.io.InputReader
 
 interface MenuAction {
     val description: String
-    val menu : Menu
+    val menu: Menu
 
-    suspend fun execute (
+    suspend fun execute(
         ui: UiDisplayer,
         inputReader: InputReader
     )

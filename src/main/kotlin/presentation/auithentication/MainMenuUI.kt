@@ -6,7 +6,7 @@ import org.example.presentation.user.mate.MateManagementUI
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import presentation.io.InputReader
+import org.example.presentation.utils.io.InputReader
 
 
 class MainMenuUI(
@@ -23,13 +23,13 @@ class MainMenuUI(
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
         while (true) {
             ui.displayMessage(description)
-            val options =if (
+            val options = if (
                 Session.currentUser?.userRole == UserRole.ADMIN
             ) mutableListOf(
                 "👑 1. Admin Management",
                 "📋 2. Mate Management",
                 "🚪 3. Logout"
-            )else mutableListOf(
+            ) else mutableListOf(
                 "📋 1. Mate Management",
                 "🚪 2. Logout"
             )
@@ -43,6 +43,7 @@ class MainMenuUI(
                 } else {
                     mateManagementUI.execute(ui, inputReader)
                 }
+
                 2 -> if (Session.currentUser?.userRole == UserRole.ADMIN) {
                     mateManagementUI.execute(ui, inputReader)
                 } else {
@@ -50,6 +51,7 @@ class MainMenuUI(
                     Session.currentUser = null
                     return
                 }
+
                 3 -> if (Session.currentUser?.userRole == UserRole.ADMIN) {
                     ui.displayMessage("🔙 Logging out...")
                     Session.currentUser = null
@@ -57,6 +59,7 @@ class MainMenuUI(
                 } else {
                     ui.displayMessage("❌ Invalid option.")
                 }
+
                 else -> ui.displayMessage("❌ Invalid option.")
             }
             ui.displayMessage("🔄 Press Enter to continue...")

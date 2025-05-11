@@ -7,7 +7,7 @@ interface AuthRepository {
 
     suspend fun insertUser(username: String, password: String, userRole: UserRole): User
     suspend fun loginUser(username: String, password: String): User
-    suspend fun getAllUsers():List<User>
+    suspend fun getAllUsers(): List<User>
     suspend fun deleteUser(username: String): Boolean
     suspend fun editUser(user: User)
     suspend fun getUserByUserName(username: String): User?

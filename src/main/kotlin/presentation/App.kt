@@ -3,7 +3,7 @@ package presentation
 import org.example.presentation.CLIMenu
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
-import presentation.io.InputReader
+import org.example.presentation.utils.io.InputReader
 
 
 class App(
