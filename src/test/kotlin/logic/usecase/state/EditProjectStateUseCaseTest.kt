@@ -7,6 +7,7 @@ import org.example.logic.usecase.state.EditProjectStateUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.UUID
 
 
 class EditProjectProjectStateUseCaseTest {
@@ -22,18 +23,19 @@ class EditProjectProjectStateUseCaseTest {
 
     @Test
     fun ` should throw exception when new state name is blank`() = runTest {
+        val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
         assertThrows<IllegalArgumentException> {
-            editProjectStateUseCase.execute(1, "")
+            editProjectStateUseCase.execute(projectId, "")
         }
     }
 
     @Test
     fun ` should edit state successfully`() = runTest {
-        val projectId = 1
+        val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
         val newStateName = "code review"
         coEvery { projectStateRepository.editProjectState(projectId, newStateName) } just Runs
 
-        editProjectStateUseCase.execute(1, "code review")
+        editProjectStateUseCase.execute(projectId, "code review")
 
         coVerify(exactly = 1) { editProjectStateUseCase.execute(projectId, newStateName) }
     }

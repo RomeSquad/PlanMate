@@ -9,6 +9,7 @@ import org.example.logic.usecase.project.DeleteProjectByIdUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.UUID
 import kotlin.test.assertEquals
 
 class DeleteProjectByIdUseCaseTest {
@@ -22,7 +23,7 @@ class DeleteProjectByIdUseCaseTest {
 
     @Test
     fun `deleteProjectById should call repository with correct id and return Unit on success`() = runTest {
-        val projectId = 123
+        val projectId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
         coEvery { projectRepository.deleteProject(projectId) } returns Unit
 
         val result = useCase.deleteProjectById(projectId)
@@ -33,7 +34,7 @@ class DeleteProjectByIdUseCaseTest {
 
     @Test
     fun `deleteProjectById should throw IllegalArgumentException when project does not exist`() = runTest {
-        val projectId = 456
+        val projectId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
         val exception = IllegalArgumentException("Project with ID $projectId not found")
         coEvery { projectRepository.deleteProject(projectId) } throws exception
 
@@ -46,7 +47,7 @@ class DeleteProjectByIdUseCaseTest {
 
     @Test
     fun `deleteProjectById should propagate unexpected exceptions from repository`() = runTest {
-        val projectId = 789
+        val projectId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
         val exception = RuntimeException("Database error")
         coEvery { projectRepository.deleteProject(projectId) } throws exception
 

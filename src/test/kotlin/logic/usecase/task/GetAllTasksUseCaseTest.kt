@@ -10,6 +10,7 @@ import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.GetAllTasksUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -24,24 +25,26 @@ class GetAllTasksUseCaseTest {
 
     @Test
     fun `getAllTasks should return list of tasks when repository returns tasks`() = runTest {
+        val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
+
         val tasks = listOf(
             Task(
-                id = "1",
+                taskId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f"),
                 title = "Task 1",
                 description = "Description 1",
-                state = ProjectState(projectId = 1, stateName = "TODO"),
-                projectId = 1,
-                createdBy = "user1",
+                state = ProjectState(projectId = projectId, stateName = "TODO"),
+                projectId = projectId,
+                createdBy = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f"),
                 createdAt = 1000L,
                 updatedAt = 1000L
             ),
             Task(
-                id = "2",
+                taskId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6s"),
                 title = "Task 2",
                 description = "Description 2",
-                state = ProjectState(projectId = 1, stateName = "DONE"),
-                projectId = 1,
-                createdBy = "user2",
+                state = ProjectState(projectId = projectId, stateName = "DONE"),
+                projectId = projectId,
+                createdBy = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e1a"),
                 createdAt = 2000L,
                 updatedAt = 2000L
             )

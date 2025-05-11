@@ -12,24 +12,28 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.UUID
 
 class GetAllProjectsUseCaseTest {
 
     private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
     private lateinit var projectRepository: ProjectRepository
 
+    private val projectId1 = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
+    private val projectId2 = UUID.fromString("123e4567-e89b-12d3-a456-426614174001")
+
     private val project1 = Project(
-        id = 1,
+        projectId = projectId1,
         name = "Project 1",
         description = "Description 1",
-        state = ProjectState(projectId = 1, stateName = "Active")
+        state = ProjectState(projectId = projectId1, stateName = "Active")
     )
 
     private val project2 = Project(
-        id = 2,
+        projectId = projectId2,
         name = "Project 2",
         description = "Description 2",
-        state = ProjectState(projectId = 2, stateName = "InProgress")
+        state = ProjectState(projectId = projectId2, stateName = "InProgress")
     )
 
     @BeforeEach

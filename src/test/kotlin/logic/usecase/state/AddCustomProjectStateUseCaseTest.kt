@@ -31,7 +31,7 @@ class AddCustomProjectProjectStateUseCaseTest {
             password = "1234",
             userRole = UserRole.ADMIN
         )
-        val projectId = 4
+        val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
         val stateName = "pending"
         val expectedState = ProjectState(projectId = projectId, stateName = stateName)
 
@@ -46,7 +46,7 @@ class AddCustomProjectProjectStateUseCaseTest {
     fun `should throw an exception when user role is mate`() = runTest {
         val currentUser = User(userId = UUID.randomUUID(), username = "Zinah", password = "1234", userRole = UserRole.MATE)
         val stateName = "pending"
-        val projectId = 1
+        val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
         assertFailsWith<IllegalAccessException> {
             addCustomProjectStateUseCase.execute(currentUser, stateName, projectId)
         }
@@ -56,7 +56,7 @@ class AddCustomProjectProjectStateUseCaseTest {
     fun ` should throw an exception when state name is blank`() = runTest {
         val currentUser = User(userId = UUID.randomUUID(), username = "Zinah", password = "1234", userRole = UserRole.ADMIN)
         assertThrows<IllegalArgumentException> {
-            addCustomProjectStateUseCase.execute(currentUser, "", 1)
+            addCustomProjectStateUseCase.execute(currentUser, "", UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f"))
         }
     }
 

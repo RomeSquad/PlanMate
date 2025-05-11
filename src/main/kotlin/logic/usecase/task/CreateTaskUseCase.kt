@@ -15,10 +15,6 @@ class CreateTaskUseCase(
             throw IllegalArgumentException("Description must not be empty")
         }
 
-        if (task.projectId == 0) {
-            throw IllegalArgumentException("Project ID cannot be zero")
-        }
-
         taskRepository.createTask(task)
     }
 }
