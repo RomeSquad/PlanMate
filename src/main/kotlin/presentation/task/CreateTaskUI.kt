@@ -7,6 +7,7 @@ import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
+import java.util.UUID
 
 
 class CreateTaskUI(
@@ -23,10 +24,7 @@ class CreateTaskUI(
         try {
             ui.displayMessage(description)
             ui.displayMessage("🔹 Enter Task ID:")
-            val id = inputReader.readString("ID: ").trim()
-            if (id.isBlank()) {
-                throw IllegalArgumentException("Task ID must not be blank")
-            }
+            val id = UUID.fromString(inputReader.readString("ID: ").trim())
 
             ui.displayMessage("🔹 Enter Task Title:")
             val title = inputReader.readString("Title: ").trim()
@@ -36,21 +34,17 @@ class CreateTaskUI(
 
             ui.displayMessage("🔹 Enter Project ID:")
             val projectIdInput = inputReader.readString("Project ID: ").trim()
-            val projectId =
-                projectIdInput.toIntOrNull() ?: throw IllegalArgumentException("Project ID must be a number")
+            val projectId = UUID.fromString(projectIdInput)
 
             ui.displayMessage("🔹 Enter Task State Name (e.g., TODO, IN_PROGRESS, DONE, leave empty for TODO):")
             val stateName = inputReader.readString("State Name: ").trim().takeIf { it.isNotBlank() } ?: "TODO"
 
             ui.displayMessage("🔹 Enter Created By (user ID or name):")
-            val createdBy = inputReader.readString("Created By: ").trim()
-            if (createdBy.isBlank()) {
-                throw IllegalArgumentException("Created By must not be blank")
-            }
+            val createdBy = UUID.fromString(inputReader.readString("Created By: ").trim())
 
             val currentTime = System.currentTimeMillis()
             val task = Task(
-                id = id,
+                taskId = id,
                 title = title,
                 description = description,
                 state = ProjectState(projectId = projectId, stateName = stateName),

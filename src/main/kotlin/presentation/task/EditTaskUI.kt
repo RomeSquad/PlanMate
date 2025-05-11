@@ -5,6 +5,7 @@ import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
+import java.util.UUID
 
 class EditTaskUI(
     private val editTaskUseCase: EditTaskUseCase,
@@ -19,7 +20,7 @@ class EditTaskUI(
         try {
             ui.displayMessage(description)
             ui.displayMessage("🔹 Enter Task ID:")
-            val taskId = inputReader.readString("Task ID: ").trim()
+            val taskId = UUID.fromString(inputReader.readString("Task ID: ").trim())
 
             ui.displayMessage("🔹 Enter New Task Title:")
             val title = inputReader.readString("Title: ").trim()

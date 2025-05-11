@@ -25,9 +25,7 @@ class GetTasksByProjectIdUI(
             ui.displayMessage(description)
             ui.displayMessage("🔹 Enter Project ID:")
             val projectIdInput = inputReader.readString("Project ID: ").trim()
-            val projectId =
-                projectIdInput.toIntOrNull() ?: throw IllegalArgumentException("Project ID must be a number")
-
+            val projectId = UUID.fromString(projectIdInput)
             val tasks = getTasksByProjectIdUseCase.getTasksByProjectId(projectId)
             if (tasks.isEmpty()) {
                 ui.displayMessage("❌ No tasks found for project ID '$projectId'.")
@@ -37,7 +35,7 @@ class GetTasksByProjectIdUI(
                     ui.displayMessage(
                         """
                         Task ${index + 1}:
-                        ID: ${task.id}
+                        ID: ${task.taskId}
                         Title: ${task.title}
                         Description: ${task.description}
                         State: ${task.state.stateName}

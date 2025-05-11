@@ -5,6 +5,7 @@ import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
+import java.util.UUID
 
 
 class AddStateToProjectUI(
@@ -30,8 +31,7 @@ class AddStateToProjectUI(
             if (projectIdInput.isBlank()) {
                 throw IllegalArgumentException("Project ID must not be blank")
             }
-            val projectId = projectIdInput.toIntOrNull()
-                ?: throw IllegalArgumentException("Project ID must be a valid number")
+            val projectId = UUID.fromString(projectIdInput)
 
             ui.displayMessage("⚠️ Add state '$stateName' to project '$projectId'? [y/n]")
             val confirmation = inputReader.readString("Confirm: ").trim().lowercase()

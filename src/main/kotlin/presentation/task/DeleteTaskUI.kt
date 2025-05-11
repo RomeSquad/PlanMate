@@ -5,6 +5,7 @@ import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
+import java.util.UUID
 
 class DeleteTaskUI(
     private val deleteTaskUseCase: DeleteTaskUseCase,
@@ -20,11 +21,9 @@ class DeleteTaskUI(
             ui.displayMessage(description)
             ui.displayMessage("🔹 Enter Project ID:")
             val projectIdInput = inputReader.readString("Project ID: ").trim()
-            val projectId =
-                projectIdInput.toIntOrNull() ?: throw IllegalArgumentException("Project ID must be a valid number")
-
+            val projectId = UUID.fromString(projectIdInput)
             ui.displayMessage("🔹 Enter Task ID:")
-            val taskId = inputReader.readString("Task ID: ").trim()
+            val taskId = UUID.fromString(inputReader.readString("Task ID: ").trim())
 
             deleteTaskUseCase.deleteTask(projectId, taskId)
 

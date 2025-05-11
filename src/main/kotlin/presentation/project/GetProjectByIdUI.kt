@@ -6,6 +6,7 @@ import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
+import java.util.UUID
 
 class GetProjectByIdUI(
     private val getProjectByIdUseCase: GetProjectByIdUseCase
@@ -35,14 +36,13 @@ class GetProjectByIdUI(
         }
     }
 
-    private fun collectProjectIdInput(ui: UiDisplayer, inputReader: InputReader): Int {
+    private fun collectProjectIdInput(ui: UiDisplayer, inputReader: InputReader): UUID {
         ui.displayMessage("🔹 Enter Project ID:")
         val idInput = inputReader.readString("Project ID: ").trim()
         if (idInput.isBlank()) {
             throw IllegalArgumentException("Project ID must not be blank")
         }
-        return idInput.toIntOrNull()
-            ?: throw IllegalArgumentException("Project ID must be a valid number")
+        return UUID.fromString(idInput)
     }
 
     private fun displayProjectDetails(ui: UiDisplayer, project: Project) {
@@ -50,7 +50,7 @@ class GetProjectByIdUI(
         ui.displayMessage(
             """
             ╔══════════════════════════╗
-            ║ Project ID: ${project.id} ║
+            ║ Project ID: ${project.projectId} ║
             ║ Project Name: ${project.name} ║
             ║ Project Description: ${project.description} ║
             ║ Project State: ${project.state.stateName} ║

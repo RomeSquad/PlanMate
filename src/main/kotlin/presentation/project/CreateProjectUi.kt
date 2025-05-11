@@ -7,6 +7,7 @@ import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
 import org.example.presentation.utils.io.InputReader
+import java.util.UUID
 
 
 class CreateProjectUi(
@@ -44,9 +45,9 @@ class CreateProjectUi(
         ui.displayMessage("🔹 Enter project name:")
         val projectName = inputReader.readString("Project Name: ").trim()
 
-            ui.displayMessage("🔹 Enter user ID (numeric):")
-            val userId = inputReader.readString("User ID: ").trim().toIntOrNull()
-                ?: throw IllegalArgumentException("User ID must be a valid number")
+        ui.displayMessage("🔹 Enter user ID (numeric):")
+
+        val userId = inputReader.readString("User ID: ").trim()
 
         ui.displayMessage("🔹 Enter username:")
         val userName = inputReader.readString("Username: ").trim()
@@ -59,7 +60,7 @@ class CreateProjectUi(
 
         return CreateProjectRequest(
             name = projectName,
-            userId = userId,
+            userId = UUID.fromString(userId),
             userName = userName,
             description = description
         )

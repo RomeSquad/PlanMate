@@ -7,6 +7,7 @@ import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
+import java.util.UUID
 
 
 class EditProjectUi(
@@ -25,7 +26,7 @@ class EditProjectUi(
             val updatedProject = collectProjectInput(ui, inputReader)
 
             editProjectUseCase.execute(updatedProject)
-            ui.displayMessage("✅ Project '${updatedProject.id}' updated successfully!")
+            ui.displayMessage("✅ Project '${updatedProject.projectId}' updated successfully!")
 
         } catch (e: IllegalArgumentException) {
             ui.displayMessage("❌ Error: ${e.message}")
@@ -40,8 +41,7 @@ class EditProjectUi(
     private fun collectProjectInput(ui: UiDisplayer, inputReader: InputReader): Project {
         ui.displayMessage("🔹 Enter project ID to edit:")
         val idInput = inputReader.readString("Project ID: ").trim()
-        val id: Int = idInput.toIntOrNull()
-            ?: throw IllegalArgumentException("Project ID must be a valid number")
+        val id = UUID.fromString(idInput)
 
         ui.displayMessage("🔹 Enter new project name:")
         val name = inputReader.readString("Project Name: ").trim()
@@ -53,7 +53,7 @@ class EditProjectUi(
         val description = inputReader.readString("Description: ").trim()
 
         return Project(
-            id = id,
+            projectId = id,
             name = name,
             description = description,
             state = ProjectState(projectId = id, stateName = "In progress")
