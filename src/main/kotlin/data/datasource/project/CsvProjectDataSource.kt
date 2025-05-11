@@ -1,16 +1,16 @@
 package org.example.data.datasource.project
 
-import org.example.data.utils.CsvFileReader
-import org.example.data.utils.CsvFileWriter
 import org.example.data.repository.mapper.fromCsvRowToProject
 import org.example.data.repository.mapper.toCsvRow
+import org.example.data.utils.CsvFileReader
+import org.example.data.utils.CsvFileWriter
 import org.example.logic.entity.Project
 import java.io.File
 
 class CsvProjectDataSource(
     private val csvFileReader: CsvFileReader,
     private val csvFileWriter: CsvFileWriter,
-    private val projectsFile : File
+    private val projectsFile: File
 ) : ProjectDataSource {
 
     override suspend fun getAllProjects(): List<Project> {

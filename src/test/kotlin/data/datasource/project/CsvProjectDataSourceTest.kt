@@ -1,71 +1,95 @@
 package data.datasource.project
 
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
+
+import ProjectStateRepositoryImpl
+import data.datasource.projectState.ProjectStateDataSource
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
-import org.example.data.datasource.project.CsvProjectDataSource
-import org.example.data.utils.CsvFileReader
-import org.example.data.utils.CsvFileWriter
-import org.example.logic.entity.Project
+import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.ProjectState
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.example.logic.repository.ProjectStateRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.File
-import java.util.Locale
+import kotlin.test.assertEquals
 
-class CsvProjectDataSourceTest{
-    private lateinit var projectDataSource: CsvProjectDataSource
-    private lateinit var csvFileReader: CsvFileReader
-    private lateinit var csvFileWriter: CsvFileWriter
-    private val projectsFile = File("project3.csv")
-    private val dateFormat = java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
+class ProjectStateRepositoryImplTest {
+
+    private lateinit var stateProjectDataSource: ProjectStateDataSource
+    private lateinit var stateRepository: ProjectStateRepository
 
     @BeforeEach
-    fun setup(){
-        csvFileReader = mockk()
-        csvFileWriter = mockk()
-        projectDataSource = CsvProjectDataSource(csvFileReader, csvFileWriter , projectsFile)
+    fun setup() {
+        stateProjectDataSource = mockk(relaxed = true)
+        stateRepository = ProjectStateRepositoryImpl(stateProjectDataSource)
     }
 
     @Test
-    fun `getAllProjects should return list of projects from CSV data`() {
-        val csvRows = listOf(
-            listOf("1", "PlanMate", "PlanMate Description","[[5, , 4, , Thu May 01 00:25:13 EEST 2025]]","[12, in progress]"),
-            listOf("2", "PlanMate", "PlanMate Description","[[6, , 7, , Thu May 01 00:25:13 EEST 2025]]","[12, in progress]"),
+    fun `getAllStates should return list of states`() = runTest {
+        // Given
+        val mockStates = listOf(
+            ProjectState(projectId = 1, stateName = "Cairo"),
+            ProjectState(projectId = 2, stateName = "Alex")
         )
-        val expectedProjects = listOf(
-            Project(name = "PlanMate", description = "PlanMate Description", state = ProjectState(12, "in progress"), id = 1) ,
-            Project(name = "PlanMate", description = "PlanMate Description", state = ProjectState(12, "in progress"), id = 2) ,
-        )
-        every { csvFileReader.readCsv(projectsFile) } returns csvRows
+        coEvery { stateProjectDataSource.getAllProjectStates() } returns mockStates
 
+        // When
+        val result = stateRepository.getAllProjectStates()
 
-        val result = projectDataSource.getAllProjects()
-
-        assertEquals(expectedProjects.map { it.id }, result.getOrNull()?.map { it.id })
-        verify { csvFileReader.readCsv(projectsFile) }
+        // Then
+        assertEquals(mockStates, result)
+        coVerify { stateProjectDataSource.getAllProjectStates() }
     }
 
     @Test
-    fun `saveAllProjects should write projects to CSV file`() {
-        val csvRows = listOf(
-            listOf("1", "PlanMate", "PlanMate Description","[[5, , 4, , Thu May 01 00:25:13 EEST 2025]]","[12, in progress]"),
-            listOf("2", "PlanMate", "PlanMate Description","[[6, , 7, , Thu May 01 00:25:13 EEST 2025]]","[12, in progress]"),
-        )
-        val expectedProjects = listOf(
-            Project(name = "PlanMate", description = "PlanMate Description", state = ProjectState(12, "in progress"), id = 1) ,
-            Project(name = "PlanMate", description = "PlanMate Description", state = ProjectState(12, "in progress"), id = 2) ,
-        )
-        every { csvFileWriter.writeCsv(projectsFile, any()) } just Runs
+    fun `addState should call dataSource addState`() = runTest {
+        // Given
+        val state = ProjectState(projectId = 5, stateName = "inProgress")
 
-        val result = projectDataSource.saveAllProjects(expectedProjects)
+        // When
+        stateRepository.addProjectState(state)
 
-        assertTrue(result.isSuccess)
-
+        // Then
+        coVerify { stateProjectDataSource.addProjectState(state) }
     }
 
+    @Test
+    fun `deleteState should call dataSource deleteState`() = runTest {
+        // Given
+        val id = 2
+
+        // When
+        stateRepository.deleteProjectState(id)
+
+        // Then
+        coVerify { stateProjectDataSource.deleteProjectState(id) }
+    }
+
+    @Test
+    fun `editState should call dataSource editState`() = runTest {
+        // Given
+        val projectId = 1
+        val newStateName = "UpdatedState"
+
+        // When
+        stateRepository.editProjectState(projectId, newStateName)
+
+        // Then
+        coVerify { stateProjectDataSource.editProjectState(projectId, newStateName) }
+    }
+
+    @Test
+    fun `getStateById should return state from dataSource`() = runTest {
+        // Given
+        val projectId = 1
+        val mockState = ProjectState(projectId = projectId, stateName = "Cairo")
+        coEvery { stateProjectDataSource.getStateById(projectId) } returns mockState
+
+        // When
+        val result = stateRepository.getProjectStateByTaskId(projectId)
+
+        // Then
+        assertEquals(mockState, result)
+        coVerify { stateProjectDataSource.getStateById(projectId) }
+    }
 }

@@ -15,7 +15,7 @@ fun Project.format(): String {
     )
 }
 
-fun changeHistoryFormat(project: Project , changeHistory : List<ChangeHistory>): String {
+fun changeHistoryFormat(project: Project, changeHistory: List<ChangeHistory>): String {
     val cliFormatter = CliFormatter()
     return String.format(
         "%-10s | %-20s | %-20s \n%-30s \n",

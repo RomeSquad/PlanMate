@@ -7,6 +7,7 @@ import org.example.logic.entity.CreateProjectResponse
 import org.example.logic.entity.Project
 import org.example.logic.entity.toProject
 import org.example.logic.repository.ProjectRepository
+import java.util.*
 
 class ProjectRepositoryImpl(
     private val projectDataSource: ProjectDataSource
@@ -47,7 +48,7 @@ class ProjectRepositoryImpl(
         projectDataSource.saveAllProjects(projects)
     }
 
-    override suspend fun deleteProject(id: Int): Unit {
+    override suspend fun deleteProject(id: Int) {
         return projects.removeIf { it.id == id }.let {
             if (!it) {
                 throw (NoSuchElementException("Project with id $id not found"))

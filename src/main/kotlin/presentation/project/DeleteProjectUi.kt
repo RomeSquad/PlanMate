@@ -1,14 +1,13 @@
 package org.example.presentation.project
 
 import org.example.logic.usecase.project.DeleteProjectByIdUseCase
+import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import presentation.io.InputReader
-
 
 class DeleteProjectUi(
-    private val deleteProjectUseCase: DeleteProjectByIdUseCase,
+    private val deleteProjectUseCase: DeleteProjectByIdUseCase
 ) : MenuAction {
     override val description: String = """
         ╔════════════════════════════╗
@@ -16,6 +15,7 @@ class DeleteProjectUi(
         ╚════════════════════════════╝
         """.trimIndent()
     override val menu: Menu = Menu()
+
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
         try {
             ui.displayMessage(description)
@@ -31,23 +31,21 @@ class DeleteProjectUi(
             val confirmation = inputReader.readString("Confirm: ").trim().lowercase()
             if (confirmation != "y") {
                 ui.displayMessage("🛑 Project deletion canceled.")
+                ui.displayMessage("🔄 Press Enter to continue...")
+                inputReader.readString("")
                 return
             }
 
-            val result = deleteProjectUseCase.deleteProjectById(projectId)
-            result.fold(
-                onSuccess = {
-                    ui.displayMessage("✅ Project '$projectId' deleted successfully!")
-                },
-                onFailure = { error ->
-                    ui.displayMessage("❌ Failed to delete project '$projectId': ${error.message}")
-                }
-            )
+            deleteProjectUseCase.deleteProjectById(projectId)
+            ui.displayMessage("✅ Project '$projectId' deleted successfully!")
+            ui.displayMessage("🔄 Press Enter to continue...")
+            inputReader.readString("")
         } catch (e: IllegalArgumentException) {
             ui.displayMessage("❌ Error: ${e.message}")
+            ui.displayMessage("🔄 Press Enter to continue...")
+            inputReader.readString("")
         } catch (e: Exception) {
             ui.displayMessage("❌ An unexpected error occurred: ${e.message ?: "Failed to delete project"}")
-        } finally {
             ui.displayMessage("🔄 Press Enter to continue...")
             inputReader.readString("")
         }
