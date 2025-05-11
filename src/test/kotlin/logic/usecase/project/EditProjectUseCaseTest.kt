@@ -1,10 +1,9 @@
-package logic.usecase.task
+package logic.usecase.project
 
 
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertTrue
-import logic.usecase.project.EditProjectUseCase
 import org.example.logic.entity.Project
 import org.example.logic.repository.ProjectRepository
 import org.junit.jupiter.api.BeforeEach
