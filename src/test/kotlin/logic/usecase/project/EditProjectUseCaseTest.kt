@@ -11,17 +11,22 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.UUID
 
 
 class EditProjectUseCaseTest {
 
     private lateinit var editProjectUseCase: EditProjectUseCase
     private lateinit var projectRepository: ProjectRepository
+
+    private val projectId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
+    private val invalidProjectId = UUID.fromString("999e4567-e89b-12d3-a456-426614174000")
+
     private val updatedProject = Project(
-        id = 1,
+        projectId = projectId,
         name = "Updated Project",
         description = "Updated Description",
-        state = ProjectState(projectId = 1, stateName = "InProgress")
+        state = ProjectState(projectId = projectId, stateName = "InProgress")
     )
 
     @BeforeEach
@@ -46,7 +51,7 @@ class EditProjectUseCaseTest {
     @Test
     fun `execute throws exception when project ID is invalid`() = runTest {
         // Given
-        val invalidProject = updatedProject.copy(id = 99)
+        val invalidProject = updatedProject.copy(projectId = invalidProjectId)
         val exception = Exception("Project with id 99 not found")
         coEvery { projectRepository.editProject(invalidProject) } throws exception
 

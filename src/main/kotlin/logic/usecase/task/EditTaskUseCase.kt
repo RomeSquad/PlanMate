@@ -1,20 +1,17 @@
 package org.example.logic.usecase.task
 
 import org.example.logic.repository.TaskRepository
+import java.util.UUID
 
 class EditTaskUseCase(
     private val taskRepository: TaskRepository
 ) {
     suspend fun editTask(
-        taskId: String,
+        taskId: UUID,
         title: String,
         description: String,
         updatedAt: Long
     ) {
-        if (taskId.isBlank()) {
-            throw IllegalArgumentException("taskId must not be blank")
-        }
-
         if (title.isBlank()) {
             throw IllegalArgumentException("title must not be blank")
         }

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.UUID
 
 class GetTasksByProjectIdUseCaseTest {
 
@@ -27,10 +28,13 @@ class GetTasksByProjectIdUseCaseTest {
 
     @Test
     fun `should return tasks when projectId exists`() = runTest {
-        val projectId = 1
+        val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
+        val taskId1 = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
+        val taskId2 = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
+
         val tasks = listOf(
-            projectId.createTask("1", "Task 1", "Description 1"),
-            projectId.createTask("2", "Task 2", "Description 2")
+            projectId.createTask(taskId1, "Task 1", "Description 1"),
+            projectId.createTask(taskId2, "Task 2", "Description 2")
         )
         coEvery { taskRepository.getTasksByProject(projectId) } returns tasks
 
@@ -42,7 +46,7 @@ class GetTasksByProjectIdUseCaseTest {
 
     @Test
     fun `should throw IllegalArgumentException when projectId is invalid`() = runTest {
-        val projectId = 0
+        val projectId = UUID.fromString("00000000-0000-0000-0000-000000000000")
 
         val exception = assertThrows<IllegalArgumentException> {
             getTasksByProjectIdUseCase.getTasksByProjectId(projectId)
@@ -54,7 +58,7 @@ class GetTasksByProjectIdUseCaseTest {
 
     @Test
     fun `should return empty list when no tasks found for projectId`() = runTest {
-        val projectId = 1
+        val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
         val emptyList = emptyList<Task>()
         coEvery { taskRepository.getTasksByProject(projectId) } returns emptyList
 
@@ -64,14 +68,14 @@ class GetTasksByProjectIdUseCaseTest {
         coVerify { taskRepository.getTasksByProject(projectId) }
     }
 
-    private fun Int.createTask(id: String, title: String, description: String): Task {
+    private fun UUID.createTask(id: UUID, title: String, description: String): Task {
         return Task(
-            id = id,
+            taskId = id,
             title = title,
             description = description,
-            state = ProjectState(1, "To-Do"),
+            state = ProjectState(this, "To-Do"),
             projectId = this,
-            createdBy = "Admin",
+            createdBy = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f"),
             createdAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis()
         )

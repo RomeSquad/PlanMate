@@ -1,14 +1,14 @@
 package org.example.logic.entity
 
-import org.bson.codecs.pojo.annotations.BsonId
+import java.util.UUID
 
 data class Task(
-    @BsonId val id: String,
+    val taskId: UUID,
     var title: String,
     var description: String,
     var state: ProjectState,
-    val projectId: Int,
-    val createdBy: String,
+    val projectId: UUID,
+    val createdBy: UUID,
     val createdAt: Long,
     var updatedAt: Long
 )

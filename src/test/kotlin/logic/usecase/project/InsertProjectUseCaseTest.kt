@@ -11,29 +11,32 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.UUID
 
 class InsertProjectUseCaseTest {
 
     private lateinit var insertProjectUseCase: InsertProjectUseCase
     private lateinit var projectRepository: ProjectRepository
 
+    private val userId = UUID.randomUUID()
+
     private val validRequest = CreateProjectRequest(
         name = "Test Project",
-        userId = 1,
+        userId = userId,
         userName = "Mohamed",
         description = "Test Description"
     )
 
     private val emptyNameRequest = CreateProjectRequest(
         name = "",
-        userId = 1,
+        userId = userId,
         userName = "Mohamed",
         description = "Test Description"
     )
 
     private val whitespaceNameRequest = CreateProjectRequest(
         name = "   ",
-        userId = 1,
+        userId = userId,
         userName = "Mohamed",
         description = "Test Description"
     )
@@ -47,7 +50,7 @@ class InsertProjectUseCaseTest {
     @Test
     fun `insert project with valid request returns response`() = runTest {
         // Given
-        val response = CreateProjectResponse(id = 1)
+        val response = CreateProjectResponse(id = userId)
         coEvery { projectRepository.insertProject(validRequest) } returns response
 
         // When
@@ -55,7 +58,7 @@ class InsertProjectUseCaseTest {
 
         // Then
         assertEquals(response, result)
-        assertEquals(1, result.id)
+        assertEquals(userId, result.id)
     }
 
     @Test

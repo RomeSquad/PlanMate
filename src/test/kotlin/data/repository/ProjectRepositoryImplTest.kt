@@ -12,17 +12,22 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.UUID
 
 class ProjectRepositoryImplTest {
 
     private lateinit var repository: ProjectRepositoryImpl
     private lateinit var fakeDataSource: ProjectDataSource
 
+    private val projectId1 = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
+    private val projectId2 = UUID.fromString("123e4567-e89b-12d3-a456-426614174001")
+    private val notExistProjectId = UUID.fromString("123e4567-e89b-12d3-a456-426614174002")
+
     private val project = Project(
-        id = 1,
+        projectId = projectId1,
         name = "test",
         description = "desc",
-        state = ProjectState(projectId = 1, stateName = "Active"),
+        state = ProjectState(projectId = projectId1, stateName = "Active"),
     )
 
     @BeforeEach
@@ -40,13 +45,10 @@ class ProjectRepositoryImplTest {
         repository = ProjectRepositoryImpl(fakeDataSource)
 
         // When
-        val result = repository.getProjectById(1)
+        val result = repository.getProjectById(projectId1)
 
         // Then
         assertEquals(project, result)
-        assertEquals(1, result.id)
-        assertEquals("test", result.name)
-        assertEquals("Active", result.state.stateName)
     }
 
     @Test
@@ -57,15 +59,15 @@ class ProjectRepositoryImplTest {
 
         // When/Then
         val exception = assertThrows<Exception> {
-            repository.getProjectById(99)
+            repository.getProjectById(notExistProjectId)
         }
-        assertEquals("Project with id 99 not found", exception.message)
+        assertEquals("Project with id $notExistProjectId not found", exception.message)
     }
 
     @Test
     fun `get all projects returns list from data source`() = runTest {
         // Given
-        val project2 = project.copy(id = 2, name = "test2", state = ProjectState(projectId = 2, stateName = "Active"))
+        val project2 = project.copy(projectId = projectId2, name = "test2", state = ProjectState(projectId = projectId2, stateName = "Active"))
         val projects = listOf(project, project2)
         coEvery { fakeDataSource.getAllProjects() } returns projects
         repository = ProjectRepositoryImpl(fakeDataSource)
@@ -98,14 +100,14 @@ class ProjectRepositoryImplTest {
         val updatedProject = project.copy(
             name = "updated",
             description = "new desc",
-            state = ProjectState(projectId = 1, stateName = "InProgress")
+            state = ProjectState(projectId = projectId1, stateName = "InProgress")
         )
 
         // When
         repository.editProject(updatedProject)
 
         // Then
-        val result = repository.getProjectById(1)
+        val result = repository.getProjectById(projectId1)
         assertEquals(updatedProject, result)
         assertEquals("InProgress", result.state.stateName)
         coVerify { fakeDataSource.saveAllProjects(listOf(updatedProject)) }
@@ -116,7 +118,7 @@ class ProjectRepositoryImplTest {
         // Given
         coEvery { fakeDataSource.getAllProjects() } returns emptyList()
         repository = ProjectRepositoryImpl(fakeDataSource)
-        val invalidProject = project.copy(id = 99)
+        val invalidProject = project.copy(projectId = notExistProjectId)
 
         // When/Then
         val exception = assertThrows<Exception> {
@@ -149,8 +151,8 @@ class ProjectRepositoryImplTest {
 
         // When/Then
         val exception = assertThrows<NoSuchElementException> {
-            repository.deleteProject(999)
+            repository.deleteProject(notExistProjectId)
         }
-        assertEquals("Project with id 999 not found", exception.message)
+        assertEquals("Project with id $notExistProjectId not found", exception.message)
     }
 }

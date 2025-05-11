@@ -5,6 +5,7 @@ import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
+import java.util.UUID
 
 class DeleteStateToProjectUI(
     private val deleteProjectStatesUseCase: DeleteProjectStatesUseCase,
@@ -23,8 +24,7 @@ class DeleteStateToProjectUI(
             if (stateIdInput.isBlank()) {
                 throw IllegalArgumentException("State ID must not be blank")
             }
-            val stateId = stateIdInput.toIntOrNull()
-                ?: throw IllegalArgumentException("State ID must be a valid number")
+            val stateId = UUID.fromString(stateIdInput)
 
             ui.displayMessage("⚠️ Delete state with ID '$stateId'? [y/n]")
             val confirmation = inputReader.readString("Confirm: ").trim().lowercase()

@@ -6,6 +6,7 @@ import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
+import java.util.UUID
 
 class EditProjectStateUI(
     private val editProjectStateUseCase: EditProjectStateUseCase,
@@ -39,11 +40,11 @@ class EditProjectStateUI(
         }
     }
 
-    private fun promptForStateId(ui: UiDisplayer, inputReader: InputReader): Int? {
+    private fun promptForStateId(ui: UiDisplayer, inputReader: InputReader): UUID? {
         ui.displayMessage("🔹 Enter State ID:")
         val stateIdInput = inputReader.readString("State ID: ").trim()
         return try {
-            stateIdInput.toInt()
+            UUID.fromString(stateIdInput)
         } catch (e: NumberFormatException) {
             ui.displayMessage("❌ Invalid State ID. Please enter a valid number ${e.message}.")
             null
@@ -62,7 +63,7 @@ class EditProjectStateUI(
     private fun confirmStateChange(
         ui: UiDisplayer,
         inputReader: InputReader,
-        stateId: Int,
+        stateId: UUID,
         newStateName: String
     ): Boolean {
         ui.displayMessage("⚠️ Change state '$stateId' to '$newStateName'? [y/n]")

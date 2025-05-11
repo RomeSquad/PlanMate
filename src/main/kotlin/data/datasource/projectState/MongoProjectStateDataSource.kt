@@ -6,6 +6,7 @@ import data.datasource.projectState.ProjectStateDataSource
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import org.example.logic.entity.ProjectState
+import java.util.UUID
 
 class MongoProjectStateDataSource(
     private val mongo: MongoCollection<ProjectState>
@@ -19,7 +20,7 @@ class MongoProjectStateDataSource(
         mongo.insertOne(state)
     }
 
-    override suspend fun editProjectState(projectId: Int, newStateName: String) {
+    override suspend fun editProjectState(projectId: UUID, newStateName: String) {
         val projectState = mongo.find(Filters.eq("_id", projectId)).firstOrNull()
         if (projectState != null) {
             val updatedProjectState = projectState.copy(stateName = newStateName)
@@ -27,11 +28,11 @@ class MongoProjectStateDataSource(
         }
     }
 
-    override suspend fun deleteProjectState(projectId: Int) {
+    override suspend fun deleteProjectState(projectId: UUID) {
         mongo.deleteOne(Filters.eq("_id", projectId))
     }
 
-    override suspend fun getStateById(projectId: Int): ProjectState {
+    override suspend fun getStateById(projectId: UUID): ProjectState {
         return mongo.find(Filters.eq("_id", projectId)).firstOrNull()
             ?: throw IllegalArgumentException("ProjectState with id $projectId not found")
     }

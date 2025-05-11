@@ -9,6 +9,7 @@ import org.example.logic.usecase.state.GetAllProjectStatesUseCase
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.UUID
 
 class GetAllProjectStatesUseCaseTest {
     private lateinit var projectStateRepository: ProjectStateRepository
@@ -22,9 +23,11 @@ class GetAllProjectStatesUseCaseTest {
 
     @Test
     fun `should return all states of the project from repository`() = runTest {
+        val projectId1 = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
+        val projectId2 = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
         val allStates = listOf(
-            ProjectState(projectId = 1, stateName = "todo"),
-            ProjectState(projectId = 2, stateName = "pending")
+            ProjectState(projectId = projectId1, stateName = "todo"),
+            ProjectState(projectId = projectId2, stateName = "pending")
         )
         coEvery { projectStateRepository.getAllProjectStates() } returns allStates
 

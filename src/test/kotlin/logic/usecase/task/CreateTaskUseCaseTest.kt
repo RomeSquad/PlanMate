@@ -6,6 +6,7 @@ import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.CreateTaskUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
+import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -22,7 +23,8 @@ class CreateTaskUseCaseTest {
 
     @Test
     fun `should return success when valid all attributes`() = runTest {
-        val task = createTask(title = "title", description = "description", projectId = 1)
+        val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
+        val task = createTask(title = "title", description = "description", projectId = projectId)
         coEvery { taskRepository.createTask(task) } just Runs
 
         createTaskUseCase.createTask(task)
@@ -70,7 +72,7 @@ class CreateTaskUseCaseTest {
         val task = createTask(
             title = "title",
             description = "description",
-            projectId = 0
+            projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
         )
         val expectedException = "Project ID cannot be zero"
 

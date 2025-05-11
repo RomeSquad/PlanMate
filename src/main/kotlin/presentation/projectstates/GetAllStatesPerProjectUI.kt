@@ -5,6 +5,7 @@ import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
+import java.util.UUID
 
 class GetAllStatesPerProjectUI(
     private val getAllProjectStatesUseCase: GetAllProjectStatesUseCase,
@@ -25,7 +26,7 @@ class GetAllStatesPerProjectUI(
 
             val allStates = getAllProjectStatesUseCase.execute()
             val projectStates = allStates.filter {
-                it.projectId == projectId.toInt()
+                it.projectId == UUID.fromString(projectId)
             }
 
             if (projectStates.isEmpty()) {
