@@ -4,7 +4,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.example.logic.TaskNotFoundException
+import org.example.logic.exception.TaskNotFoundException
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.GetTaskByIdUseCase
 import org.junit.jupiter.api.Assertions.assertEquals

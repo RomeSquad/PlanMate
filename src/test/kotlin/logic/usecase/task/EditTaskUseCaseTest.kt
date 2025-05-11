@@ -2,7 +2,7 @@ package logic.usecase.task
 
 import io.mockk.*
 import kotlinx.coroutines.test.runTest
-import org.example.logic.TaskNotFoundException
+import org.example.logic.exception.TaskNotFoundException
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.EditTaskUseCase
 import org.junit.jupiter.api.BeforeEach

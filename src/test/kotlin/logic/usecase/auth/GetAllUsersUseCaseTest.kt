@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.UUID
 
 class GetAllUsersUseCaseTest {
     private lateinit var getAllUsersUseCase: GetAllUsersUseCase
@@ -28,13 +29,13 @@ class GetAllUsersUseCaseTest {
         // Given
         val users = listOf(
             User(
-                userId = 1,
+                userId = UUID.randomUUID(),
                 username = "amr",
                 password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password"
                 userRole = UserRole.MATE
             ),
             User(
-                userId = 2,
+                userId = UUID.randomUUID(),
                 username = "nasser",
                 password = "e99a18c428cb38d5f260853678922e03", // MD5 hash of "abc123"
                 userRole = UserRole.ADMIN
