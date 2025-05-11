@@ -1,6 +1,8 @@
 package org.example.di
 
 import logic.usecase.project.EditProjectUseCase
+import logic.usecase.validator.UserCredentialsValidator
+import logic.usecase.validator.UserCredentialsValidatorImpl
 import org.example.logic.usecase.auth.*
 import org.example.logic.usecase.history.AddChangeHistoryUseCase
 import org.example.logic.usecase.history.ShowProjectHistoryUseCase
@@ -22,7 +24,8 @@ val logicModule = module {
     //endregion
 
     //region User
-    single { InsertUserUseCase(get()) }
+    single<UserCredentialsValidator> { UserCredentialsValidatorImpl() }
+    single { InsertUserUseCase(get(),get()) }
     single { LoginUseCase(get()) }
     single { GetAllUsersUseCase(get()) }
     single { DeleteUserUseCase(get()) }

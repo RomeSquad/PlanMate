@@ -1,6 +1,6 @@
 package org.example.presentation.auithentication
 
-import org.example.logic.InvalidCredentialsException
+import org.example.logic.exception.InvalidCredentialsException
 import org.example.logic.usecase.auth.LoginUseCase
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
