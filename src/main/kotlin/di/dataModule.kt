@@ -1,17 +1,17 @@
 package org.example.di
 
-import CsvProjectStateDataSource
 import ProjectStateRepositoryImpl
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import data.datasource.projectState.ProjectStateDataSource
 import org.example.data.datasource.authentication.AuthDataSource
 import org.example.data.datasource.authentication.MongoAuthDataSource
 import org.example.data.datasource.changelog.ChangeHistoryDataSource
 import org.example.data.datasource.changelog.MongoChangeHistoryDataSource
-import org.example.data.datasource.project.CsvProjectDataSource
+import org.example.data.datasource.project.MongoProjectDataSource
 import org.example.data.datasource.project.ProjectDataSource
-import org.example.data.datasource.state.ProjectStateDataSource
+import org.example.data.datasource.projectState.MongoProjectStateDataSource
 import org.example.data.datasource.task.MongoTaskDataSource
 import org.example.data.datasource.task.TaskDataSource
 import org.example.data.repository.AuthRepositoryImpl
@@ -41,11 +41,11 @@ val dataModule = module {
     single<CsvFileReader> { CsvFileReaderImpl(get(), get()) }
     single<CsvFileWriter> { CsvFileWriterImpl(get()) }
 
-    single<ProjectDataSource> { CsvProjectDataSource(get(), get(), get(named("projectFile"))) }
     single<AuthDataSource> { MongoAuthDataSource(get(named("users-collection"))) }
     single<TaskDataSource> { MongoTaskDataSource(get(named("tasks-collection"))) }
-    single<ProjectStateDataSource> { CsvProjectStateDataSource() }
     single<ChangeHistoryDataSource> { MongoChangeHistoryDataSource(get(named("change-history-collection"))) }
+    single<ProjectDataSource> { MongoProjectDataSource(get(named("projects-collection"))) }
+    single<ProjectStateDataSource> { MongoProjectStateDataSource(get(named("states-collection"))) }
 
 
     //TODO: add other data sources. Follow the same pattern as above
@@ -73,10 +73,10 @@ val dataModule = module {
     single<MongoCollection<Task>>(named("tasks-collection")) {
         get<MongoDatabase>().getCollection<Task>("tasks")
     }
-    single<MongoCollection<ProjectState>>(named("states-collection")){
+    single<MongoCollection<ProjectState>>(named("states-collection")) {
         get<MongoDatabase>().getCollection<ProjectState>("states")
     }
-    single<MongoCollection<ChangeHistory>>(named("change-history-collection")){
+    single<MongoCollection<ChangeHistory>>(named("change-history-collection")) {
         get<MongoDatabase>().getCollection<ChangeHistory>("change-history")
     }
 }

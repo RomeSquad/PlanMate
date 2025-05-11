@@ -16,7 +16,7 @@ import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.koin.dsl.module
 import presentation.App
-import presentation.io.InputReader
+import org.example.presentation.utils.io.InputReader
 
 val presentationModule = module {
     single<UiDisplayer> { ConsoleWriter() }
@@ -202,7 +202,7 @@ val presentationModule = module {
     single {
         CLIMenu(
             get(),
-            get(), 
+            get(),
         )
     }
 }
