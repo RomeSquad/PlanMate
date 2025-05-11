@@ -7,8 +7,8 @@ class DefaultProjectStateUseCase(
     private val stateRepository: ProjectStateRepository
 ) {
     private val defaultStateNames = listOf("todo", "in progress", "done")
-    fun initializeProjectState(projectId: Int) {
 
+    suspend fun initializeProjectState(projectId: Int) {
         defaultStateNames.forEach { name ->
             val state = ProjectState(
                 stateName = name,

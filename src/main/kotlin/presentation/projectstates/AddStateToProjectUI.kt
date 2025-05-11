@@ -1,10 +1,10 @@
 package org.example.presentation.projectstates
 
 import org.example.logic.usecase.state.AddProjectStatesUseCase
+import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import presentation.io.InputReader
 
 
 class AddStateToProjectUI(

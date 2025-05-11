@@ -1,11 +1,12 @@
 package logic.usecase.state
 
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.ProjectState
 import org.example.logic.repository.ProjectStateRepository
 import org.example.logic.usecase.state.GetAllProjectStatesUseCase
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -20,12 +21,12 @@ class GetAllProjectStatesUseCaseTest {
     }
 
     @Test
-    fun `should return all states of the project from repository`() {
+    fun `should return all states of the project from repository`() = runTest {
         val allStates = listOf(
             ProjectState(projectId = 1, stateName = "todo"),
             ProjectState(projectId = 2, stateName = "pending")
         )
-        every { projectStateRepository.getAllProjectStates() } returns allStates
+        coEvery { projectStateRepository.getAllProjectStates() } returns allStates
 
         val result = getAllProjectStatesUseCase.execute()
 
@@ -33,4 +34,3 @@ class GetAllProjectStatesUseCaseTest {
     }
 
 }
-

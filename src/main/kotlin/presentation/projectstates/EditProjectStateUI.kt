@@ -2,10 +2,10 @@ package org.example.presentation.projectstates
 
 
 import org.example.logic.usecase.state.EditProjectStateUseCase
+import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import presentation.io.InputReader
 
 class EditProjectStateUI(
     private val editProjectStateUseCase: EditProjectStateUseCase,

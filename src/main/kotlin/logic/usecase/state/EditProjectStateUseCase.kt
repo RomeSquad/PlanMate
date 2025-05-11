@@ -5,7 +5,7 @@ import org.example.logic.repository.ProjectStateRepository
 class EditProjectStateUseCase(
     private val stateRepository: ProjectStateRepository
 ) {
-    fun execute(projectId: Int, newStateName: String) {
+    suspend fun execute(projectId: Int, newStateName: String) {
         require(newStateName.isNotBlank()) { "should new state name must not be blank" }
 
         stateRepository.editProjectState(projectId, newStateName)
