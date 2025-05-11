@@ -1,0 +1,17 @@
+package org.example.logic.exception
+
+class UserNameOrPasswordEmptyException : IllegalArgumentException("Username or password cannot be empty")
+class PasswordLengthException : IllegalArgumentException("Password must be at least 6 characters")
+class UserNameAlreadyExistsException : IllegalArgumentException("Username already exists")
+class UserNotFoundException : Exception("User not found")
+
+
+
+
+
+
+class TaskNotFoundException(message: String) : Exception(message)
+class EntityNotChangedException : Exception("Entity not changed")
+class EmptyNameException : Exception("Name cannot be empty")
+class EmptyPasswordException : Exception("Password cannot be empty")
+class InvalidCredentialsException(message: String = "Invalid credentials") : Exception(message)
