@@ -15,12 +15,13 @@ import org.koin.dsl.module
 val logicModule = module {
 
     //region Projects
-    single { InsertProjectUseCase(get()) }
+    single { InsertProjectUseCase(get(), get()) }
     single { GetProjectByIdUseCase(get()) }
     single { SaveAllProjectUseCase(get()) }
     single { EditProjectUseCase(get()) }
     single { GetAllProjectsUseCase(get()) }
     single { DeleteProjectByIdUseCase(get()) }
+    single { ValidationProject() }
     //endregion
 
     //region User
@@ -31,6 +32,7 @@ val logicModule = module {
     single { DeleteUserUseCase(get()) }
     single { EditUserUseCase(get()) }
     single { GetUserByUsernameUseCase(get()) }
+    single { GetCurrentUserUseCase(get()) }
     //endregion
 
     //region Task
@@ -40,7 +42,6 @@ val logicModule = module {
     single { GetAllTasksUseCase(get()) }
     single { GetTasksByProjectIdUseCase(get()) }
     single { GetTaskByIdUseCase(get()) }
-    single { GetTasksByProjectIdUseCase(get()) }
     //endregion
 
     //region State

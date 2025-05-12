@@ -5,8 +5,9 @@ class PasswordLengthException : IllegalArgumentException("Password must be at le
 class UserNameAlreadyExistsException : IllegalArgumentException("Username already exists")
 class UserNotFoundException : Exception("User not found")
 
-
-
+open class UserException : Exception()
+class InvalidUserException : UserException()
+class EmptyTitleException : IllegalArgumentException()
 
 
 

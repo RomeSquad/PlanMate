@@ -12,11 +12,11 @@ import org.example.presentation.user.admin.*
 import org.example.presentation.user.mate.MateManagementUI
 import org.example.presentation.utils.io.ConsoleInputReader
 import org.example.presentation.utils.io.ConsoleWriter
+import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.koin.dsl.module
 import presentation.App
-import org.example.presentation.utils.io.InputReader
 
 val presentationModule = module {
     single<UiDisplayer> { ConsoleWriter() }
@@ -26,13 +26,15 @@ val presentationModule = module {
     single {
         LoginManagementUI(
             get(),
-            get()
+            get(),
+            get(),
         )
     }
     single {
         MainMenuUI(
             get(),
-            get()
+            get(),
+            get(),
         )
     }
     single {
@@ -41,7 +43,8 @@ val presentationModule = module {
             get(),
             get(),
             get(),
-            get()
+            get(),
+            get(),
         )
     }
     single {
@@ -56,6 +59,7 @@ val presentationModule = module {
     }
     single {
         DeleteUserUi(
+            get(),
             get()
         )
     }
@@ -80,28 +84,27 @@ val presentationModule = module {
             get(),
             get(),
             get(),
-            get()
         )
     }
     single {
         CreateProjectUi(
             get(),
-            get()
-        )
-    }
-    single {
-        GetProjectByIdUI(
-            get()
+            get(),
+            get(),
+            get(),
+            get(),
         )
     }
     single {
         DeleteProjectUi(
-            get()
+            get(),
+            get(),
         )
     }
     single {
         EditProjectUi(
-            get()
+            get(),
+            get(),
         )
     }
     single {
@@ -120,22 +123,28 @@ val presentationModule = module {
     }
     single {
         AddStateToProjectUI(
-            get()
+            get(),
+            get(),
+            get(),
         )
     }
     single {
         EditProjectStateUI(
-            get()
+            get(),
+            get(),
         )
     }
     single {
         DeleteStateToProjectUI(
-            get()
+            get(),
+            get(),
+            get(),
         )
     }
     single {
         GetAllStatesPerProjectUI(
-            get()
+            get(),
+            get(),
         )
     }
 
@@ -145,23 +154,29 @@ val presentationModule = module {
             get(),
             get(),
             get(),
-            get(),
-            get()
         )
     }
     single {
         CreateTaskUI(
-            get()
+            get(),
+            get(),
+            get(),
+            get(),
         )
     }
     single {
         DeleteTaskUI(
-            get()
-        )
+            get(),
+            get(),
+            get(),
+            )
     }
     single {
         EditTaskUI(
-            get()
+            get(),
+            get(),
+            get(),
+            get(),
         )
     }
     single {
@@ -169,17 +184,6 @@ val presentationModule = module {
             get()
         )
     }
-    single {
-        GetTaskByIdUI(
-            get()
-        )
-    }
-    single {
-        GetTasksByProjectIdUI(
-            get()
-        )
-    }
-
     single {
         ShowTaskHistoryUI(
             get()
