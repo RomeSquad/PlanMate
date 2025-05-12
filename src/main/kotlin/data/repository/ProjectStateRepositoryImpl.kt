@@ -19,7 +19,7 @@ class ProjectStateRepositoryImpl(
         return projectStateDataSource.editProjectState(projectId, newStateName)
     }
 
-    override suspend fun deleteProjectState(projectId: UUID) {
+    override suspend fun deleteProjectState(projectId: UUID): Boolean {
         return projectStateDataSource.deleteProjectState(projectId)
     }
 

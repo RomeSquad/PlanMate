@@ -2,7 +2,7 @@ package data.datasource.projectState
 
 import org.example.logic.entity.ProjectState
 import java.io.File
-import java.util.UUID
+import java.util.*
 
 class CsvProjectStateDataSource : ProjectStateDataSource {
     private val csvFile = File("state.csv")
@@ -52,7 +52,7 @@ class CsvProjectStateDataSource : ProjectStateDataSource {
         }
     }
 
-    override suspend fun deleteProjectState(projectId: UUID) {
+    override suspend fun deleteProjectState(projectId: UUID): Boolean {
         val updatedStates = getAllProjectStates().filterNot { it.projectId == projectId }
         return saveAllStates(updatedStates)
 
@@ -63,10 +63,11 @@ class CsvProjectStateDataSource : ProjectStateDataSource {
 
     }
 
-    private fun saveAllStates(states: List<ProjectState>) {
+    private fun saveAllStates(states: List<ProjectState>): Boolean {
         csvFile.writeText("")
         states.forEach { state ->
             csvFile.appendText("${state.projectId},${state.stateName}\n")
         }
+        return true
     }
 }

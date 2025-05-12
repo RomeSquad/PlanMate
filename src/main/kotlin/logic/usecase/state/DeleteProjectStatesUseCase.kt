@@ -6,7 +6,7 @@ import java.util.UUID
 class DeleteProjectStatesUseCase(
     private val stateRepository: ProjectStateRepository
 ) {
-    suspend fun execute(stateId: UUID) {
+    suspend fun execute(stateId: UUID): Boolean {
         return stateRepository.deleteProjectState(stateId)
     }
 }

@@ -6,7 +6,7 @@ import data.datasource.projectState.ProjectStateDataSource
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import org.example.logic.entity.ProjectState
-import java.util.UUID
+import java.util.*
 
 class MongoProjectStateDataSource(
     private val mongo: MongoCollection<ProjectState>
@@ -28,8 +28,9 @@ class MongoProjectStateDataSource(
         }
     }
 
-    override suspend fun deleteProjectState(projectId: UUID) {
+    override suspend fun deleteProjectState(projectId: UUID): Boolean {
         mongo.deleteOne(Filters.eq("_id", projectId))
+        return true
     }
 
     override suspend fun getStateById(projectId: UUID): ProjectState {
