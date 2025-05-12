@@ -21,20 +21,20 @@ class MongoProjectStateDataSource(
     }
 
     override suspend fun editProjectState(projectId: UUID, newStateName: String) {
-        val projectState = mongo.find(Filters.eq("_id", projectId)).firstOrNull()
+        val projectState = mongo.find(Filters.eq("projectId", projectId)).firstOrNull()
         if (projectState != null) {
             val updatedProjectState = projectState.copy(stateName = newStateName)
-            mongo.replaceOne(Filters.eq("_id", projectId), updatedProjectState)
+            mongo.replaceOne(Filters.eq("projectId", projectId), updatedProjectState)
         }
     }
 
     override suspend fun deleteProjectState(projectId: UUID): Boolean {
-        mongo.deleteOne(Filters.eq("_id", projectId))
+        mongo.deleteOne(Filters.eq("projectId", projectId))
         return true
     }
 
     override suspend fun getStateById(projectId: UUID): ProjectState {
-        return mongo.find(Filters.eq("_id", projectId)).firstOrNull()
+        return mongo.find(Filters.eq("projectId", projectId)).firstOrNull()
             ?: throw IllegalArgumentException("ProjectState with id $projectId not found")
     }
 }

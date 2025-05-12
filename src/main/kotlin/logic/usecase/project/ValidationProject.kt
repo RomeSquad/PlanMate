@@ -12,4 +12,6 @@ class ValidationProject {
         if (project.name.isBlank()) throw EmptyTitleException()
     }
 
+
+
 }

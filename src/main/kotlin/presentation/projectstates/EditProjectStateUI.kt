@@ -1,15 +1,15 @@
 package org.example.presentation.projectstates
 
 
+import logic.usecase.project.EditProjectUseCase
 import org.example.logic.usecase.project.GetAllProjectsUseCase
-import org.example.logic.usecase.state.EditProjectStateUseCase
 import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
 
 class EditProjectStateUI(
-    private val editProjectStateUseCase: EditProjectStateUseCase,
+    private val editProjectUseCase: EditProjectUseCase,
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
 ) : MenuAction {
     override val description: String = """
@@ -41,9 +41,8 @@ class EditProjectStateUI(
                 .takeIf { it.isNotBlank() }
                 ?: throw IllegalArgumentException("State name cannot be empty.")
             val updatedProject = selectedProject.copy(state = selectedProject.state.copy(stateName = newState))
-            editProjectStateUseCase.execute(
-                projectId = selectedProject.projectId,
-                newStateName = updatedProject.state.stateName,
+            editProjectUseCase.execute(
+                project = updatedProject,
             )
             ui.displayMessage("✅ Project '${selectedProject.name}' state updated successfully to '${updatedProject.state.stateName}'!")
             ui.displayMessage("🔄 Press Enter to continue...")
