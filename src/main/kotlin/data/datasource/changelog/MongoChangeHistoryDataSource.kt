@@ -4,6 +4,7 @@ import com.mongodb.client.model.Filters
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.coroutines.flow.toList
 import org.example.logic.entity.ChangeHistory
+import java.util.UUID
 
 class MongoChangeHistoryDataSource(
     val mongo: MongoCollection<ChangeHistory>
@@ -13,12 +14,12 @@ class MongoChangeHistoryDataSource(
         return mongo.insertOne(changeHistory).let { changeHistory }
     }
 
-    override suspend fun getByProjectId(projectId: Int): List<ChangeHistory> {
+    override suspend fun getByProjectId(projectId: UUID): List<ChangeHistory> {
         val filter = Filters.eq("projectID", projectId)
         return mongo.find(filter).toList()
     }
 
-    override suspend fun getByTaskId(taskId: Int): List<ChangeHistory> {
+    override suspend fun getByTaskId(taskId: UUID): List<ChangeHistory> {
         val filter = Filters.eq("taskID", taskId)
         return mongo.find(filter).toList()
     }

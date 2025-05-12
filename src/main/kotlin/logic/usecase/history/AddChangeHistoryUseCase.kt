@@ -7,9 +7,9 @@ import java.util.*
 class AddChangeHistoryUseCase(private val repository: ChangeHistoryRepository) {
 
     suspend fun execute(
-        projectId: Int,
-        taskId: Int,
-        authorId: Int,
+        projectId: UUID,
+        taskId: UUID,
+        authorId: UUID,
         changeDate: Date,
         changeDescription: String
     ): ChangeHistory {

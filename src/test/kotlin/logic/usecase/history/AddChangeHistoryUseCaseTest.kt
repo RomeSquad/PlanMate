@@ -18,9 +18,9 @@ class AddChangeHistoryUseCaseTest {
     private val fakeDate = Date(123)
 
     private val fakeChange = ChangeHistory(
-        projectID = 1,
-        taskID = 23,
-        authorID = 42,
+        projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
+        taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
+        authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
         changeDate = fakeDate,
         changeDescription = "Changed status to InProgress"
     )
@@ -38,9 +38,9 @@ class AddChangeHistoryUseCaseTest {
 
         // When
         val result = useCase.execute(
-            projectId = 1,
-            taskId = 23,
-            authorId = 42,
+            projectId = UUID.fromString("11111111-1111-1111-1111-111111111111"),
+            taskId = UUID.fromString("22222222-2222-2222-2222-222222222222"),
+            authorId = UUID.fromString("33333333-3333-3333-3333-333333333333"),
             changeDate = fakeDate,
             changeDescription = "Changed status to InProgress"
         )
@@ -58,9 +58,9 @@ class AddChangeHistoryUseCaseTest {
         val exception = assertThrows(IllegalArgumentException::class.java) {
             runBlocking {
                 useCase.execute(
-                    projectId = 1,
-                    taskId = 11111111,
-                    authorId = 42,
+                    projectId = UUID.fromString("11111111-1111-1111-1111-111111111111"),
+                    taskId = UUID.fromString("22222222-2222-2222-2222-222222222222"),
+                    authorId = UUID.fromString("33333333-3333-3333-3333-333333333333"),
                     changeDate = fakeDate,
                     changeDescription = "Changed status to InProgress"
                 )

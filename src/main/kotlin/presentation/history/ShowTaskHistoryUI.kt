@@ -7,6 +7,7 @@ import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
 import org.example.presentation.utils.io.InputReader
+import java.util.UUID
 
 class ShowTaskHistoryUI(
     private val showTaskHistoryUseCase: ShowTaskHistoryUseCase
@@ -27,8 +28,7 @@ class ShowTaskHistoryUI(
             if (idInput.isBlank()) {
                 throw IllegalArgumentException("Task ID must not be blank")
             }
-            val id = idInput.toIntOrNull()
-                ?: throw IllegalArgumentException("Task ID must be a valid number")
+            val id = UUID.fromString(idInput)
 
             val result = showTaskHistoryUseCase.execute(id)
             if (result.isEmpty()) {

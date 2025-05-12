@@ -7,6 +7,7 @@ import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
 import org.example.presentation.utils.io.InputReader
+import java.util.UUID
 
 class ShowProjectHistoryUI(
     private val showProjectHistoryUseCase: ShowProjectHistoryUseCase
@@ -27,9 +28,7 @@ class ShowProjectHistoryUI(
             if (idInput.isBlank()) {
                 throw IllegalArgumentException("Project ID must not be blank")
             }
-            val id = idInput.toIntOrNull()
-                ?: throw IllegalArgumentException("Project ID must be a valid number")
-
+            val id = UUID.fromString(idInput)
             val result = showProjectHistoryUseCase.execute(id)
             if (result.isEmpty()) {
                 ui.displayMessage("❌ No history found for project ID: $id")
