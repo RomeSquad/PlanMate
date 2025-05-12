@@ -59,7 +59,7 @@ class MongoAuthDataSource(
 
         val update = Updates.combine(
             Updates.set("password", user.password),
-            Updates.set("role", user.userRole),
+            Updates.set("userRole", user.userRole),
         )
 
         val updateResult = userMongoCollection.updateOne(filter, update)
@@ -73,10 +73,15 @@ class MongoAuthDataSource(
         return userMongoCollection.find(Filters.eq("username", username)).firstOrNull()
     }
 
-    private suspend fun isUserNameExists(username: String) {
+
+    override suspend fun isUserNameExists(username: String) {
         if (userMongoCollection.find(Filters.eq("username", username)).firstOrNull() != null) {
             throw UserNameAlreadyExistsException()
         }
+    }
+
+    override suspend fun getCurrentUser(): User? {
+        return userMongoCollection.find().firstOrNull()
     }
 
 }

@@ -23,4 +23,6 @@ class AuthRepositoryImpl(
 
     override suspend fun getUserByUserName(username: String): User? = authDataSource.getUserByUserName(username)
 
+    override suspend fun getCurrentUser(): User? = authDataSource.getCurrentUser()
+
 }

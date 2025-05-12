@@ -1,15 +1,17 @@
 package org.example.presentation.auithentication
 
 import org.example.logic.exception.InvalidCredentialsException
+import org.example.logic.usecase.auth.GetCurrentUserUseCase
 import org.example.logic.usecase.auth.LoginUseCase
+import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import org.example.presentation.utils.io.InputReader
 
 class LoginManagementUI(
     private val loginUseCase: LoginUseCase,
     private val mainMenuUI: MainMenuUI,
+    private val getCurrentUser: GetCurrentUserUseCase
 ) : MenuAction {
     override val description: String = """
         ╔══════════════════════════╗
@@ -33,9 +35,19 @@ class LoginManagementUI(
                         ui.displayMessage("🔹 Enter Password:")
                         val password = inputReader.readString("Password: ").trim()
 
-                        val user = loginUseCase.login(username, password)
-                        Session.currentUser = user
-                        ui.displayMessage("✅ Login successful! Welcome, ${user.username} (${user.userRole}).")
+
+                        if (username.isEmpty() || password.isEmpty()) {
+                            ui.displayMessage("❌ Username and password cannot be empty.")
+                            continue
+                        }
+                        val isLogin = loginUseCase.login(username, password)
+                        val getCurrentUser = getCurrentUser.getCurrentUser()
+
+                        if (getCurrentUser == null) {
+                            ui.displayMessage("❌ No authenticated user found! Please log in first.")
+                            continue
+                        }
+                        ui.displayMessage("🎉 Login successful! Welcome, ${isLogin.username} (${isLogin.userRole}).")
                         ui.displayMessage("🔄 Press Enter to continue...")
                         inputReader.readString("")
                         mainMenuUI.execute(ui, inputReader)

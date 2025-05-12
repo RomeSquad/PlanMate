@@ -59,13 +59,6 @@ class CsvAuthDataSource(
         return users.find { it.username == username }
     }
 
-
-    override suspend fun getAllUsers(): List<User> {
-        val data = csvFileReader.readCsv(userFile)
-        val users = data.map { it.fromCsvRowToUser() }
-        return users
-    }
-
     fun saveAllUsers() {
         users.forEach { user ->
             val csvRow = user.toCsvRow()
@@ -73,12 +66,21 @@ class CsvAuthDataSource(
         }
     }
 
-    private fun isUserNameExists(username: String) {
+    override suspend fun isUserNameExists(username: String) {
         if (users.any { it.username == username }) {
             throw UserNameAlreadyExistsException()
         }
     }
 
+    override suspend fun getCurrentUser(): User? {
+        return users.firstOrNull()
+    }
 
+
+    override suspend fun getAllUsers(): List<User> {
+        val data = csvFileReader.readCsv(userFile)
+        val users = data.map { it.fromCsvRowToUser() }
+        return users
+    }
 
 }

@@ -1,13 +1,15 @@
 package org.example.presentation.user.admin
 
 import org.example.presentation.project.ProjectManagementUI
+import org.example.presentation.task.TaskManagementUI
+import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import org.example.presentation.utils.io.InputReader
 
 class AdminManagementUI(
     private val projectManagementUI: ProjectManagementUI,
+    private val taskManagementUI: TaskManagementUI,
     private val createUserUi: CreateUserUi,
     private val deleteUserUi: DeleteUserUi,
     private val editUserUI: EditUserUI,
@@ -27,8 +29,9 @@ class AdminManagementUI(
                 """
                 📂 1. Manage Projects
                 👥 2. Manage Users
-                🚪 3. Logout
-                🛠️ Select an option (1-3):
+                ✅ 3. Manage Tasks
+                🚪 4. Logout
+                🛠️ Select an option (1-4):
                 """.trimIndent()
             )
             val choice = inputReader.readString("Choice: ").trim().toIntOrNull()
@@ -36,7 +39,8 @@ class AdminManagementUI(
             when (choice) {
                 1 -> projectManagementUI.execute(ui, inputReader)
                 2 -> manageUsers(ui, inputReader)
-                3 -> {
+                3 -> taskManagementUI.execute(ui, inputReader)
+                4 -> {
                     ui.displayMessage("🔙 Logging out...")
                     return
                 }

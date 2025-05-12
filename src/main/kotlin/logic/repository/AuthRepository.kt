@@ -12,4 +12,5 @@ interface AuthRepository {
     suspend fun deleteUser(username: String): Boolean
     suspend fun editUser(user: User)
     suspend fun getUserByUserName(username: String): User?
+    suspend fun getCurrentUser(): User?
 }
