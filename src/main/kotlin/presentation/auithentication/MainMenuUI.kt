@@ -65,9 +65,9 @@ class MainMenuUI(
                     return
                 }
 
-                3 -> if (Session.currentUser?.userRole == UserRole.ADMIN) {
+
+                3 -> if (currentUser.userRole == UserRole.ADMIN) {
                     ui.displayMessage("🔙 Logging out...")
-                    Session.currentUser = null
                     return
                 } else {
                     ui.displayMessage("❌ Invalid option.")

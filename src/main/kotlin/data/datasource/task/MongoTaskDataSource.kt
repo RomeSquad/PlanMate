@@ -12,11 +12,12 @@ import org.example.data.utils.TaskConstants.TASK_TITLE
 import org.example.data.utils.TaskConstants.TASK_UPDATED_AT
 import org.example.logic.entity.Task
 import org.example.logic.exception.TaskNotFoundException
-import java.util.UUID
+import java.util.*
 
 class MongoTaskDataSource(
     val mongo: MongoCollection<Task>
 ) : TaskDataSource {
+
     override suspend fun createTask(task: Task) {
         mongo.insertOne(task)
     }
@@ -50,13 +51,8 @@ class MongoTaskDataSource(
             Filters.eq(TASK_ID, taskId),
             Filters.eq(PROJECT_ID, projectId)
         )
-        val deleteResult = mongo.deleteOne(filter)
 
-        if (deleteResult.deletedCount == 0L) {
-            throw TaskNotFoundException(
-                "Task with id $taskId in project $projectId not found"
-            )
-        }
+        mongo.deleteOne(filter)
     }
 
     override suspend fun getTaskByIdFromFile(taskId: UUID): Task {
