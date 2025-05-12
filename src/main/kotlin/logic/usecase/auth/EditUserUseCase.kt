@@ -18,7 +18,7 @@ class EditUserUseCase(
     }
 
     private fun validateUserInputs(newUser: User, oldUser: User) {
-        if (newUser.username.trim() == oldUser.username.trim() && newUser.password.trim() == oldUser.password.trim()) {
+        if (newUser.username.trim() == oldUser.username.trim() && newUser.password.trim() == oldUser.password.trim() && newUser.userRole == oldUser.userRole) {
             throw EntityNotChangedException()
         }
     }

@@ -14,6 +14,5 @@ interface AuthDataSource {
     suspend fun editUser(user: User)
     suspend fun getUserByUserName(username: String): User?
     suspend fun isUserNameExists(username: String)
-
     suspend fun getCurrentUser() : User?
 }

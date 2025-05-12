@@ -52,21 +52,20 @@ class MongoAuthDataSource(
     }
 
     override suspend fun editUser(user: User) {
+        val hashedPassword = hashPassword(user.password)
+
         val filter = Filters.eq("username", user.username)
 
         userMongoCollection.find(filter).firstOrNull()
             ?: throw UserNotFoundException()
 
         val update = Updates.combine(
-            Updates.set("password", user.password),
+            Updates.set("password", hashedPassword),
             Updates.set("userRole", user.userRole),
         )
 
-        val updateResult = userMongoCollection.updateOne(filter, update)
+        userMongoCollection.updateOne(filter, update)
 
-        if (updateResult.wasAcknowledged()) {
-            throw UserNotFoundException()
-        }
     }
 
     override suspend fun getUserByUserName(username: String): User? {
