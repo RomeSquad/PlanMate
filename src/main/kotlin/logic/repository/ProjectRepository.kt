@@ -1,12 +1,11 @@
 package org.example.logic.repository
 
-import org.example.logic.entity.CreateProjectRequest
-import org.example.logic.entity.CreateProjectResponse
 import org.example.logic.entity.Project
-import java.util.UUID
+import org.example.logic.entity.auth.User
+import java.util.*
 
 interface ProjectRepository {
-    suspend fun insertProject(projectRequest: CreateProjectRequest): CreateProjectResponse
+    suspend fun createProject(project: Project, user: User): UUID
     suspend fun getAllProjects(): List<Project>
     suspend fun getProjectById(id: UUID): Project
     suspend fun saveAllProjects()

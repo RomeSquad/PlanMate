@@ -1,6 +1,5 @@
 package org.example.presentation.project
 
-import org.example.logic.usecase.project.SaveAllProjectUseCase
 import org.example.presentation.projectstates.ProjectStateManagementUI
 import org.example.presentation.task.TaskManagementUI
 import org.example.presentation.utils.io.InputReader
@@ -14,10 +13,8 @@ class ProjectManagementUI(
     private val deleteProjectUi: DeleteProjectUi,
     private val editProjectUi: EditProjectUi,
     private val listProjectUi: ListProjectUi,
-    private val getProjectByIdUI: GetProjectByIdUI,
     private val taskManagementUi: TaskManagementUI,
     private val projectStateManagementUI: ProjectStateManagementUI,
-    private val saveAllProjectUseCase: SaveAllProjectUseCase
 ) : MenuAction {
     override val description: String = """
         ╔══════════════════════════╗
@@ -31,11 +28,9 @@ class ProjectManagementUI(
         "🗑️ 2. Delete Project",
         "✏️ 3. Edit Project",
         "📜 4. List All Projects",
-        "🔍 5. Get Project by ID",
-        "📜 6. Show Project History",
-        "📋 7. Manage Tasks",
-        "📋 8. Manage Project States",
-        "⬅️ 9. Back to Main Menu"
+        "📋 5. Manage Tasks",
+        "📋 6. Manage Project States",
+        "⬅️ 7. Back to Main Menu"
     )
 
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
@@ -52,7 +47,7 @@ class ProjectManagementUI(
     private fun displayMenu(ui: UiDisplayer) {
         ui.displayMessage(description)
         ui.displayMessage(options.joinToString("\n"))
-        ui.displayMessage("🔹 Choose an option (1-9):")
+        ui.displayMessage("🔹 Choose an option (1-7):")
     }
 
     private fun collectUserChoice(inputReader: InputReader): Int? {
@@ -65,21 +60,22 @@ class ProjectManagementUI(
             2 -> deleteProjectUi.execute(ui, inputReader)
             3 -> editProjectUi.execute(ui, inputReader)
             4 -> listProjectUi.execute(ui, inputReader)
-            5 -> getProjectByIdUI.execute(ui, inputReader)
-            7 -> taskManagementUi.execute(ui, inputReader)
-            8 -> projectStateManagementUI.execute(ui, inputReader)
-            9 -> {
+            5 -> taskManagementUi.execute(ui, inputReader)
+            6 -> projectStateManagementUI.execute(ui, inputReader)
+            7 -> {
                 try {
-                    saveAllProjectUseCase.saveProjects()
-                    ui.displayMessage("✅ All projects saved successfully!")
-                } catch (e: Exception) {
-                    ui.displayMessage("❌ Failed to save projects: ${e.message ?: "Unknown error"}")
+                    ui.displayMessage("🔙 Returning to Main Menu...")
+                    return false
+                } catch (
+                    e: Exception
+                ) {
+                    ui.displayMessage("❌ An unexpected error occurred: ${e.message ?: "Failed to return to main menu"}")
                 }
-                ui.displayMessage("🔙 Returning to Main Menu...")
-                return false
+
+
             }
 
-            else -> ui.displayMessage("❌ Invalid choice. Please select a number between 1 and 9.")
+            else -> ui.displayMessage("❌ Invalid choice. Please select a number between 1 and 8.")
         }
         return true
     }

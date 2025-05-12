@@ -21,9 +21,9 @@ class ListProjectUi(
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
         try {
             ui.displayMessage(description)
+            ui.displayMessage("🔄 Fetching all projects...")
             val projects = listProjectsUseCase.getAllProjects()
             displayProjects(ui, projects)
-
         } catch (e: Exception) {
             ui.displayMessage("❌ An unexpected error occurred: ${e.message ?: "Failed to retrieve projects"}")
         } finally {
@@ -41,7 +41,6 @@ class ListProjectUi(
                 ui.displayMessage(
                     """
                     ╔══════════════════════════╗
-                    ║ Project ID: ${project.projectId} ║
                     ║ Project Name: ${project.name} ║
                     ║ Project Description: ${project.description} ║
                     ║ Project State: ${project.state.stateName} ║
