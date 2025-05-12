@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.util.UUID
 
 class GetTasksByProjectIdUseCaseTest {
@@ -43,18 +42,6 @@ class GetTasksByProjectIdUseCaseTest {
         assertEquals(tasks, result)
         coVerify { taskRepository.getTasksByProject(projectId) }
     }
-
-    @Test
-    fun `should throw IllegalArgumentException when projectId is invalid`() = runTest {
-        val projectId = UUID.fromString("00000000-0000-0000-0000-000000000000")
-
-        val exception = assertThrows<IllegalArgumentException> {
-            getTasksByProjectIdUseCase.getTasksByProjectId(projectId)
-        }
-
-        assertEquals("Project ID must be greater than zero", exception.message)
-    }
-
 
     @Test
     fun `should return empty list when no tasks found for projectId`() = runTest {

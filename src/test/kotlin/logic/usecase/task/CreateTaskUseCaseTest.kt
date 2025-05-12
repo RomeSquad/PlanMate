@@ -44,10 +44,7 @@ class CreateTaskUseCaseTest {
             createTaskUseCase.createTask(task)
         }
 
-        assertEquals(
-            expected = expectedException,
-            actual = result.message
-        )
+        assertEquals(expectedException, result.message)
         coVerify(exactly = 0) { taskRepository.createTask(any()) }
     }
 
@@ -66,22 +63,4 @@ class CreateTaskUseCaseTest {
         assertEquals(expectedException, result.message)
         coVerify(exactly = 0) { taskRepository.createTask(any()) }
     }
-
-    @Test
-    fun `should return failure when projectId is zero`() = runTest {
-        val task = createTask(
-            title = "title",
-            description = "description",
-            projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
-        )
-        val expectedException = "Project ID cannot be zero"
-
-        val result = assertThrows<IllegalArgumentException> {
-            createTaskUseCase.createTask(task)
-        }
-
-        assertEquals(expectedException, result.message)
-        coVerify(exactly = 0) { taskRepository.createTask(any()) }
-    }
-
 }

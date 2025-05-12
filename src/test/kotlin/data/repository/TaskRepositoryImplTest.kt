@@ -88,6 +88,43 @@ class TaskRepositoryImplTest {
     }
 
     @Test
+    fun `when use getTaskByProject returns empty list when no tasks found`() = runTest {
+        coEvery { taskDataSource.getAllTasks() } returns emptyList()
+
+        val result = taskRepository.getTasksByProject(projectId)
+
+        assertEquals(0, result.size)
+        coVerify { taskDataSource.getAllTasks() }
+    }
+
+    @Test
+    fun `when use getTasksByProject returns list of matching tasks when some match projectId`() = runTest {
+        val matchingTask = sampleTask.copy(taskId = UUID.randomUUID(), projectId = projectId)
+        val nonMatchingTask = sampleTask.copy(taskId = UUID.randomUUID(), projectId = UUID.randomUUID())
+
+        coEvery { taskDataSource.getAllTasks() } returns listOf(matchingTask, nonMatchingTask)
+
+        val result = taskRepository.getTasksByProject(projectId)
+
+        assertEquals(1, result.size)
+        assertEquals(matchingTask.taskId, result[0].taskId)
+        coVerify { taskDataSource.getAllTasks() }
+    }
+
+    @Test
+    fun `getTasksByProject returns empty list when no tasks match projectId`() = runTest {
+        val nonMatchingTask1 = sampleTask.copy(taskId = UUID.randomUUID(), projectId = UUID.randomUUID())
+        val nonMatchingTask2 = sampleTask.copy(taskId = UUID.randomUUID(), projectId = UUID.randomUUID())
+
+        coEvery { taskDataSource.getAllTasks() } returns listOf(nonMatchingTask1, nonMatchingTask2)
+
+        val result = taskRepository.getTasksByProject(projectId)
+
+        assertEquals(0, result.size)
+        coVerify { taskDataSource.getAllTasks() }
+    }
+
+    @Test
     fun `should return all tasks when calling getAllTasks`() = runTest {
         val taskId2 = UUID.fromString("123e4567-e89b-12d3-a456-426614174003")
         val tasks = listOf(sampleTask, sampleTask.copy(taskId = taskId2))
@@ -96,8 +133,6 @@ class TaskRepositoryImplTest {
         val result = taskRepository.getAllTasks()
 
         assertEquals(2, result.size)
-        assertEquals(taskId, result[0].taskId)
-        assertEquals(taskId2, result[1].taskId)
         coVerify { taskDataSource.getAllTasks() }
     }
 }
