@@ -18,7 +18,8 @@ class CliFormatter : Formatter {
         omitBottomBorder: Boolean = false
     ): String {
         val output = StringBuilder()
-
+        if (width < 0) throw IllegalArgumentException("Width must be greater than 0")
+        if (height < 0) throw IllegalArgumentException("Height must be greater than 0")
         if (!omitTopBorder) output.append(topBorder(width, sidePaddingSize, topBottomPaddingSize))
 
         val messageLines = message.split("\n")
@@ -102,22 +103,50 @@ class CliFormatter : Formatter {
 
     fun horizontalLayout(messages: List<String>, width: Int = 30, height: Int = 3): String {
         val output = StringBuilder()
-        messages.map {
-            output.append(
-                rectangleLayout(
-                    message = it,
-                    width = width,
-                    height = height,
-                    omitRightSideBorder = true
-                )
+        // nested for loop to create a horizontal layout using the rectangleLayout method
+        val recMessages = messages.map {
+            rectangleLayout(
+                message = it,
+                width = width,
+                height = height,
+                omitBottomBorder = true,
+                omitRightSideBorder = true
             )
+        }
+        for (index in 0 until height) {
+            for (message in recMessages) {
+                val messageLines = message.split("\n")
+                if (index >= messageLines.size) {
+                    output.append(" ".repeat(width))
+                } else {
+                    if (messageLines[index].length > width) {
+                        output.append(messageLines[index].take(width))
+                    } else {
+                        val empty = ((width - messageLines[index].length) / 2) + 1
+                        var emptySpace = " ".repeat(empty)
+                        output.append(emptySpace)
+                        output.append(messageLines[index])
+                        if (Math.floorMod(messageLines[index].length, 2) != 0) output.append(" ")
+                        output.append(emptySpace)
+                    }
+                }
+            }
+            output.appendLine(SIDE_BORDER)
+        }
+        return output.toString()
+    }
+
+    fun tableLayout(messages: List<List<String>>) : String {
+        val output = StringBuilder()
+        messages.map {
+            output.append(horizontalLayout(it))
         }
         return output.toString()
     }
 
 
     companion object {
-        private val TOP_BOTTOM_BORDER = "-"
-        private val SIDE_BORDER = "|"
+        private val TOP_BOTTOM_BORDER = "═"
+        private val SIDE_BORDER = "║"
     }
 }

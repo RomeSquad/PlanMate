@@ -3,8 +3,8 @@ package org.example.data.datasource.changelog
 import com.mongodb.client.model.Filters
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.coroutines.flow.toList
-import org.example.data.utils.TaskConstants.PROJECT_ID
-import org.example.data.utils.TaskConstants.TASK_ID
+import org.example.data.utils.data.utils.HistoryConstants.PROJECT_ID
+import org.example.data.utils.data.utils.HistoryConstants.TASK_ID
 import org.example.logic.entity.ChangeHistory
 import java.util.*
 
