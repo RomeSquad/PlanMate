@@ -1,5 +1,6 @@
 package org.example.presentation.project
 
+import org.example.presentation.history.ShowHistoryManagementUI
 import org.example.presentation.projectstates.ProjectStateManagementUI
 import org.example.presentation.task.TaskManagementUI
 import org.example.presentation.utils.io.InputReader
@@ -15,6 +16,7 @@ class ProjectManagementUI(
     private val listProjectUi: ListProjectUi,
     private val taskManagementUi: TaskManagementUI,
     private val projectStateManagementUI: ProjectStateManagementUI,
+    private val changeHistoryManagementUI: ShowHistoryManagementUI
 ) : MenuAction {
     override val description: String = """
         ╔══════════════════════════╗
@@ -28,9 +30,10 @@ class ProjectManagementUI(
         "🗑️ 2. Delete Project",
         "✏️ 3. Edit Project",
         "📜 4. List All Projects",
-        "📋 5. Manage Tasks",
-        "📋 6. Manage Project States",
-        "⬅️ 7. Back to Main Menu"
+        "📜 5. View Project Logs",
+        "📋 6. Manage Tasks",
+        "📋 7. Manage Project States",
+        "⬅️ 8. Back to Main Menu"
     )
 
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
@@ -60,9 +63,10 @@ class ProjectManagementUI(
             2 -> deleteProjectUi.execute(ui, inputReader)
             3 -> editProjectUi.execute(ui, inputReader)
             4 -> listProjectUi.execute(ui, inputReader)
-            5 -> taskManagementUi.execute(ui, inputReader)
-            6 -> projectStateManagementUI.execute(ui, inputReader)
-            7 -> {
+            5 -> changeHistoryManagementUI.execute(ui, inputReader)
+            6 -> taskManagementUi.execute(ui, inputReader)
+            7 -> projectStateManagementUI.execute(ui, inputReader)
+            8 -> {
                 try {
                     ui.displayMessage("🔙 Returning to Main Menu...")
                     return false

@@ -5,6 +5,7 @@ import org.example.data.datasource.authentication.AuthDataSource
 import org.example.logic.entity.auth.User
 import org.example.logic.repository.AuthRepository
 import org.example.logic.request.auth.LoginRequest
+import java.util.*
 
 class AuthRepositoryImpl(
     private val authDataSource: AuthDataSource
@@ -22,6 +23,8 @@ class AuthRepositoryImpl(
     override suspend fun editUser(user: User) = authDataSource.editUser(user)
 
     override suspend fun getUserByUserName(username: String): User? = authDataSource.getUserByUserName(username)
+
+    override suspend fun getUserById(id: UUID): User? = authDataSource.getUserById(id)
 
     override suspend fun getCurrentUser(): User? = authDataSource.getCurrentUser()
 

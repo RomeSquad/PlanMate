@@ -3,6 +3,7 @@ package org.example.di
 import org.example.presentation.CLIMenu
 import org.example.presentation.auithentication.LoginManagementUI
 import org.example.presentation.auithentication.MainMenuUI
+import org.example.presentation.history.ShowHistoryManagementUI
 import org.example.presentation.history.ShowProjectHistoryUI
 import org.example.presentation.history.ShowTaskHistoryUI
 import org.example.presentation.project.*
@@ -39,6 +40,7 @@ val presentationModule = module {
     }
     single {
         AdminManagementUI(
+            get(),
             get(),
             get(),
             get(),
@@ -83,6 +85,7 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get(),
         )
     }
     single {
@@ -117,14 +120,14 @@ val presentationModule = module {
             get(),
             get(),
             get(),
-            get()
+            get(),
+            get(),
         )
     }
     single {
-        AddStateToProjectUI(
+        AddTaskStateToProjectUI(
             get(),
-            get(),
-            get(),
+            get()
         )
     }
     single {
@@ -149,6 +152,7 @@ val presentationModule = module {
 
     single {
         TaskManagementUI(
+            get(),
             get(),
             get(),
             get(),
@@ -179,18 +183,28 @@ val presentationModule = module {
         )
     }
     single {
-        GetAllTasksUI(
-            get()
+        SwimlanesView(
+            get(),
+            get(),
         )
     }
     single {
         ShowTaskHistoryUI(
-            get()
+            get(),
+            get(),
+            get(),
         )
     }
     single {
         ShowProjectHistoryUI(
-            get()
+            get(),
+            get(),
+        )
+    }
+    single {
+        ShowHistoryManagementUI(
+            get(),
+            get(),
         )
     }
 
