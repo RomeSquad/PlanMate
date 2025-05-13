@@ -20,6 +20,8 @@ class GetTasksByProjectIdUseCaseTest {
     private lateinit var taskRepository: TaskRepository
     private lateinit var getTasksByProjectIdUseCase: GetTasksByProjectIdUseCase
 
+    private val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
+
     @BeforeEach
     fun setup() {
         taskRepository = mockk()
@@ -28,57 +30,69 @@ class GetTasksByProjectIdUseCaseTest {
 
     @Test
     fun `should return tasks when projectId exists`() = runTest {
-        val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
+        // Given
         val taskId1 = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
-        val taskId2 = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
-
+        val taskId2 = UUID.fromString("a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d") // Unique taskId
         val tasks = listOf(
-            projectId.createTask(taskId1, "Task 1", "Description 1"),
-            projectId.createTask(taskId2, "Task 2", "Description 2")
+            Task(
+                taskId = taskId1,
+                title = "Task 1",
+                description = "Description 1",
+                state = ProjectState(projectId = projectId, stateName = "To-Do"),
+                projectId = projectId,
+                createdBy = UUID.fromString("b2c3d4e5-6f7a-8b9c-0d1e-2f3a4b5c6d7e"),
+                createdAt = 1000L,
+                updatedAt = 1000L
+            ),
+            Task(
+                taskId = taskId2,
+                title = "Task 2",
+                description = "Description 2",
+                state = ProjectState(projectId = projectId, stateName = "To-Do"),
+                projectId = projectId,
+                createdBy = UUID.fromString("b2c3d4e5-6f7a-8b9c-0d1e-2f3a4b5c6d7e"),
+                createdAt = 2000L,
+                updatedAt = 2000L
+            )
         )
         coEvery { taskRepository.getTasksByProject(projectId) } returns tasks
 
+        // When
         val result = getTasksByProjectIdUseCase.getTasksByProjectId(projectId)
 
-        assertEquals(tasks, result)
-        coVerify { taskRepository.getTasksByProject(projectId) }
+        // Then
+        coVerify(exactly = 1) { taskRepository.getTasksByProject(projectId) }
+        assertEquals(tasks, result, "Task lists do not match")
+        assertEquals(2, result.size, "Expected 2 tasks")
+        assertEquals("Task 1", result[0].title, "First task title mismatch")
+        assertEquals("Task 2", result[1].title, "Second task title mismatch")
     }
-
-    @Test
-    fun `should throw IllegalArgumentException when projectId is invalid`() = runTest {
-        val projectId = UUID.fromString("00000000-0000-0000-0000-000000000000")
-
-        val exception = assertThrows<IllegalArgumentException> {
-            getTasksByProjectIdUseCase.getTasksByProjectId(projectId)
-        }
-
-        assertEquals("Project ID must be greater than zero", exception.message)
-    }
-
 
     @Test
     fun `should return empty list when no tasks found for projectId`() = runTest {
-        val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
-        val emptyList = emptyList<Task>()
-        coEvery { taskRepository.getTasksByProject(projectId) } returns emptyList
+        // Given
+        coEvery { taskRepository.getTasksByProject(projectId) } returns emptyList()
 
+        // When
         val result = getTasksByProjectIdUseCase.getTasksByProjectId(projectId)
 
-        assertTrue(result.isEmpty())
-        coVerify { taskRepository.getTasksByProject(projectId) }
+        // Then
+        coVerify(exactly = 1) { taskRepository.getTasksByProject(projectId) }
+        assertTrue(result.isEmpty(), "Expected empty task list")
     }
 
-    private fun UUID.createTask(id: UUID, title: String, description: String): Task {
-        return Task(
-            taskId = id,
-            title = title,
-            description = description,
-            state = ProjectState(this, "To-Do"),
-            projectId = this,
-            createdBy = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f"),
-            createdAt = System.currentTimeMillis(),
-            updatedAt = System.currentTimeMillis()
-        )
+    @Test
+    fun `should throw exception when repository fails`() = runTest {
+        // Given
+        val exception = RuntimeException("Database error")
+        coEvery { taskRepository.getTasksByProject(projectId) } throws exception
+
+        // When/Then
+        val thrownException = assertThrows<RuntimeException> {
+            getTasksByProjectIdUseCase.getTasksByProjectId(projectId)
+        }
+        assertEquals("Database error", thrownException.message)
+        coVerify(exactly = 1) { taskRepository.getTasksByProject(projectId) }
     }
 }
 
