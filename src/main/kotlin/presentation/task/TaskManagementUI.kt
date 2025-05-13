@@ -10,7 +10,7 @@ class TaskManagementUI(
     private val createTaskUi: CreateTaskUI,
     private val deleteTaskUi: DeleteTaskUI,
     private val editTaskUi: EditTaskUI,
-    private val getAllTasksUi: GetAllTasksUI,
+    private val swimlanesView: SwimlanesView,
     private val changeHistoryManagementUI: ShowHistoryManagementUI
 ) : MenuAction {
     private val options = listOf(
@@ -18,7 +18,7 @@ class TaskManagementUI(
         "🗑️ 2. Delete Task",
         "✏️ 3. Edit Task",
         "📜 4. Show Task History",
-        "📜 5. List All Tasks",
+        "📜 5. View Project Tasks",
         "⬅️ 6. Back to Main Menu"
     )
 
@@ -41,7 +41,7 @@ class TaskManagementUI(
                 2 -> deleteTaskUi.execute(ui, inputReader)
                 3 -> editTaskUi.execute(ui, inputReader)
                 4 -> changeHistoryManagementUI.execute(ui, inputReader)
-                5 -> getAllTasksUi.execute(ui, inputReader)
+                5 -> swimlanesView.execute(ui, inputReader)
                 6 -> return
                 else -> ui.displayMessage("❌ Invalid option. Please select a number between 1 and 6.")
             }
