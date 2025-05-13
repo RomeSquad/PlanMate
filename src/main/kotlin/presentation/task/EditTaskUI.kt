@@ -1,5 +1,7 @@
 package org.example.presentation.task
 
+import org.example.logic.usecase.auth.GetCurrentUserUseCase
+import org.example.logic.usecase.history.AddChangeHistoryUseCase
 import org.example.logic.usecase.project.GetAllProjectsUseCase
 import org.example.logic.usecase.state.EditProjectStateUseCase
 import org.example.logic.usecase.task.EditTaskUseCase
@@ -8,12 +10,16 @@ import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
+import java.util.Date
+import java.util.UUID
 
 class EditTaskUI(
     private val editTaskUseCase: EditTaskUseCase,
     private val getTasksByProjectIdUseCase: GetTasksByProjectIdUseCase,
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
-    private val editProjectStateUseCase: EditProjectStateUseCase
+    private val editProjectStateUseCase: EditProjectStateUseCase,
+    private val addChangeHistory: AddChangeHistoryUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
 ) : MenuAction {
     override val description: String = """
         ╔══════════════════════════╗
@@ -74,6 +80,15 @@ class EditTaskUI(
             editProjectStateUseCase.execute(
                 projectId = selectedProject.projectId,
                 newStateName = state,
+            )
+
+            val currentUser = getCurrentUserUseCase.getCurrentUser()
+            addChangeHistory.execute(
+                projectId = selectedProject.projectId,
+                taskId = selectedTask.taskId,
+                authorId = currentUser!!.userId,
+                changeDate = Date(Date().time) ,
+                changeDescription = "Task Updated",
             )
             ui.displayMessage("✅ Task '${selectedTask.title}' updated successfully!")
             ui.displayMessage("🔄 Press Enter to continue...")

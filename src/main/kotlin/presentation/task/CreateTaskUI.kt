@@ -4,6 +4,8 @@ import logic.usecase.project.EditProjectUseCase
 import org.example.logic.entity.Project
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
+import org.example.logic.usecase.auth.GetCurrentUserUseCase
+import org.example.logic.usecase.history.AddChangeHistoryUseCase
 import org.example.logic.usecase.project.GetAllProjectsUseCase
 import org.example.logic.usecase.state.AddProjectStatesUseCase
 import org.example.logic.usecase.task.CreateTaskUseCase
@@ -18,7 +20,9 @@ class CreateTaskUI(
     private val createTaskUseCase: CreateTaskUseCase,
     private val editProjectUseCase: EditProjectUseCase,
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
-    private val addProjectStatesUseCase: AddProjectStatesUseCase
+    private val addProjectStatesUseCase: AddProjectStatesUseCase,
+    private val addChangeHistory: AddChangeHistoryUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
 ) : MenuAction {
     override val description: String = """
         ╔══════════════════════════╗
@@ -84,6 +88,14 @@ class CreateTaskUI(
                 ),
             )
             editProjectUseCase.execute(updatedProject)
+            val currentUser = getCurrentUserUseCase.getCurrentUser()
+            addChangeHistory.execute(
+                projectId = selectedProject.projectId,
+                taskId = task.taskId,
+                authorId = currentUser!!.userId,
+                changeDate = Date(task.createdAt) ,
+                changeDescription = "Task Created",
+            )
             ui.displayMessage("✅ Task '$title' created successfully!")
         } catch (e: IllegalArgumentException) {
             ui.displayMessage("❌ Error: ${e.message}")
@@ -91,10 +103,6 @@ class CreateTaskUI(
             inputReader.readString("")
         } catch (e: Exception) {
             ui.displayMessage("❌ An unexpected error occurred: ${e.message ?: "Failed to create task"}")
-            ui.displayMessage("🔄 Press Enter to continue...")
-            inputReader.readString("")
-        } catch (ex: Exception) {
-            ui.displayMessage("❌ Failed to get all projects: ${ex.message}")
             ui.displayMessage("🔄 Press Enter to continue...")
             inputReader.readString("")
         } finally {
