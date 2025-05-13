@@ -3,16 +3,22 @@ package org.example.presentation.project
 import logic.usecase.project.EditProjectUseCase
 import org.example.logic.entity.Project
 import org.example.logic.entity.ProjectState
+import org.example.logic.usecase.auth.GetCurrentUserUseCase
+import org.example.logic.usecase.history.AddChangeHistoryUseCase
 import org.example.logic.usecase.project.GetAllProjectsUseCase
 import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
+import java.util.Date
+import java.util.UUID
 
 
 class EditProjectUi(
     private val editProjectUseCase: EditProjectUseCase,
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
+    private val addChangeHistory: AddChangeHistoryUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
 ) : MenuAction {
     override val description: String = """
         ╔════════════════════════════╗
@@ -69,6 +75,14 @@ class EditProjectUi(
                 state = ProjectState(projectId = selectedProject.projectId, stateName = state)
             )
             editProjectUseCase.execute(updatedProject)
+            val currentUser = getCurrentUserUseCase.getCurrentUser()
+            addChangeHistory.execute(
+                projectId = selectedProject.projectId,
+                taskId = UUID.fromString("0"),
+                authorId = currentUser!!.userId,
+                changeDate = Date(Date().time) ,
+                changeDescription = "Project edited",
+            )
             ui.displayMessage("✅ Project '${updatedProject.name}' updated successfully!")
         } catch (e: IllegalArgumentException) {
             ui.displayMessage("❌ Error: ${e.message}")

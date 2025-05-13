@@ -95,6 +95,7 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get(),
         )
     }
     single {
@@ -105,6 +106,8 @@ val presentationModule = module {
     }
     single {
         EditProjectUi(
+            get(),
+            get(),
             get(),
             get(),
         )
@@ -172,6 +175,8 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get(),
+            get(),
         )
     }
     single {
@@ -179,10 +184,14 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get(),
+            get(),
         )
     }
     single {
         EditTaskUI(
+            get(),
+            get(),
             get(),
             get(),
             get(),

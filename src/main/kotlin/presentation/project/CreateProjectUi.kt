@@ -4,6 +4,7 @@ import org.example.logic.entity.Project
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
 import org.example.logic.usecase.auth.GetCurrentUserUseCase
+import org.example.logic.usecase.history.AddChangeHistoryUseCase
 import org.example.logic.usecase.project.InsertProjectUseCase
 import org.example.logic.usecase.state.AddProjectStatesUseCase
 import org.example.logic.usecase.state.DefaultProjectStateUseCase
@@ -21,7 +22,10 @@ class CreateProjectUi(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val createTaskUseCase: CreateTaskUseCase,
     private val addProjectStatesUseCase: AddProjectStatesUseCase,
+    private val addChangeHistory: AddChangeHistoryUseCase,
+
 ) : MenuAction {
+
     override val description: String = """
             ╔════════════════════════════╗
             ║    Create a New Project    ║
@@ -54,6 +58,14 @@ class CreateProjectUi(
                 project = project,
                 user = currentUser
             )
+            addChangeHistory.execute(
+                projectId = projectId,
+                taskId = UUID.fromString("0"),
+                authorId = currentUser.userId,
+                changeDate = Date(Date().time) ,
+                changeDescription = "Project created",
+            )
+
             ui.displayMessage("✅ Project '${name}' created successfully! 🎉")
             defaultProjectStateUseCase.initializeProjectState(
                 projectId = projectId

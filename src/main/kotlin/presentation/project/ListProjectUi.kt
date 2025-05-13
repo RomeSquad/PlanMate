@@ -2,6 +2,7 @@ package org.example.presentation.project
 
 import org.example.logic.entity.Project
 import org.example.logic.usecase.project.GetAllProjectsUseCase
+import org.example.presentation.utils.formatter.CliFormatter
 import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
@@ -37,15 +38,16 @@ class ListProjectUi(
             ui.displayMessage("❌ No projects found.")
         } else {
             ui.displayMessage("✅ Projects:")
+            val formatter = CliFormatter()
             projects.forEach { project ->
                 ui.displayMessage(
-                    """
-                    ╔══════════════════════════╗
-                    ║ Project Name: ${project.name} ║
-                    ║ Project Description: ${project.description} ║
-                    ║ Project State: ${project.state.stateName} ║
-                    ╚══════════════════════════╝
-                    """.trimIndent()
+                    formatter.rectangleLayout(
+                        " Project Name: ${project.name}\n" +
+                                "Project Description: ${project.description}\n" +
+                                "Project State: ${project.state.stateName}",
+                        width = 50,
+                        height = 3
+                    )
                 )
             }
         }

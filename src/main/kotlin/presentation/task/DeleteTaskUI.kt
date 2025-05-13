@@ -1,5 +1,7 @@
 package org.example.presentation.task
 
+import org.example.logic.usecase.auth.GetCurrentUserUseCase
+import org.example.logic.usecase.history.AddChangeHistoryUseCase
 import org.example.logic.usecase.project.GetAllProjectsUseCase
 import org.example.logic.usecase.task.DeleteTaskUseCase
 import org.example.logic.usecase.task.GetTasksByProjectIdUseCase
@@ -7,11 +9,15 @@ import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
+import java.util.Date
+import java.util.UUID
 
 class DeleteTaskUI(
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val getTasksByProjectIdUseCase: GetTasksByProjectIdUseCase,
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
+    private val addChangeHistory: AddChangeHistoryUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
 ) : MenuAction {
     override val description: String = """
         ╔══════════════════════════╗
@@ -58,6 +64,14 @@ class DeleteTaskUI(
             val confirmation = inputReader.readString("Type 'YES' to confirm: ").trim()
             if (confirmation.equals("YES", ignoreCase = true)) {
                 deleteTaskUseCase.deleteTask(selectedProject.projectId, selectedTask.taskId)
+                val currentUser = getCurrentUserUseCase.getCurrentUser()
+                addChangeHistory.execute(
+                    projectId = selectedProject.projectId,
+                    taskId = selectedTask.taskId,
+                    authorId = currentUser!!.userId,
+                    changeDate = Date(Date().time) ,
+                    changeDescription = "Task Deleted",
+                )
                 ui.displayMessage("✅ Task '${selectedTask.title}' deleted successfully!")
             } else {
                 ui.displayMessage("❌ Task deletion cancelled.")
