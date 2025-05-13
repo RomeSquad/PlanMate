@@ -183,8 +183,9 @@ val presentationModule = module {
         )
     }
     single {
-        GetAllTasksUI(
-            get()
+        SwimlanesView(
+            get(),
+            get(),
         )
     }
     single {
