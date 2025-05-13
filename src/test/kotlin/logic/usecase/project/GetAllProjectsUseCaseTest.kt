@@ -1,84 +1,88 @@
 package logic.usecase.project
 
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.Project
 import org.example.logic.entity.ProjectState
 import org.example.logic.repository.ProjectRepository
 import org.example.logic.usecase.project.GetAllProjectsUseCase
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import java.util.*
 
 class GetAllProjectsUseCaseTest {
+
     private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
     private lateinit var projectRepository: ProjectRepository
 
+    private val projectId1 = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
+    private val projectId2 = UUID.fromString("123e4567-e89b-12d3-a456-426614174001")
+
+    private val project1 = Project(
+        projectId = projectId1,
+        name = "Project 1",
+        description = "Description 1",
+        state = ProjectState(projectId = projectId1, stateName = "Active")
+    )
+
+    private val project2 = Project(
+        projectId = projectId2,
+        name = "Project 2",
+        description = "Description 2",
+        state = ProjectState(projectId = projectId2, stateName = "InProgress")
+    )
+
     @BeforeEach
     fun setup() {
-        projectRepository = mockk<ProjectRepository>()
+        projectRepository = mockk()
         getAllProjectsUseCase = GetAllProjectsUseCase(projectRepository)
     }
 
     @Test
-    fun `should return list of projects when repository returns success`() {
+    fun `get all projects returns list when repository returns projects`() = runTest {
         // Given
-        val projects = listOf(
-            Project(
-                id = 1,
-                name = "Project A",
-                description = "A sample project",
-                state = ProjectState(
-                    projectId = 1,
-                    stateName = "Project B",
-                )
-            ),
-            Project(
-                id = 2,
-                name = "Project B",
-                description = "Another sample project",
-                state = ProjectState(
-                    projectId = 2,
-                    stateName = "Project B",
-                )
-            )
-        )
-        every { projectRepository.getAllProjects() } returns Result.success(projects)
+        val projects = listOf(project1, project2)
+        coEvery { projectRepository.getAllProjects() } returns projects
 
         // When
         val result = getAllProjectsUseCase.getAllProjects()
 
         // Then
-        Assertions.assertTrue(result.isSuccess)
-        Assertions.assertEquals(projects, result.getOrNull())
+        assertEquals(projects, result)
+        assertEquals(2, result.size)
+        assertEquals("Project 1", result[0].name)
+        assertEquals("Project 2", result[1].name)
+        assertEquals("Active", result[0].state.stateName)
+        assertEquals("InProgress", result[1].state.stateName)
     }
 
     @Test
-    fun `should return failure when repository throws exception`() {
+    fun `get all projects returns empty list when repository returns no projects`() = runTest {
+        // Given
+        coEvery { projectRepository.getAllProjects() } returns emptyList()
+
+        // When
+        val result = getAllProjectsUseCase.getAllProjects()
+
+        // Then
+        assertEquals(emptyList<Project>(), result)
+        assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun `get all projects throws exception when repository fails`() = runTest {
         // Given
         val exception = RuntimeException("Failed to fetch projects")
-        every { projectRepository.getAllProjects() } returns Result.failure(exception)
+        coEvery { projectRepository.getAllProjects() } throws exception
 
-        // When
-        val result = getAllProjectsUseCase.getAllProjects()
-
-        // Then
-        Assertions.assertTrue(result.isFailure)
-        Assertions.assertEquals(exception, result.exceptionOrNull())
-    }
-
-    @Test
-    fun `should return empty list when repository returns success with no projects`() {
-        // Given
-        val projects = emptyList<Project>()
-        every { projectRepository.getAllProjects() } returns Result.success(projects)
-
-        // When
-        val result = getAllProjectsUseCase.getAllProjects()
-
-        // Then
-        Assertions.assertTrue(result.isSuccess)
-        Assertions.assertEquals(projects, result.getOrNull())
-        Assertions.assertTrue(result.getOrNull()?.isEmpty() == true)
+        // When/Then
+        val thrownException = assertThrows<RuntimeException> {
+            getAllProjectsUseCase.getAllProjects()
+        }
+        assertEquals("Failed to fetch projects", thrownException.message)
     }
 }

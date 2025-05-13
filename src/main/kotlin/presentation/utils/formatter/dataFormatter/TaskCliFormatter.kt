@@ -5,7 +5,7 @@ import org.example.logic.entity.Task
 fun Task.format(): String {
     return String.format(
         "%-10s | %-20s | %-20s | %-30s | %-15s | %-15s | %-10s | %-10s",
-        "ID: $id",
+        "ID: $taskId",
         "Title: $title",
         "Description: $description",
         "State: $state",

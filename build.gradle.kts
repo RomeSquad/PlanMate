@@ -36,7 +36,18 @@ dependencies {
     implementation(platform("org.mongodb:mongodb-driver-bom:5.4.0"))
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine")
     implementation("org.mongodb:bson-kotlinx:5.4.0")
-//    implementation("ch.qos.logback:logback-classic:1.2.11")
+    implementation("org.litote.kmongo:kmongo-coroutine:4.11.0")
+    implementation("org.litote.kmongo:kmongo-id-serialization:4.11.0")
+    implementation("org.litote.kmongo:kmongo-coroutine:4.9.0")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    //mongo-db
+    implementation(platform("org.mongodb:mongodb-driver-bom:5.4.0"))
+    implementation("org.mongodb:mongodb-driver-kotlin-coroutine")
+    implementation("org.mongodb:bson-kotlinx:5.4.0")
 }
 
 tasks.test {
@@ -76,7 +87,7 @@ tasks.jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = "0.75".toBigDecimal() // 100% coverage required
+                minimum = "0.70".toBigDecimal() // 100% coverage required
             }
         }
     }

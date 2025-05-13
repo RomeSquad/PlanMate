@@ -1,17 +1,20 @@
 package org.example.di
 
-import CsvProjectStateDataSource
 import ProjectStateRepositoryImpl
+import com.mongodb.ConnectionString
+import com.mongodb.MongoClientSettings
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import data.datasource.projectState.ProjectStateDataSource
+import org.bson.UuidRepresentation
 import org.example.data.datasource.authentication.AuthDataSource
 import org.example.data.datasource.authentication.MongoAuthDataSource
 import org.example.data.datasource.changelog.ChangeHistoryDataSource
 import org.example.data.datasource.changelog.MongoChangeHistoryDataSource
-import org.example.data.datasource.project.CsvProjectDataSource
+import org.example.data.datasource.project.MongoProjectDataSource
 import org.example.data.datasource.project.ProjectDataSource
-import org.example.data.datasource.state.ProjectStateDataSource
+import org.example.data.datasource.projectState.MongoProjectStateDataSource
 import org.example.data.datasource.task.MongoTaskDataSource
 import org.example.data.datasource.task.TaskDataSource
 import org.example.data.repository.AuthRepositoryImpl
@@ -41,11 +44,11 @@ val dataModule = module {
     single<CsvFileReader> { CsvFileReaderImpl(get(), get()) }
     single<CsvFileWriter> { CsvFileWriterImpl(get()) }
 
-    single<ProjectDataSource> { CsvProjectDataSource(get(), get(), get(named("projectFile"))) }
     single<AuthDataSource> { MongoAuthDataSource(get(named("users-collection"))) }
     single<TaskDataSource> { MongoTaskDataSource(get(named("tasks-collection"))) }
-    single<ProjectStateDataSource> { CsvProjectStateDataSource() }
     single<ChangeHistoryDataSource> { MongoChangeHistoryDataSource(get(named("change-history-collection"))) }
+    single<ProjectDataSource> { MongoProjectDataSource(get(named("projects-collection"))) }
+    single<ProjectStateDataSource> { MongoProjectStateDataSource(get(named("states-collection"))) }
 
 
     //TODO: add other data sources. Follow the same pattern as above
@@ -58,11 +61,18 @@ val dataModule = module {
     single<ChangeHistoryRepository> { ChangeHistoryRepositoryImpl(get()) }
 
     single<MongoDatabase> {
+        val uri =
+            "mongodb+srv://rome:rome@plan-mate.rxaopvb.mongodb.net/?retryWrites=true&w=majority&appName=plan-mate"
 
-        val uri = "mongodb+srv://rome:rome@plan-mate.rxaopvb.mongodb.net/?retryWrites=true&w=majority&appName=plan-mate"
+        val connectionString = ConnectionString(uri)
 
-        val mongoClient: MongoClient = MongoClient.create(uri)
-        mongoClient.getDatabase("plan-mate")
+        val settings = MongoClientSettings.builder()
+            .applyConnectionString(connectionString)
+            .uuidRepresentation(UuidRepresentation.STANDARD)
+            .build()
+
+        val client = MongoClient.create(settings)
+        client.getDatabase("plan-mate")
     }
     single<MongoCollection<User>>(named("users-collection")) {
         get<MongoDatabase>().getCollection<User>("users")
@@ -73,10 +83,10 @@ val dataModule = module {
     single<MongoCollection<Task>>(named("tasks-collection")) {
         get<MongoDatabase>().getCollection<Task>("tasks")
     }
-    single<MongoCollection<ProjectState>>(named("states-collection")){
+    single<MongoCollection<ProjectState>>(named("states-collection")) {
         get<MongoDatabase>().getCollection<ProjectState>("states")
     }
-    single<MongoCollection<ChangeHistory>>(named("change-history-collection")){
+    single<MongoCollection<ChangeHistory>>(named("change-history-collection")) {
         get<MongoDatabase>().getCollection<ChangeHistory>("change-history")
     }
 }

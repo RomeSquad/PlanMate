@@ -6,22 +6,28 @@ import org.example.data.datasource.task.TaskDataSource
 import org.example.data.repository.TaskRepositoryImpl
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.*
+import java.util.*
 import kotlin.test.BeforeTest
+import kotlin.test.assertTrue
 
 class TaskRepositoryImplTest {
 
     private lateinit var taskDataSource: TaskDataSource
     private lateinit var taskRepository: TaskRepositoryImpl
 
+    private val taskId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
+    private val projectId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001")
+    private val userId = UUID.fromString("123e4567-e89b-12d3-a456-426614174002")
+
     private val sampleTask = Task(
-        id = "task1",
+        taskId = taskId,
         title = "title1",
         description = "desc",
-        state = ProjectState(1, "To-Do"),
-        projectId = 1,
-        createdBy = "U1",
+        state = ProjectState(projectId, "To-Do"),
+        projectId = projectId,
+        createdBy = userId,
         createdAt = 5,
         updatedAt = 10
     )
@@ -42,54 +48,66 @@ class TaskRepositoryImplTest {
     }
 
     @Test
-    fun `should edit task when calling editTask`() = runTest {
-        coEvery { taskDataSource.editTask("task1", "new title", "new description", 20L) } just Runs
+    fun `should edit task successfully when calling editTask`() = runTest {
+        coEvery { taskDataSource.editTask(taskId, "new title", "new description", 20L) } just Runs
 
-        taskRepository.editTask("task1", "new title", "new description", 20L)
+        taskRepository.editTask(taskId, "new title", "new description", 20L)
 
-        coVerify { taskDataSource.editTask("task1", "new title", "new description", 20L) }
+        coVerify { taskDataSource.editTask(taskId, "new title", "new description", 20L) }
     }
 
     @Test
-    fun `should delete task when calling deleteTask`() = runTest {
-        coEvery { taskDataSource.deleteTask(1, "task1") } just Runs
+    fun `should delete task successfully when calling deleteTask`() = runTest {
+        coEvery { taskDataSource.deleteTask(projectId, taskId) } just Runs
 
-        taskRepository.deleteTask(1, "task1")
+        taskRepository.deleteTask(projectId, taskId)
 
-        coVerify { taskDataSource.deleteTask(1, "task1") }
+        coVerify { taskDataSource.deleteTask(projectId, taskId) }
     }
 
     @Test
     fun `should return task when calling getTaskById with valid id`() = runTest {
-        coEvery { taskDataSource.getTaskByIdFromFile("task1") } returns sampleTask
+        coEvery { taskDataSource.getTaskByIdFromFile(taskId) } returns sampleTask
 
-        val result = taskRepository.getTaskById("task1")
+        val result = taskRepository.getTaskById(taskId)
 
-        assertEquals("task1", result.id)
-        coVerify { taskDataSource.getTaskByIdFromFile("task1") }
+        assertEquals(taskId, result.taskId)
+        coVerify { taskDataSource.getTaskByIdFromFile(taskId) }
     }
 
     @Test
-    fun `getTasksByProject returns filtered tasks`() = runTest {
-        val tasks = listOf(sampleTask, sampleTask.copy(id = "t2", projectId = 2))
-        coEvery { taskDataSource.getAllTasks() } returns tasks
+    fun `should return tasks by projectId when match tasks by projectId`() = runTest {
+        val matchTask = sampleTask.copy(taskId = UUID.randomUUID(), projectId = projectId)
+        val notMatchTask = sampleTask.copy(taskId = UUID.randomUUID(), projectId = UUID.randomUUID())
+        coEvery { taskDataSource.getAllTasks() } returns listOf(matchTask, notMatchTask)
 
-        val result = taskRepository.getTasksByProject(1)
+        val result = taskRepository.getTasksByProject(projectId)
 
-        assertEquals(1, result.size)
-        assertEquals("task1", result[0].id)
+        assertEquals(listOf(matchTask), result)
+        coVerify { taskDataSource.getAllTasks() }
+    }
+
+    @Test
+    fun `should return empty list of tasks when no tasks match projectId`() = runTest {
+        val firstNotMatchTask = sampleTask.copy(taskId = UUID.randomUUID(), projectId = UUID.randomUUID())
+        val secondNotMatchTask = sampleTask.copy(taskId = UUID.randomUUID(), projectId = UUID.randomUUID())
+        coEvery { taskDataSource.getAllTasks() } returns listOf(firstNotMatchTask, secondNotMatchTask)
+
+        val result = taskRepository.getTasksByProject(UUID.randomUUID())
+
+        assertTrue(result.isEmpty())
+        coVerify { taskDataSource.getAllTasks() }
     }
 
     @Test
     fun `should return all tasks when calling getAllTasks`() = runTest {
-        val tasks = listOf(sampleTask, sampleTask.copy(id = "task2"))
+        val taskId2 = UUID.fromString("123e4567-e89b-12d3-a456-426614174003")
+        val tasks = listOf(sampleTask, sampleTask.copy(taskId = taskId2))
         coEvery { taskDataSource.getAllTasks() } returns tasks
 
         val result = taskRepository.getAllTasks()
 
         assertEquals(2, result.size)
-        assertEquals("task1", result[0].id)
-        assertEquals("task2", result[1].id)
         coVerify { taskDataSource.getAllTasks() }
     }
 }

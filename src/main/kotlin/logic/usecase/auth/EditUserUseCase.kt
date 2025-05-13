@@ -1,9 +1,10 @@
 package org.example.logic.usecase.auth
 
-import org.example.logic.EmptyNameException
-import org.example.logic.EmptyPasswordException
-import org.example.logic.EntityNotChangedException
+
 import org.example.logic.entity.auth.User
+import org.example.logic.exception.EmptyNameException
+import org.example.logic.exception.EmptyPasswordException
+import org.example.logic.exception.EntityNotChangedException
 import org.example.logic.repository.AuthRepository
 
 
@@ -19,11 +20,17 @@ class EditUserUseCase(
     }
 
     private fun validateUserInputs(newUser: User, oldUser: User) {
-        if (newUser == oldUser)
-            throw EntityNotChangedException()
-        if (newUser.username.isEmpty()) throw EmptyNameException()
-        if (newUser.password.isBlank()) throw EmptyPasswordException()
+        if (newUser.username.trim().isEmpty()) {
+            throw EmptyNameException("Name cannot be empty")
+        }
+        if (newUser.password.trim().isEmpty()) {
+            throw EmptyPasswordException("Password cannot be empty")
+        }
+        if (newUser.username.trim() == oldUser.username.trim() &&
+            newUser.password.trim() == oldUser.password.trim() &&
+            newUser.userRole == oldUser.userRole
+        ) {
+            throw EntityNotChangedException("Entity not changed")
+        }
     }
-
 }
-

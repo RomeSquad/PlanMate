@@ -3,6 +3,7 @@ package org.example.data.repository
 import org.example.data.datasource.task.TaskDataSource
 import org.example.logic.entity.Task
 import org.example.logic.repository.TaskRepository
+import java.util.*
 
 class TaskRepositoryImpl(
     private val taskDataSource: TaskDataSource,
@@ -11,7 +12,7 @@ class TaskRepositoryImpl(
     override suspend fun createTask(task: Task) = taskDataSource.createTask(task)
 
     override suspend fun editTask(
-        taskId: String,
+        taskId: UUID,
         title: String,
         description: String,
         updatedAt: Long
@@ -19,15 +20,15 @@ class TaskRepositoryImpl(
         taskDataSource.editTask(taskId, title, description, updatedAt)
     }
 
-    override suspend fun deleteTask(projectId: Int, taskId: String) {
+    override suspend fun deleteTask(projectId: UUID, taskId: UUID) {
         taskDataSource.deleteTask(projectId, taskId)
     }
 
-    override suspend fun getTaskById(taskId: String): Task {
+    override suspend fun getTaskById(taskId: UUID): Task {
         return taskDataSource.getTaskByIdFromFile(taskId)
     }
 
-    override suspend fun getTasksByProject(projectId: Int): List<Task> {
+    override suspend fun getTasksByProject(projectId: UUID): List<Task> {
         return taskDataSource.getAllTasks().filter { it.projectId == projectId }
     }
 

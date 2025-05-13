@@ -1,15 +1,19 @@
 package org.example.presentation.history
 
 import org.example.logic.usecase.history.ShowTaskHistoryUseCase
+import org.example.logic.usecase.project.GetAllProjectsUseCase
+import org.example.logic.usecase.task.GetTasksByProjectIdUseCase
 import org.example.presentation.utils.formatter.CliFormatter
 import org.example.presentation.utils.formatter.dataFormatter.format
+import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import presentation.io.InputReader
 
 class ShowTaskHistoryUI(
-    private val showTaskHistoryUseCase: ShowTaskHistoryUseCase
+    private val showTaskHistoryUseCase: ShowTaskHistoryUseCase,
+    private val getAllProjectsUseCase: GetAllProjectsUseCase,
+    private val getTasksByProjectIdUseCase: GetTasksByProjectIdUseCase
 ) : MenuAction {
 
     override val description: String = """
@@ -22,22 +26,53 @@ class ShowTaskHistoryUI(
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
         try {
             ui.displayMessage(description)
-            ui.displayMessage("🔹 Enter Task ID:")
-            val idInput = inputReader.readString("Task ID:").trim()
-            if (idInput.isBlank()) {
-                throw IllegalArgumentException("Task ID must not be blank")
-            }
-            val id = idInput.toIntOrNull()
-                ?: throw IllegalArgumentException("Task ID must be a valid number")
-
-            val result = showTaskHistoryUseCase.execute(id)
-            if (result.isEmpty()) {
-                ui.displayMessage("❌ No history found for Task ID: $id")
+            ui.displayMessage("🔍 Fetching all projects...")
+            val projects = getAllProjectsUseCase.getAllProjects()
+            if (projects.isEmpty()) {
+                ui.displayMessage("❌ No projects available.")
                 return
             }
+            ui.displayMessage("📂 Available Projects:")
+            projects.forEachIndexed { index, project ->
+                ui.displayMessage("📌 ${index + 1}. ${project.name} | 🆔 ID: ${project.projectId}")
+            }
+            val projectIndex = inputReader.readIntOrNull("🔹 Select a project to view task history:", 1..projects.size)
+                ?.minus(1)
+                ?: throw IllegalArgumentException("Invalid project selection.")
+            val selectedProject = projects[projectIndex]
+            ui.displayMessage("🔍 Fetching tasks for project '${selectedProject.name}'...")
+            val tasks = getTasksByProjectIdUseCase.getTasksByProjectId(selectedProject.projectId)
+            if (tasks.isEmpty()) {
+                ui.displayMessage("❌ No tasks found for project '${selectedProject.name}'.")
+                return
+            }
+            ui.displayMessage("📝 Available Tasks:")
+            tasks.forEachIndexed { index, task ->
+                ui.displayMessage("✅ ${index + 1}. ${task.title} | 🏷️ Status: ${task.state.stateName} | 🆔 ID: ${task.taskId}")
+            }
+            val taskIndex = inputReader.readIntOrNull("🔹 Select a task to view history:", 1..tasks.size)
+                ?.minus(1)
+                ?: throw IllegalArgumentException("Invalid task selection.")
+            val selectedTask = tasks[taskIndex]
+            ui.displayMessage("🔍 Fetching change history for task '${selectedTask.title}'...")
+            val result = showTaskHistoryUseCase.execute(selectedTask.taskId)
+            if (result.isEmpty()) {
+                ui.displayMessage("❌ No change history found for task '${selectedTask.title}'.")
+                return
+            }
+            ui.displayMessage("📜 Change History for '${selectedTask.title}':")
+            ui.displayMessage("🔍 Fetching change history details...")
+            if (result.isEmpty()) {
+                ui.displayMessage("❌ No change history details found.")
+                return
+            }
+            ui.displayMessage("📜 Change History Details:")
+            ui.displayMessage("🔍 Formatting change history details...")
             val formatter = CliFormatter()
             val show = formatter.verticalLayout(result.map { it.format() })
-            ui.displayMessage("✅ Change History Details:")
+            ui.displayMessage("🔍 Formatting completed.")
+            ui.displayMessage("🔍 Displaying change history details...")
+            ui.displayMessage("🔍 Change history details retrieved successfully.")
             ui.displayMessage(show)
         } catch (e: IllegalArgumentException) {
             ui.displayMessage("❌ Error: ${e.message}")

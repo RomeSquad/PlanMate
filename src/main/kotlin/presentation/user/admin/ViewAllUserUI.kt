@@ -1,10 +1,10 @@
 package org.example.presentation.user.admin
 
 import org.example.logic.usecase.auth.GetAllUsersUseCase
+import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import presentation.io.InputReader
 
 class ViewAllUserUI(
     private val getAllUsersUseCase: GetAllUsersUseCase,

@@ -1,11 +1,13 @@
 package logic.usecase.state
 
 import io.mockk.*
+import kotlinx.coroutines.test.runTest
 import org.example.logic.repository.ProjectStateRepository
 import org.example.logic.usecase.state.EditProjectStateUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.*
 
 
 class EditProjectProjectStateUseCaseTest {
@@ -20,22 +22,22 @@ class EditProjectProjectStateUseCaseTest {
 
 
     @Test
-    fun ` should throw exception when new state name is blank`() {
+    fun ` should throw exception when new state name is blank`() = runTest {
+        val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
         assertThrows<IllegalArgumentException> {
-            editProjectStateUseCase.execute(1, "")
+            editProjectStateUseCase.execute(projectId, "")
         }
     }
 
     @Test
-    fun ` should edit state successfully`() {
-        val projectId = 1
+    fun ` should edit state successfully`() = runTest {
+        val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
         val newStateName = "code review"
+        coEvery { projectStateRepository.editProjectState(projectId, newStateName) } just Runs
 
-        every { projectStateRepository.editProjectState(projectId, newStateName) } just Runs
+        editProjectStateUseCase.execute(projectId, "code review")
 
-        editProjectStateUseCase.execute(1, "code review")
-
-        verify(exactly = 1) { editProjectStateUseCase.execute(projectId, newStateName) }
+        coVerify(exactly = 1) { editProjectStateUseCase.execute(projectId, newStateName) }
     }
 
 }

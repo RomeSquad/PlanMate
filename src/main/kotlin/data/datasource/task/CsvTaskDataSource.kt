@@ -1,18 +1,19 @@
 package org.example.data.datasource.task
 
+import org.example.data.datasource.mapper.fromCsvRowToTask
+import org.example.data.datasource.mapper.toCsvRow
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
-import org.example.data.repository.mapper.fromCsvRowToTask
-import org.example.data.repository.mapper.toCsvRow
-import org.example.logic.TaskNotFoundException
 import org.example.logic.entity.Task
+import org.example.logic.exception.TaskNotFoundException
 import java.io.File
+import java.util.*
 
-class CsvTaskDataSource (
+class CsvTaskDataSource(
     private val csvFileReader: CsvFileReader,
     private val csvFileWriter: CsvFileWriter,
     private val taskFile: File
-): TaskDataSource {
+) : TaskDataSource {
 
     override suspend fun createTask(task: Task) {
         val row = task.toCsvRow()
@@ -20,13 +21,13 @@ class CsvTaskDataSource (
     }
 
     override suspend fun editTask(
-        taskId: String,
+        taskId: UUID,
         title: String,
         description: String,
         updatedAt: Long
     ) {
         val tasks = getAllTasks().toMutableList()
-        val index = tasks.indexOfFirst { it.id == taskId }
+        val index = tasks.indexOfFirst { it.taskId == taskId }
 
         if (index == -1) {
             throw TaskNotFoundException("Task with id $taskId not found")
@@ -42,12 +43,12 @@ class CsvTaskDataSource (
         saveAllTasks(tasks)
     }
 
-    override suspend fun deleteTask(projectId: Int, taskId: String) {
+    override suspend fun deleteTask(projectId: UUID, taskId: UUID) {
         val allTasks = getAllTasks().toMutableList()
         val removed = allTasks.removeIf {
             it.projectId == projectId
-            &&
-            it.id == taskId
+                    &&
+                    it.taskId == taskId
         }
 
         if (!removed) {
@@ -59,15 +60,15 @@ class CsvTaskDataSource (
         saveAllTasks(allTasks)
     }
 
-    override suspend fun getTaskByIdFromFile(taskId: String): Task {
+    override suspend fun getTaskByIdFromFile(taskId: UUID): Task {
         val data = csvFileReader.readCsv(taskFile)
         val tasks = data.map { it.fromCsvRowToTask() }
-        val task = tasks.firstOrNull { it.id == taskId }
+        val task = tasks.firstOrNull { it.taskId == taskId }
             ?: throw TaskNotFoundException("Task not found for this id")
         return task
     }
 
-    override suspend fun getTasksByProjectId(projectId: Int): List<Task> {
+    override suspend fun getTasksByProjectId(projectId: UUID): List<Task> {
         return getAllTasks().filter { it.projectId == projectId }
     }
 

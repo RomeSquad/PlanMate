@@ -1,6 +1,8 @@
 package org.example.logic.entity
 
-data class TaskState (
-    val projectId: Int,
+import java.util.*
+
+data class TaskState(
+    val projectId: UUID,
     val stateName: String,
 )

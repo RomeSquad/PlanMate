@@ -3,14 +3,14 @@ package org.example.presentation
 import org.example.presentation.auithentication.LoginManagementUI
 import org.example.presentation.auithentication.MainMenuUI
 import org.example.presentation.auithentication.Session
+import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import presentation.io.InputReader
 
 class CLIMenu(
     private val loginView: LoginManagementUI,
-    private val userManagementView: MainMenuUI
+    private val userManagementView: MainMenuUI,
 ) : MenuAction {
     override val description: String = """
         ╔════════════════════════════════════╗

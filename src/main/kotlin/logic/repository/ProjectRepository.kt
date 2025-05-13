@@ -1,14 +1,14 @@
 package org.example.logic.repository
 
-import org.example.logic.entity.CreateProjectRequest
-import org.example.logic.entity.CreateProjectResponse
 import org.example.logic.entity.Project
+import org.example.logic.entity.auth.User
+import java.util.*
 
 interface ProjectRepository {
-    fun insertProject(projectRequest: CreateProjectRequest): Result<CreateProjectResponse>
-    fun getProjectById(id: Int): Result<Project>
-    fun getAllProjects(): Result<List<Project>>
-    fun saveAllProjects(): Result<Unit>
-    fun deleteProject(id: Int): Result<Unit>
-    fun  editProject(project: Project): Result<Unit>
+    suspend fun createProject(project: Project, user: User): UUID
+    suspend fun getAllProjects(): List<Project>
+    suspend fun getProjectById(id: UUID): Project
+    suspend fun saveAllProjects()
+    suspend fun editProject(project: Project)
+    suspend fun deleteProject(id: UUID)
 }

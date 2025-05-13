@@ -10,6 +10,7 @@ import org.example.logic.usecase.auth.GetUserByUsernameUseCase
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.*
 
 class GetUserByUsernameUseCaseTest {
     private lateinit var getUserByUsernameUseCase: GetUserByUsernameUseCase
@@ -26,7 +27,7 @@ class GetUserByUsernameUseCaseTest {
         // Given
         val username = "amr"
         val expectedUser = User(
-            userId = 1,
+            userId = UUID.randomUUID(),
             username = username,
             password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password"
             userRole = UserRole.MATE

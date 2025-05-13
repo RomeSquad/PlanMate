@@ -1,14 +1,15 @@
 package org.example.logic.repository
 
 import org.example.logic.entity.Task
+import java.util.*
 
 interface TaskRepository {
     suspend fun createTask(task: Task)
-    suspend fun editTask(taskId: String, title: String, description: String, updatedAt: Long)
-    suspend fun deleteTask(projectId: Int, taskId: String)
+    suspend fun editTask(taskId: UUID, title: String, description: String, updatedAt: Long)
+    suspend fun deleteTask(projectId: UUID, taskId: UUID)
 
-    suspend fun getTaskById (taskId: String): Task
-    suspend fun getTasksByProject(projectId: Int): List<Task>
+    suspend fun getTaskById(taskId: UUID): Task
+    suspend fun getTasksByProject(projectId: UUID): List<Task>
 
     suspend fun getAllTasks(): List<Task>
 }
