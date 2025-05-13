@@ -146,7 +146,7 @@ class CliFormatter : Formatter {
 
 
     companion object {
-        private val TOP_BOTTOM_BORDER = "-"
-        private val SIDE_BORDER = "|"
+        private val TOP_BOTTOM_BORDER = "═"
+        private val SIDE_BORDER = "║"
     }
 }
