@@ -13,7 +13,6 @@ class NotAccessException(message: String) : Exception(message)
 class CantAddStateWithNoNameException(message: String) : Exception(message)
 
 
-
 class TaskNotFoundException(message: String) : Exception(message)
 class EntityNotChangedException(message: String) : Exception(message)
 class EmptyNameException(message: String) : Exception(message)

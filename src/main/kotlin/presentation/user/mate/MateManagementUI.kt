@@ -1,10 +1,10 @@
 package org.example.presentation.user.mate
 
 import org.example.presentation.task.TaskManagementUI
+import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import org.example.presentation.utils.io.InputReader
 
 class MateManagementUI(
     private val taskManagementUI: TaskManagementUI,

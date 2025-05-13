@@ -12,7 +12,7 @@ import org.example.logic.request.auth.LoginRequest
 import org.example.logic.usecase.auth.LoginUseCase
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.assertThrows
-import java.util.UUID
+import java.util.*
 import kotlin.test.Test
 
 class LoginUseCaseTest {

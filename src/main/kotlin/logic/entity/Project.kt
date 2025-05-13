@@ -1,6 +1,6 @@
 package org.example.logic.entity
 
-import java.util.UUID
+import java.util.*
 
 data class Project(
     val projectId: UUID,
@@ -20,7 +20,7 @@ data class CreateProjectResponse(
     val id: UUID,
 )
 
-fun CreateProjectRequest.toProject() : Project {
+fun CreateProjectRequest.toProject(): Project {
     val id = UUID.randomUUID()
     return Project(
         projectId = id,

@@ -179,7 +179,7 @@ val presentationModule = module {
             get(),
             get(),
             get(),
-            )
+        )
     }
     single {
         EditTaskUI(

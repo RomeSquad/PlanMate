@@ -10,7 +10,7 @@ import org.example.logic.usecase.state.AddCustomProjectStateUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.UUID
+import java.util.*
 import kotlin.test.assertFailsWith
 
 class AddCustomProjectProjectStateUseCaseTest {
@@ -44,7 +44,8 @@ class AddCustomProjectProjectStateUseCaseTest {
 
     @Test
     fun `should throw an exception when user role is mate`() = runTest {
-        val currentUser = User(userId = UUID.randomUUID(), username = "Zinah", password = "1234", userRole = UserRole.MATE)
+        val currentUser =
+            User(userId = UUID.randomUUID(), username = "Zinah", password = "1234", userRole = UserRole.MATE)
         val stateName = "pending"
         val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
         assertFailsWith<IllegalAccessException> {
@@ -54,9 +55,14 @@ class AddCustomProjectProjectStateUseCaseTest {
 
     @Test
     fun ` should throw an exception when state name is blank`() = runTest {
-        val currentUser = User(userId = UUID.randomUUID(), username = "Zinah", password = "1234", userRole = UserRole.ADMIN)
+        val currentUser =
+            User(userId = UUID.randomUUID(), username = "Zinah", password = "1234", userRole = UserRole.ADMIN)
         assertThrows<IllegalArgumentException> {
-            addCustomProjectStateUseCase.execute(currentUser, "", UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f"))
+            addCustomProjectStateUseCase.execute(
+                currentUser,
+                "",
+                UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
+            )
         }
     }
 

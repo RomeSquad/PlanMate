@@ -1,7 +1,7 @@
 package org.example.data.datasource.task
 
 import org.example.logic.entity.Task
-import java.util.UUID
+import java.util.*
 
 interface TaskDataSource {
     suspend fun createTask(task: Task)

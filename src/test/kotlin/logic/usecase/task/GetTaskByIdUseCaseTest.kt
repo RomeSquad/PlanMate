@@ -23,7 +23,7 @@ class GetTaskByIdUseCaseTest {
 
     @Test
     fun `should return task when existing it`() = runTest {
-        val task = createTask(title = "title", description =  "description")
+        val task = createTask(title = "title", description = "description")
         coEvery { taskRepository.getTaskById(task.taskId) } returns task
 
         val result = getTaskByIdUseCase.getTaskById(taskId = task.taskId)

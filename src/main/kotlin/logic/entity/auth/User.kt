@@ -1,10 +1,10 @@
 package org.example.logic.entity.auth
 
-import java.util.UUID
+import java.util.*
 
 
 data class User(
-    val userId : UUID = UUID.randomUUID(),
+    val userId: UUID = UUID.randomUUID(),
     val username: String,
     val password: String,
     val userRole: UserRole,

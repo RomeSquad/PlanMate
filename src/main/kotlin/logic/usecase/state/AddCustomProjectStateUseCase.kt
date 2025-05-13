@@ -4,7 +4,7 @@ import org.example.logic.entity.ProjectState
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.repository.ProjectStateRepository
-import java.util.UUID
+import java.util.*
 
 class AddCustomProjectStateUseCase(
     private val stateRepository: ProjectStateRepository

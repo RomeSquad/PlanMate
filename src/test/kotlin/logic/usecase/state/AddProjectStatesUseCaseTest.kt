@@ -7,7 +7,7 @@ import org.example.logic.usecase.state.AddProjectStatesUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.UUID
+import java.util.*
 
 class AddProjectStatesUseCaseTest {
     private lateinit var projectStateRepository: ProjectStateRepository

@@ -1,4 +1,5 @@
 package org.example.data.datasource.mapper
+
 import org.example.data.utils.ParserImpl
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
@@ -20,8 +21,6 @@ fun ChangeHistory.toCsvCell() = listOf(projectID, taskID, authorID, changeDescri
 
 fun ProjectState.toCsvCell() = listOf(projectId, stateName).toString()
 val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
-
-
 
 
 fun List<String>.fromCsvRowToProject(): Project {

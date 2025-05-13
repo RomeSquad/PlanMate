@@ -7,7 +7,7 @@ import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.EditTaskUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
-import java.util.UUID
+import java.util.*
 import kotlin.test.Test
 
 class EditTaskUseCaseTest {

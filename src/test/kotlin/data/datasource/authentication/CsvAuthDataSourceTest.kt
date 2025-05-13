@@ -1,12 +1,6 @@
 package data.datasource.authentication
 
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.runs
-import io.mockk.unmockkStatic
-import io.mockk.verify
+import io.mockk.*
 import kotlinx.coroutines.test.runTest
 import logic.request.auth.CreateUserRequest
 import org.example.data.datasource.authentication.CsvAuthDataSource
@@ -23,7 +17,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.io.File
-import java.util.UUID
+import java.util.*
 
 class CsvAuthDataSourceTest {
 

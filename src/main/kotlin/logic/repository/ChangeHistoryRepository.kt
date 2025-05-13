@@ -1,7 +1,7 @@
 package org.example.logic.repository
 
 import org.example.logic.entity.ChangeHistory
-import java.util.UUID
+import java.util.*
 
 interface ChangeHistoryRepository {
     suspend fun addChangeHistory(changeHistory: ChangeHistory): ChangeHistory

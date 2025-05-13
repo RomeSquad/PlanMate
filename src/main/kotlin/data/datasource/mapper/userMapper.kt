@@ -4,7 +4,7 @@ import logic.request.auth.CreateUserRequest
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.utils.hashPassword
-import java.util.UUID
+import java.util.*
 
 fun User.toCsvRow(): List<String> {
     return listOf(userId.toString(), username, password, userRole.toString())
@@ -19,6 +19,7 @@ fun List<String>.fromCsvRowToUser(): User {
         userRole = UserRole.valueOf(this[3])
     )
 }
+
 fun CreateUserRequest.toUser() = User(
     username = username,
     password = hashPassword(password),

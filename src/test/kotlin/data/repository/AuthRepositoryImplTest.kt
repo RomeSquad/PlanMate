@@ -3,7 +3,6 @@ package data.repository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import logic.request.auth.CreateUserRequest
 import org.example.data.datasource.authentication.AuthDataSource
@@ -18,7 +17,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.UUID
+import java.util.*
 
 class AuthRepositoryImplTest {
     private lateinit var authRepository: AuthRepositoryImpl
@@ -146,10 +145,10 @@ class AuthRepositoryImplTest {
             username = username,
             password = "5f4dcc3b5aa765d61d8327deb882cf98",
         )
-        coEvery { authDataSource.loginUser(request) } throws  UserNotFoundException()
+        coEvery { authDataSource.loginUser(request) } throws UserNotFoundException()
 
         // When
-        assertThrows<UserNotFoundException> {  authRepository.loginUser(request)}
+        assertThrows<UserNotFoundException> { authRepository.loginUser(request) }
 
         // Then
     }
@@ -173,10 +172,10 @@ class AuthRepositoryImplTest {
             username = "mohamed",
             password = "5f4dcc3b5aa765d61d8327deb882cf98",
         )
-        coEvery { authDataSource.loginUser(request) } throws  UserNotFoundException()
+        coEvery { authDataSource.loginUser(request) } throws UserNotFoundException()
 
         // When
-        assertThrows<UserNotFoundException> {  authRepository.loginUser(request)}
+        assertThrows<UserNotFoundException> { authRepository.loginUser(request) }
 
     }
     // endregion
@@ -234,10 +233,10 @@ class AuthRepositoryImplTest {
     fun `should throw exception when deleteUser with non-existing username`() = runTest {
         // Given
 
-        coEvery { authDataSource.deleteUser("alaa") } throws  UserNotFoundException()
+        coEvery { authDataSource.deleteUser("alaa") } throws UserNotFoundException()
 
         // When/Then
-         assertThrows<UserNotFoundException> {
+        assertThrows<UserNotFoundException> {
             authRepository.deleteUser("alaa")
         }
     }
@@ -261,9 +260,8 @@ class AuthRepositoryImplTest {
         val result = authRepository.editUser(expectedUser.copy(userRole = UserRole.MATE))
 
         // Then
-        coVerify {  authDataSource.editUser(any()) }
+        coVerify { authDataSource.editUser(any()) }
     }
-
 
 
     // region getUserByUserName

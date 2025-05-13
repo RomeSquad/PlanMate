@@ -21,6 +21,7 @@ class ShowHistoryManagementUI(
         "📝 2. Show Task History",
         "⬅️ 3. Back to Main Menu"
     )
+
     override suspend fun execute(
         ui: UiDisplayer,
         inputReader: InputReader
@@ -38,6 +39,7 @@ class ShowHistoryManagementUI(
                     ui.displayMessage("✅ Exiting history management menu. Have a great day! 👋")
                     return
                 }
+
                 else -> ui.displayMessage("❌ Invalid choice. Please try again.")
             }
         }

@@ -1,7 +1,7 @@
 package data.datasource.projectState
 
 import org.example.logic.entity.ProjectState
-import java.util.UUID
+import java.util.*
 
 interface ProjectStateDataSource {
     suspend fun getAllProjectStates(): List<ProjectState>

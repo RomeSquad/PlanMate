@@ -1,13 +1,15 @@
 package logic.usecase.task
 
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.example.logic.repository.TaskRepository
 import org.example.logic.usecase.task.DeleteTaskUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.UUID
+import java.util.*
 import kotlin.test.assertEquals
 
 class DeleteTaskUseCaseTest {
@@ -41,7 +43,12 @@ class DeleteTaskUseCaseTest {
     @Test
     fun `should throw NoSuchElementException when task does not exist`() = runTest {
         // Given
-        coEvery { taskRepository.deleteTask(projectId, nonExistentTaskId) } throws NoSuchElementException("Task with id $nonExistentTaskId not found")
+        coEvery {
+            taskRepository.deleteTask(
+                projectId,
+                nonExistentTaskId
+            )
+        } throws NoSuchElementException("Task with id $nonExistentTaskId not found")
 
         // When/Then
         val exception = assertThrows<NoSuchElementException> {
@@ -54,7 +61,12 @@ class DeleteTaskUseCaseTest {
     @Test
     fun `should throw NoSuchElementException when project does not exist`() = runTest {
         // Given
-        coEvery { taskRepository.deleteTask(nonExistentProjectId, taskId) } throws NoSuchElementException("Project with id $nonExistentProjectId not found")
+        coEvery {
+            taskRepository.deleteTask(
+                nonExistentProjectId,
+                taskId
+            )
+        } throws NoSuchElementException("Project with id $nonExistentProjectId not found")
 
         // When/Then
         val exception = assertThrows<NoSuchElementException> {

@@ -1,6 +1,6 @@
 package org.example.logic.entity
 
-import java.util.UUID
+import java.util.*
 
 data class Task(
     val taskId: UUID,

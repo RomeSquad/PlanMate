@@ -3,7 +3,7 @@ package org.example.data.repository
 import org.example.data.datasource.changelog.ChangeHistoryDataSource
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.repository.ChangeHistoryRepository
-import java.util.UUID
+import java.util.*
 
 class ChangeHistoryRepositoryImpl(
     private val dataSource: ChangeHistoryDataSource

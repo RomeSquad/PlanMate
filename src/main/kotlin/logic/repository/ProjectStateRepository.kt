@@ -1,7 +1,7 @@
 package org.example.logic.repository
 
 import org.example.logic.entity.ProjectState
-import java.util.UUID
+import java.util.*
 
 interface ProjectStateRepository {
     suspend fun addProjectState(state: ProjectState)

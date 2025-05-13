@@ -8,7 +8,7 @@ import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.util.UUID
+import java.util.*
 import kotlin.test.BeforeTest
 import kotlin.test.assertTrue
 

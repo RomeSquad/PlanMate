@@ -10,7 +10,7 @@ import org.example.logic.usecase.auth.GetUserByUsernameUseCase
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.UUID
+import java.util.*
 
 class GetUserByUsernameUseCaseTest {
     private lateinit var getUserByUsernameUseCase: GetUserByUsernameUseCase

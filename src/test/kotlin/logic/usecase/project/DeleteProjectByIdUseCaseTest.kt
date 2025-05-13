@@ -9,7 +9,7 @@ import org.example.logic.usecase.project.DeleteProjectByIdUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.UUID
+import java.util.*
 import kotlin.test.assertEquals
 
 class DeleteProjectByIdUseCaseTest {

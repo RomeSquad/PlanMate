@@ -26,7 +26,7 @@ val logicModule = module {
 
     //region User
     single<UserCredentialsValidator> { UserCredentialsValidatorImpl() }
-    single { InsertUserUseCase(get(),get()) }
+    single { InsertUserUseCase(get(), get()) }
     single { LoginUseCase(get()) }
     single { GetAllUsersUseCase(get()) }
     single { DeleteUserUseCase(get()) }

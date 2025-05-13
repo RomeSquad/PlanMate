@@ -2,10 +2,10 @@ package org.example.presentation.project
 
 import org.example.logic.entity.Project
 import org.example.logic.usecase.project.GetAllProjectsUseCase
+import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import org.example.presentation.utils.io.InputReader
 
 
 class ListProjectUi(

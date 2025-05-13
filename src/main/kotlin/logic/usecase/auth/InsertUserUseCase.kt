@@ -13,7 +13,7 @@ class InsertUserUseCase(
     suspend fun insertUser(username: String, password: String, userRole: UserRole): User {
         userCredentialsValidator.validateCredentialsNotEmpty(username, password)
         userCredentialsValidator.validatePasswordStrength(password)
-        val request  = CreateUserRequest(username, password, userRole)
+        val request = CreateUserRequest(username, password, userRole)
         return authRepository.insertUser(request)
     }
 }

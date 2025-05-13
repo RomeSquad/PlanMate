@@ -1,9 +1,9 @@
 package org.example.presentation.projectstates
 
+import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
-import org.example.presentation.utils.io.InputReader
 
 class ProjectStateManagementUI(
     private val addStateToProjectUI: AddStateToProjectUI,

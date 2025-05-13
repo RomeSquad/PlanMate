@@ -13,12 +13,11 @@ class AuthRepositoryImpl(
 
     override suspend fun insertUser(request: CreateUserRequest): User = authDataSource.insertUser(request)
 
-    override suspend fun loginUser(request: LoginRequest): User =  authDataSource.loginUser(request)
+    override suspend fun loginUser(request: LoginRequest): User = authDataSource.loginUser(request)
 
     override suspend fun getAllUsers(): List<User> = authDataSource.getAllUsers()
 
-
-    override suspend fun deleteUser(username: String): Boolean =  authDataSource.deleteUser(username)
+    override suspend fun deleteUser(username: String): Boolean = authDataSource.deleteUser(username)
 
     override suspend fun editUser(user: User) = authDataSource.editUser(user)
 
