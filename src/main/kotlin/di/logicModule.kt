@@ -52,6 +52,7 @@ val logicModule = module {
     single { EditProjectStateUseCase(get()) }
     single { GetAllProjectStatesUseCase(get()) }
     single { GetStateByTaskIdUseCase(get()) }
+    single { AddTaskStateToProjectUseCase(get(), get(), get()) }
     //endregion
 
     //region Change History

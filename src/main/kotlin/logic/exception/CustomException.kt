@@ -9,6 +9,9 @@ open class UserException : Exception()
 class InvalidUserException : UserException()
 class EmptyTitleException : IllegalArgumentException()
 
+class NotAccessException(message: String) : Exception(message)
+class CantAddStateWithNoNameException(message: String) : Exception(message)
+
 
 
 class TaskNotFoundException(message: String) : Exception(message)
