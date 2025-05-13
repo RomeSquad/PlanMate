@@ -3,10 +3,11 @@ package org.example.data.datasource.authentication
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoCollection
+import data.datasource.authentication.dto.UserDto
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import logic.request.auth.CreateUserRequest
-import org.example.data.datasource.mapper.toUser
+import org.example.data.datasource.mapper.toUserDto
 import org.example.data.utils.AuthConstants.PASSWORD
 import org.example.data.utils.AuthConstants.USER_ID
 import org.example.data.utils.AuthConstants.USER_NAME
@@ -19,20 +20,20 @@ import org.example.logic.request.auth.LoginRequest
 import java.util.*
 
 class MongoAuthDataSource(
-    private val userMongoCollection: MongoCollection<User>
+    private val userMongoCollection: MongoCollection<UserDto>
 ) : AuthDataSource {
-    override suspend fun getAllUsers(): List<User> {
+    override suspend fun getAllUsers(): List<UserDto> {
         return userMongoCollection.find().toList()
     }
 
-    override suspend fun insertUser(request: CreateUserRequest): User {
+    override suspend fun insertUser(request: CreateUserRequest): UserDto {
         isUserNameExists(request.username)
-        val newUser = request.toUser()
+        val newUser = request.toUserDto()
         userMongoCollection.insertOne(newUser)
         return newUser
     }
 
-    override suspend fun loginUser(request: LoginRequest): User {
+    override suspend fun loginUser(request: LoginRequest): UserDto {
         val hashedPassword = hashStringWithMD5(request.password)
         val filter = Filters.and(
             Filters.eq(USER_NAME, request.username),
@@ -56,7 +57,7 @@ class MongoAuthDataSource(
         }
     }
 
-    override suspend fun editUser(user: User) {
+    override suspend fun editUser(user: UserDto) {
         val hashedPassword = hashStringWithMD5(user.password)
 
         val filter = Filters.eq(USER_NAME, user.username)
@@ -73,7 +74,7 @@ class MongoAuthDataSource(
 
     }
 
-    override suspend fun getUserByUserName(username: String): User? {
+    override suspend fun getUserByUserName(username: String): UserDto? {
         return userMongoCollection.find(Filters.eq(USER_NAME, username)).firstOrNull()
     }
 
@@ -84,11 +85,11 @@ class MongoAuthDataSource(
         }
     }
 
-    override suspend fun getCurrentUser(): User? {
+    override suspend fun getCurrentUser(): UserDto? {
         return userMongoCollection.find().firstOrNull()
     }
 
-    override suspend fun getUserById(id: UUID): User? {
+    override suspend fun getUserById(id: UUID): UserDto? {
         return userMongoCollection.find(Filters.eq(USER_ID, id)).firstOrNull()
     }
 

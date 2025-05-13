@@ -1,10 +1,11 @@
 package org.example.data.datasource.authentication
 
+import data.datasource.authentication.dto.UserDto
 import kotlinx.coroutines.runBlocking
 import logic.request.auth.CreateUserRequest
 import org.example.data.datasource.mapper.fromCsvRowToUser
 import org.example.data.datasource.mapper.toCsvRow
-import org.example.data.datasource.mapper.toUser
+import org.example.data.datasource.mapper.toUserDto
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.data.utils.hashStringWithMD5
@@ -20,7 +21,7 @@ class CsvAuthDataSource(
     private val csvFileWriter: CsvFileWriter,
     private val userFile: File
 ) : AuthDataSource {
-    private var users = mutableListOf<User>()
+    private var users = mutableListOf<UserDto>()
 
     init {
         runBlocking {
@@ -28,15 +29,15 @@ class CsvAuthDataSource(
         }
     }
 
-    override suspend fun insertUser(request: CreateUserRequest): User {
+    override suspend fun insertUser(request: CreateUserRequest): UserDto {
         isUserNameExists(request.username)
-        val newUser = request.toUser()
+        val newUser = request.toUserDto()
         users.add(newUser)
         saveAllUsers()
         return newUser
     }
 
-    override suspend fun loginUser(request: LoginRequest): User {
+    override suspend fun loginUser(request: LoginRequest): UserDto {
         val hashedPassword = hashStringWithMD5(request.password)
         val user = users.find { it.username == request.username && it.password == hashedPassword }
             ?: throw UserNotFoundException()
@@ -49,14 +50,14 @@ class CsvAuthDataSource(
         return true
     }
 
-    override suspend fun editUser(user: User) {
+    override suspend fun editUser(user: UserDto) {
         val existingUser = users.find { it.username == user.username } ?: throw UserNotFoundException()
         users.remove(existingUser)
         users.add(user)
         saveAllUsers()
     }
 
-    override suspend fun getUserByUserName(username: String): User? {
+    override suspend fun getUserByUserName(username: String): UserDto? {
         return users.find { it.username == username }
     }
 
@@ -73,16 +74,16 @@ class CsvAuthDataSource(
         }
     }
 
-    override suspend fun getCurrentUser(): User? {
+    override suspend fun getCurrentUser(): UserDto? {
         return users.firstOrNull()
     }
 
-    override suspend fun getUserById(id: UUID): User? {
+    override suspend fun getUserById(id: UUID): UserDto? {
         return users.find { it.userId == id }
     }
 
 
-    override suspend fun getAllUsers(): List<User> {
+    override suspend fun getAllUsers(): List<UserDto> {
         val data = csvFileReader.readCsv(userFile)
         val users = data.map { it.fromCsvRowToUser() }
         return users

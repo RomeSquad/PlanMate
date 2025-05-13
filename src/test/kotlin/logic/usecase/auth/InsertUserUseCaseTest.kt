@@ -5,7 +5,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import logic.request.auth.CreateUserRequest
 import logic.usecase.validator.UserCredentialsValidator
-import org.example.data.datasource.mapper.toUser
+import org.example.data.datasource.mapper.toUserDto
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.exception.PasswordLengthException
 import org.example.logic.exception.UserNameOrPasswordEmptyException
@@ -34,7 +34,7 @@ class InsertUserUseCaseTest {
                 password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
                 userRole = userRole
             )
-            val expectedUser = request.toUser()
+            val expectedUser = request.toUserDto()
             coEvery { authRepository.insertUser(any()) } returns expectedUser
 
             // When
@@ -55,7 +55,7 @@ class InsertUserUseCaseTest {
             password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
             userRole = userRole
         )
-        val expectedUser = request.toUser()
+        val expectedUser = request.toUserDto()
         coEvery { authRepository.insertUser(request) } throws UserNameOrPasswordEmptyException()
 
         // When/Then
