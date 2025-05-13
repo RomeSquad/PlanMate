@@ -1,5 +1,6 @@
 package org.example.presentation.task
 
+import org.example.presentation.history.ShowHistoryManagementUI
 import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
@@ -10,6 +11,7 @@ class TaskManagementUI(
     private val deleteTaskUi: DeleteTaskUI,
     private val editTaskUi: EditTaskUI,
     private val getAllTasksUi: GetAllTasksUI,
+    private val changeHistoryManagementUI: ShowHistoryManagementUI
 ) : MenuAction {
     private val options = listOf(
         "➕ 1. Create Task",
@@ -38,6 +40,7 @@ class TaskManagementUI(
                 1 -> createTaskUi.execute(ui, inputReader)
                 2 -> deleteTaskUi.execute(ui, inputReader)
                 3 -> editTaskUi.execute(ui, inputReader)
+                4 -> changeHistoryManagementUI.execute(ui, inputReader)
                 5 -> getAllTasksUi.execute(ui, inputReader)
                 6 -> return
                 else -> ui.displayMessage("❌ Invalid option. Please select a number between 1 and 6.")
