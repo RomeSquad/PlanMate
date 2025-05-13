@@ -14,8 +14,7 @@ class ShowTaskHistoryUseCaseTest {
 
     private lateinit var repository: ChangeHistoryRepository
     private lateinit var useCase: ShowTaskHistoryUseCase
-    private val taskId = 101
-
+    private val taskId = UUID.fromString("11111111-1111-1111-1111-111111111111")
 
     @BeforeEach
     fun setUp() {
@@ -54,21 +53,21 @@ class ShowTaskHistoryUseCaseTest {
     private fun fakeChangeHistoryList(): List<ChangeHistory> {
 
         val fakeDate = Date(123)
-        val taskId = 101
+        val taskId = UUID.fromString("11111111-1111-1111-1111-111111111111")
 
 
         return listOf(
             ChangeHistory(
-                projectID = 1,
+                projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
                 taskID = taskId,
-                authorID = 10,
+                authorID = UUID.fromString("11111111-1111-1111-1111-111111111110"),
                 changeDate = fakeDate,
                 changeDescription = "Task created"
             ),
             ChangeHistory(
-                projectID = 1,
+                projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
                 taskID = taskId,
-                authorID = 11,
+                authorID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
                 changeDate = fakeDate,
                 changeDescription = "Changed status"
             )

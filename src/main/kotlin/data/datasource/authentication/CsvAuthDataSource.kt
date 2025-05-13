@@ -14,6 +14,7 @@ import org.example.logic.exception.UserNotFoundException
 import org.example.logic.request.auth.LoginRequest
 import org.example.utils.hashPassword
 import java.io.File
+import java.util.UUID
 
 class CsvAuthDataSource(
     private val csvFileReader: CsvFileReader,
@@ -74,6 +75,10 @@ class CsvAuthDataSource(
 
     override suspend fun getCurrentUser(): User? {
         return users.firstOrNull()
+    }
+
+    override suspend fun getUserById(id: UUID): User? {
+        return users.find { it.userId == id }
     }
 
 
