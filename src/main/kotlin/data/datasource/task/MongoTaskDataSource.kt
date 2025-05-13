@@ -15,7 +15,7 @@ import org.example.logic.exception.TaskNotFoundException
 import java.util.*
 
 class MongoTaskDataSource(
-    val mongo: MongoCollection<Task>
+    private val mongo: MongoCollection<Task>
 ) : TaskDataSource {
 
     override suspend fun createTask(task: Task) {
