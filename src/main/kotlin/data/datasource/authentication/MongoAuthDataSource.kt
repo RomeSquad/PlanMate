@@ -12,6 +12,7 @@ import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
 import org.example.logic.request.auth.LoginRequest
 import org.example.utils.hashPassword
+import java.util.*
 
 class MongoAuthDataSource(
     private val userMongoCollection: MongoCollection<User>
@@ -81,6 +82,10 @@ class MongoAuthDataSource(
 
     override suspend fun getCurrentUser(): User? {
         return userMongoCollection.find().firstOrNull()
+    }
+
+    override suspend fun getUserById(id: UUID): User? {
+        return userMongoCollection.find(Filters.eq("userId", id)).firstOrNull()
     }
 
 }
