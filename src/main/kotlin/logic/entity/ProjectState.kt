@@ -1,6 +1,8 @@
 package org.example.logic.entity
 
+import java.util.*
+
 data class ProjectState(
-    val projectId: Int,
+    val projectId: UUID,
     val stateName: String,
 )

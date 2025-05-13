@@ -1,13 +1,16 @@
 package org.example.logic.usecase.project
 
-import org.example.logic.entity.CreateProjectRequest
-import org.example.logic.entity.CreateProjectResponse
+import org.example.logic.entity.Project
+import org.example.logic.entity.auth.User
 import org.example.logic.repository.ProjectRepository
+import java.util.*
 
 class InsertProjectUseCase(
-    private val projectRepository: ProjectRepository
+    private val projectRepository: ProjectRepository,
+    private val validationProject: ValidationProject
 ) {
-    fun insertProject(projectRequest: CreateProjectRequest): Result<CreateProjectResponse> {
-        return projectRequest.takeIf{it.name.isNotBlank()}?.let { projectRepository.insertProject(it) }?: Result.failure(Exception("Project name cannot be blank"))
+    suspend fun insertProject(project: Project, user: User): UUID {
+        validationProject.validateCreateProject(project, user)
+        return projectRepository.createProject(project, user)
     }
 }

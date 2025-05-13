@@ -41,7 +41,7 @@ class MongoChangeHistoryDataSourceTest {
     fun `should return list of change history by taskId`() = runBlocking {
         // given
         val expected = listOfFakeChangeHistoryData()
-        val taskId = 1
+        val taskId = UUID.fromString("22222222-2222-2222-2222-222222222222")
 
         val mockDataSource = mockk<MongoChangeHistoryDataSource>()
         coEvery { mockDataSource.getByTaskId(taskId) } returns expected
@@ -57,7 +57,7 @@ class MongoChangeHistoryDataSourceTest {
     fun `should return list of change history by projectId`() = runBlocking {
         // given
         val expected = listOfFakeChangeHistoryData()
-        val projectId = 1
+        val projectId = UUID.fromString("11111111-1111-1111-1111-111111111111")
 
 
         val mockDataSource = mockk<MongoChangeHistoryDataSource>()
@@ -69,9 +69,10 @@ class MongoChangeHistoryDataSourceTest {
         // then
         assertEquals(expected, result)
     }
+
     @Test
     fun `should return empty list if no change history found by projectId`() = runBlocking {
-        val projectId = 999
+        val projectId = UUID.fromString("11111111-1111-1111-1111-111111111199")
 
         coEvery { mongoCollection.find(Filters.eq("projectID", projectId)).toList() } returns emptyList()
 
@@ -79,9 +80,10 @@ class MongoChangeHistoryDataSourceTest {
 
         assertEquals(emptyList(), result)
     }
+
     @Test
     fun `should return empty list if no change history found by taskId`() = runBlocking {
-        val taskId = 999
+        val taskId = UUID.fromString("22222222-2222-2222-2222-222222222999")
 
         coEvery { mongoCollection.find(Filters.eq("taskID", taskId)).toList() } returns emptyList()
 
@@ -93,16 +95,16 @@ class MongoChangeHistoryDataSourceTest {
     private fun listOfFakeChangeHistoryData(): List<ChangeHistory> {
         return listOf(
             ChangeHistory(
-                projectID = 1,
-                taskID = 1,
-                authorID = 1,
+                projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
+                taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
+                authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
                 changeDate = Date(11),
                 changeDescription = "  "
             ), ChangeHistory(
-                projectID = 1,
-                taskID = 1,
-                authorID = 111,
-                changeDate = Date(11),
+                projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
+                taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
+                authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
+                changeDate = Date(12),
                 changeDescription = "11  "
             )
         )
@@ -111,9 +113,9 @@ class MongoChangeHistoryDataSourceTest {
 
     private fun fakeChangeHistoryData(): ChangeHistory {
         return ChangeHistory(
-            projectID = 1,
-            taskID = 1,
-            authorID = 1,
+            projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
+            taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
+            authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
             changeDate = Date(11),
             changeDescription = "  "
         )

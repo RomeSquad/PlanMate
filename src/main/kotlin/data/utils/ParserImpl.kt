@@ -38,12 +38,14 @@ class ParserImpl : Parser {
                     insideQuotes = !insideQuotes
                     currentLine.append(char)
                 }
+
                 char == '\n' && !insideQuotes -> {
                     if (currentLine.isNotEmpty()) {
                         lines.add(currentLine.toString())
                         currentLine.clear()
                     }
                 }
+
                 else -> currentLine.append(char)
             }
         }
@@ -69,14 +71,17 @@ class ParserImpl : Parser {
                     insideBrackets++
                     currentField.append(char)
                 }
+
                 char == ']' -> {
                     insideBrackets--
                     currentField.append(char)
                 }
+
                 char == '"' && insideBrackets == 0 -> {
                     insideQuotes = !insideQuotes
                     currentField.append(char)
                 }
+
                 char == ',' && !insideQuotes && insideBrackets == 0 -> {
                     val field = currentField.toString().trim()
                     if (field.startsWith("[") && field.endsWith("]")) {
@@ -91,6 +96,7 @@ class ParserImpl : Parser {
                     }
                     currentField.clear()
                 }
+
                 else -> currentField.append(char)
             }
         }

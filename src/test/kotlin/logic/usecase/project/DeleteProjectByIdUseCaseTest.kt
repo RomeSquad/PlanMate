@@ -1,36 +1,60 @@
 package logic.usecase.project
 
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.example.logic.repository.ProjectRepository
 import org.example.logic.usecase.project.DeleteProjectByIdUseCase
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.*
+import kotlin.test.assertEquals
 
-class DeleteProjectByIdUseCaseTest{
-    private lateinit var projectRepository: ProjectRepository
-    private lateinit var deleteProjectByIdUseCase: DeleteProjectByIdUseCase
+class DeleteProjectByIdUseCaseTest {
+    private lateinit var useCase: DeleteProjectByIdUseCase
+    private val projectRepository: ProjectRepository = mockk()
+
     @BeforeEach
-    fun setup() {
-        projectRepository = mockk()
-        deleteProjectByIdUseCase = DeleteProjectByIdUseCase(projectRepository)
+    fun setUp() {
+        useCase = DeleteProjectByIdUseCase(projectRepository)
     }
 
     @Test
-    fun `when request to delete specific project by id then return success result`() {
-        every { projectRepository.deleteProject(1) } returns (Result.success(Unit))
-        val projectResponse = deleteProjectByIdUseCase.deleteProjectById(1)
-        assertEquals(projectResponse.isSuccess, true)
+    fun `deleteProjectById should call repository with correct id and return Unit on success`() = runTest {
+        val projectId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
+        coEvery { projectRepository.deleteProject(projectId) } returns Unit
+
+        val result = useCase.deleteProjectById(projectId)
+
+        coVerify(exactly = 1) { projectRepository.deleteProject(projectId) }
+        assertEquals(Unit, result)
     }
+
     @Test
-    fun `when request to delete specific project by invalid id then return result failure with exception`() {
-        every { projectRepository.deleteProject(2) } returns (Result.failure(NoSuchElementException("Project not found")))
-        val projectResponse = deleteProjectByIdUseCase.deleteProjectById(2)
-        assertThrows<NoSuchElementException> {
-            projectResponse.getOrThrow()
+    fun `deleteProjectById should throw IllegalArgumentException when project does not exist`() = runTest {
+        val projectId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
+        val exception = IllegalArgumentException("Project with ID $projectId not found")
+        coEvery { projectRepository.deleteProject(projectId) } throws exception
+
+        val thrown = assertThrows<IllegalArgumentException> {
+            useCase.deleteProjectById(projectId)
         }
+        assertEquals("Project with ID $projectId not found", thrown.message)
+        coVerify(exactly = 1) { projectRepository.deleteProject(projectId) }
     }
 
+    @Test
+    fun `deleteProjectById should propagate unexpected exceptions from repository`() = runTest {
+        val projectId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
+        val exception = RuntimeException("Database error")
+        coEvery { projectRepository.deleteProject(projectId) } throws exception
+
+        val thrown = assertThrows<RuntimeException> {
+            useCase.deleteProjectById(projectId)
+        }
+        assertEquals("Database error", thrown.message)
+        coVerify(exactly = 1) { projectRepository.deleteProject(projectId) }
+    }
 }

@@ -2,16 +2,17 @@ package data.datasource.task
 
 import io.mockk.*
 import kotlinx.coroutines.test.runTest
+import org.example.data.datasource.mapper.toCsvRow
 import org.example.data.datasource.task.CsvTaskDataSource
-import org.example.data.repository.mapper.toCsvRow
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
-import org.example.logic.TaskNotFoundException
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
+import org.example.logic.exception.TaskNotFoundException
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import java.io.File
+import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -21,6 +22,14 @@ class CsvTaskDataSourceTest {
     private lateinit var csvFileReader: CsvFileReader
     private lateinit var csvFileWriter: CsvFileWriter
     private val tasksFile = File("tasks.csv")
+
+    private val firstProjectId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000")
+    private val secondProjectId = UUID.fromString("550e8400-e29b-41d4-a716-446655440006")
+    private val firstTaskId = UUID.fromString("550e8400-e29b-41d4-a716-446655440001")
+    private val secondTaskId = UUID.fromString("550e8400-e29b-41d4-a716-446655440002")
+    private val thirdTaskId = UUID.fromString("550e8400-e29b-41d4-a716-446655440003")
+    private val firstUserID = UUID.fromString("550e8400-e29b-41d4-a716-446655440004")
+    private val secondUserID = UUID.fromString("550e8400-e29b-41d4-a716-446655440005")
 
     @BeforeEach
     fun setup() {
@@ -45,7 +54,7 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
         coEvery { csvFileWriter.writeCsv(tasksFile, any()) } just Runs
 
-        csvTaskDataSource.editTask("task1", "new title", "new description", 19)
+        csvTaskDataSource.editTask(firstTaskId, "new title", "new description", 19)
 
         coVerify { csvFileReader.readCsv(tasksFile) }
         coVerify { csvFileWriter.writeCsv(tasksFile, any()) }
@@ -57,7 +66,7 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
 
         assertThrows<TaskNotFoundException> {
-            csvTaskDataSource.editTask("task3", "title", "description", 19)
+            csvTaskDataSource.editTask(thirdTaskId, "title", "description", 19)
         }
         coVerify { csvFileReader.readCsv(tasksFile) }
     }
@@ -67,9 +76,9 @@ class CsvTaskDataSourceTest {
         val csvData = csvRowsData()
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
 
-        val result = csvTaskDataSource.getTasksByProjectId(1)
+        val result = csvTaskDataSource.getTasksByProjectId(firstProjectId)
 
-        assertEquals("task1", result.first().id)
+        assertEquals(firstTaskId, result.first().taskId)
         coVerify { csvFileReader.readCsv(tasksFile) }
     }
 
@@ -78,9 +87,9 @@ class CsvTaskDataSourceTest {
         val csvData = csvRowsData()
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
 
-        val result = csvTaskDataSource.getTaskByIdFromFile("task1")
+        val result = csvTaskDataSource.getTaskByIdFromFile(firstTaskId)
 
-        assertEquals("task1", result.id)
+        assertEquals(firstTaskId, result.taskId)
         coVerify { csvFileReader.readCsv(tasksFile) }
     }
 
@@ -90,7 +99,7 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
 
         assertThrows<TaskNotFoundException> {
-            csvTaskDataSource.getTaskByIdFromFile("task3")
+            csvTaskDataSource.getTaskByIdFromFile(thirdTaskId)
         }
         coVerify { csvFileReader.readCsv(tasksFile) }
     }
@@ -103,7 +112,7 @@ class CsvTaskDataSourceTest {
 
         val result = csvTaskDataSource.getAllTasks()
 
-        assertEquals(tasksData.map { it.id }, result.map { it.id })
+        assertEquals(tasksData.map { it.taskId }, result.map { it.taskId })
         coVerify { csvFileReader.readCsv(tasksFile) }
     }
 
@@ -122,10 +131,11 @@ class CsvTaskDataSourceTest {
     @Test
     fun `when use deleteTask should throw exception when task not found`() = runTest {
         val csvData = csvRowsData()
+        val notFoundProjectId = UUID.fromString("550e8400-e29b-41d4-a716-446655440017")
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
 
         assertThrows<TaskNotFoundException> {
-            csvTaskDataSource.deleteTask(3,"task3")
+            csvTaskDataSource.deleteTask(notFoundProjectId, thirdTaskId)
         }
         coVerify { csvFileReader.readCsv(tasksFile) }
     }
@@ -137,9 +147,9 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
         coEvery { csvFileWriter.writeCsv(tasksFile, any()) } just Runs
 
-        csvTaskDataSource.deleteTask(1,"task1")
+        csvTaskDataSource.deleteTask(firstProjectId, firstTaskId)
 
-        val remainTasks = tasksData.filterNot { it.projectId == 1 && it.id == "task1" }
+        val remainTasks = tasksData.filterNot { it.projectId == firstProjectId && it.taskId == firstTaskId }
         remainTasks.forEach {
             coVerify { csvFileWriter.writeCsv(tasksFile, listOf(it.toCsvRow())) }
         }
@@ -151,7 +161,7 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
 
         assertThrows<TaskNotFoundException> {
-            csvTaskDataSource.deleteTask(1,"task3")
+            csvTaskDataSource.deleteTask(firstProjectId, thirdTaskId)
         }
         coVerify { csvFileReader.readCsv(tasksFile) }
     }
@@ -159,33 +169,34 @@ class CsvTaskDataSourceTest {
     @Test
     fun `when use deleteTask should throw exception when projectId not match`() = runTest {
         val csvData = csvRowsData()
+        val notFoundProjectId = UUID.fromString("550e8400-e29b-41d4-a716-446655440017")
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
 
         assertThrows<TaskNotFoundException> {
-            csvTaskDataSource.deleteTask(3,"task1")
+            csvTaskDataSource.deleteTask(notFoundProjectId, firstTaskId)
         }
         coVerify { csvFileReader.readCsv(tasksFile) }
     }
 
     private fun csvRowsData(): List<List<String>> {
-        return listOf (
+        return listOf(
             listOf(
-                "task1",
+                firstTaskId.toString(),
                 "title1",
                 "description1",
-                "[1, To-Do]",
-                "1",
-                "U1",
+                "[${firstProjectId}, To-Do]",
+                firstProjectId.toString(),
+                firstUserID.toString(),
                 "5",
                 "8"
             ),
             listOf(
-                "task2",
+                secondTaskId.toString(),
                 "title2",
                 "description2",
-                "[2, In-Progress]",
-                "2",
-                "U2",
+                "[${secondProjectId}, In-Progress]",
+                secondProjectId.toString(),
+                secondUserID.toString(),
                 "5",
                 "8"
             )
@@ -195,28 +206,28 @@ class CsvTaskDataSourceTest {
     private fun tasksData(): List<Task> {
         return listOf(
             Task(
-                id = "task1",
+                taskId = firstTaskId,
                 title = "title1",
                 description = "description1",
                 state = ProjectState(
-                    1,
+                    firstProjectId,
                     "To-Do"
                 ),
-                projectId = 1,
-                createdBy = "U1",
+                projectId = firstProjectId,
+                createdBy = firstUserID,
                 createdAt = 5,
                 updatedAt = 8
             ),
             Task(
-                id = "task2",
+                taskId = secondTaskId,
                 title = "title2",
                 description = "description2",
                 state = ProjectState(
-                    2,
+                    secondProjectId,
                     "In-Progress"
                 ),
-                projectId = 2,
-                createdBy = "U2",
+                projectId = secondProjectId,
+                createdBy = secondUserID,
                 createdAt = 5,
                 updatedAt = 8
             )

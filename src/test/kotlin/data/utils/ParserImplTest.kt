@@ -11,6 +11,7 @@ import kotlin.test.assertTrue
 class ParserImplTest {
 
     private lateinit var parser: Parser
+
     @BeforeEach
     fun setUp() {
         parser = ParserImpl()

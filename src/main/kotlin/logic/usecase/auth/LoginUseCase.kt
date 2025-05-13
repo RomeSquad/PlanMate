@@ -2,12 +2,14 @@ package org.example.logic.usecase.auth
 
 import org.example.logic.entity.auth.User
 import org.example.logic.repository.AuthRepository
+import org.example.logic.request.auth.LoginRequest
 
 class LoginUseCase(
     private val authRepository: AuthRepository
 ) {
     suspend fun login(username: String, password: String): User {
-        return authRepository.loginUser(username, password)
+        val request = LoginRequest(username, password)
+        return authRepository.loginUser(request)
     }
 
 }
