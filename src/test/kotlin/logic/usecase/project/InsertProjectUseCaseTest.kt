@@ -1,94 +1,131 @@
 package logic.usecase.project
 
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.example.logic.entity.CreateProjectRequest
-import org.example.logic.entity.CreateProjectResponse
+import org.example.logic.entity.Project
+import org.example.logic.entity.ProjectState
+import org.example.logic.entity.auth.User
+import org.example.logic.entity.auth.UserRole
 import org.example.logic.repository.ProjectRepository
 import org.example.logic.usecase.project.InsertProjectUseCase
+import org.example.logic.usecase.project.ValidationProject
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.UUID
+import java.util.*
 
 class InsertProjectUseCaseTest {
 
     private lateinit var insertProjectUseCase: InsertProjectUseCase
     private lateinit var projectRepository: ProjectRepository
+    private lateinit var validationProject: ValidationProject
 
     private val userId = UUID.randomUUID()
+    private val projectId = UUID.randomUUID()
 
-    private val validRequest = CreateProjectRequest(
+    private val user = User(
+        userId = userId,
+        username = "Mohamed",
+        password = "password",
+        userRole = UserRole.ADMIN
+
+    )
+
+    private val validProject = Project(
+        projectId = projectId,
         name = "Test Project",
-        userId = userId,
-        userName = "Mohamed",
-        description = "Test Description"
+        description = "Test Description",
+        state = ProjectState(projectId = projectId, stateName = "InProgress")
     )
 
-    private val emptyNameRequest = CreateProjectRequest(
-        name = "",
-        userId = userId,
-        userName = "Mohamed",
-        description = "Test Description"
-    )
-
-    private val whitespaceNameRequest = CreateProjectRequest(
-        name = "   ",
-        userId = userId,
-        userName = "Mohamed",
-        description = "Test Description"
-    )
+    private val emptyNameProject = validProject.copy(name = "")
+    private val whitespaceNameProject = validProject.copy(name = "   ")
 
     @BeforeEach
     fun setup() {
         projectRepository = mockk()
-        insertProjectUseCase = InsertProjectUseCase(projectRepository)
+        validationProject = mockk()
+        insertProjectUseCase = InsertProjectUseCase(projectRepository, validationProject)
     }
 
     @Test
-    fun `insert project with valid request returns response`() = runTest {
-        // Given
-        val response = CreateProjectResponse(id = userId)
-        coEvery { projectRepository.insertProject(validRequest) } returns response
+    fun `insert project with valid project and user returns project ID`() = runTest {
+        coEvery { validationProject.validateCreateProject(validProject, user) } returns Unit
+        coEvery { projectRepository.createProject(validProject, user) } returns projectId
 
-        // When
-        val result = insertProjectUseCase.insertProject(validRequest)
+        val result = insertProjectUseCase.insertProject(validProject, user)
 
-        // Then
-        assertEquals(response, result)
-        assertEquals(userId, result.id)
+        assertEquals(projectId, result)
+        coVerify { validationProject.validateCreateProject(validProject, user) }
+        coVerify { projectRepository.createProject(validProject, user) }
     }
 
     @Test
     fun `insert project with empty name throws IllegalArgumentException`() = runTest {
-        // When/Then
+        coEvery {
+            validationProject.validateCreateProject(
+                emptyNameProject,
+                user
+            )
+        } throws IllegalArgumentException("Project name cannot be blank")
+
         val exception = assertThrows<IllegalArgumentException> {
-            insertProjectUseCase.insertProject(emptyNameRequest)
+            insertProjectUseCase.insertProject(emptyNameProject, user)
         }
         assertEquals("Project name cannot be blank", exception.message)
+        coVerify { validationProject.validateCreateProject(emptyNameProject, user) }
+        coVerify(exactly = 0) { projectRepository.createProject(any(), any()) }
     }
 
     @Test
     fun `insert project with whitespace name throws IllegalArgumentException`() = runTest {
-        // When/Then
+        coEvery {
+            validationProject.validateCreateProject(
+                whitespaceNameProject,
+                user
+            )
+        } throws IllegalArgumentException("Project name cannot be blank")
+
         val exception = assertThrows<IllegalArgumentException> {
-            insertProjectUseCase.insertProject(whitespaceNameRequest)
+            insertProjectUseCase.insertProject(whitespaceNameProject, user)
         }
         assertEquals("Project name cannot be blank", exception.message)
+        coVerify { validationProject.validateCreateProject(whitespaceNameProject, user) }
+        coVerify(exactly = 0) { projectRepository.createProject(any(), any()) }
     }
 
     @Test
     fun `insert project throws exception when repository fails`() = runTest {
-        // Given
-        val exception = RuntimeException("Failed to insert project")
-        coEvery { projectRepository.insertProject(validRequest) } throws exception
+        coEvery { validationProject.validateCreateProject(validProject, user) } returns Unit
+        val repositoryException = RuntimeException("Failed to insert project")
+        coEvery { projectRepository.createProject(validProject, user) } throws repositoryException
 
-        // When/Then
-        val thrownException = assertThrows<RuntimeException> {
-            insertProjectUseCase.insertProject(validRequest)
+        val exception = assertThrows<RuntimeException> {
+            insertProjectUseCase.insertProject(validProject, user)
         }
-        assertEquals("Failed to insert project", thrownException.message)
+        assertEquals("Failed to insert project", exception.message)
+        coVerify { validationProject.validateCreateProject(validProject, user) }
+        coVerify { projectRepository.createProject(validProject, user) }
+    }
+
+    @Test
+    fun `insert project with invalid user throws IllegalArgumentException`() = runTest {
+        val invalidUser = user.copy(userId = UUID.randomUUID())
+        coEvery {
+            validationProject.validateCreateProject(
+                validProject,
+                invalidUser
+            )
+        } throws IllegalArgumentException("Invalid user")
+
+        val exception = assertThrows<IllegalArgumentException> {
+            insertProjectUseCase.insertProject(validProject, invalidUser)
+        }
+        assertEquals("Invalid user", exception.message)
+        coVerify { validationProject.validateCreateProject(validProject, invalidUser) }
+        coVerify(exactly = 0) { projectRepository.createProject(any(), any()) }
     }
 }
