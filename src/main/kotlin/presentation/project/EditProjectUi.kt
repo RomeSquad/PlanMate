@@ -78,7 +78,7 @@ class EditProjectUi(
             val currentUser = getCurrentUserUseCase.getCurrentUser()
             addChangeHistory.execute(
                 projectId = selectedProject.projectId,
-                taskId = UUID.fromString("0"),
+                taskId = UUID.randomUUID(),
                 authorId = currentUser!!.userId,
                 changeDate = Date(Date().time) ,
                 changeDescription = "Project edited",

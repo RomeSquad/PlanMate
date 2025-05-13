@@ -4,7 +4,7 @@ import com.mongodb.client.model.Filters
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
-import org.example.data.utils.TaskConstants.PROJECT_ID
+import org.example.data.utils.ProjectConstants.PROJECT_ID
 import org.example.logic.entity.Project
 import org.example.logic.entity.auth.User
 import org.litote.kmongo.eq
@@ -42,6 +42,7 @@ class MongoProjectDataSource(
     }
 
     override suspend fun editProject(project: Project) {
+
         val index = projects.indexOfFirst { it.projectId == project.projectId }
         if (index != -1) {
             projects[index] = project
