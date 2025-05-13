@@ -6,6 +6,8 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
+import org.example.logic.exception.EmptyNameException
+import org.example.logic.exception.EmptyPasswordException
 import org.example.logic.exception.EntityNotChangedException
 import org.example.logic.repository.AuthRepository
 import org.example.logic.usecase.auth.EditUserUseCase
@@ -38,7 +40,7 @@ class EditUserUseCaseTest {
             userRole = UserRole.MATE
         )
         val newUser = User(
-            userId = userId, // Same ID to simulate updating the same user
+            userId = userId,
             username = "amr_updated",
             password = "e99a18c428cb38d5f260853678922e03", // MD5 hash of "abc123"
             userRole = UserRole.ADMIN
@@ -61,7 +63,7 @@ class EditUserUseCaseTest {
             password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password"
             userRole = UserRole.MATE
         )
-        val newUser = oldUser.copy() // Identical to oldUser
+        val newUser = oldUser.copy()
 
         // When/Then
         val exception = assertFailsWith<EntityNotChangedException> {
@@ -82,8 +84,8 @@ class EditUserUseCaseTest {
         )
         val newUser = User(
             userId = userId,
-            username = " amr ", // Same after trimming
-            password = " 5f4dcc3b5aa765d61d8327deb882cf99 ", // Same after trimming
+            username = " amr ",
+            password = " 5f4dcc3b5aa765d61d8327deb882cf99 ",
             userRole = UserRole.MATE
         )
 
@@ -92,6 +94,54 @@ class EditUserUseCaseTest {
             editUserUseCase.editUser(newUser, oldUser)
         }
         assertEquals("Entity not changed", exception.message)
+        coVerify(exactly = 0) { authenticationRepository.editUser(any()) }
+    }
+
+    @Test
+    fun `should throw EmptyNameException when newUser username is empty`() = runTest {
+        // Given
+        val oldUser = User(
+            userId = userId,
+            username = "amr",
+            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password"
+            userRole = UserRole.MATE
+        )
+        val newUser = User(
+            userId = userId,
+            username = "",
+            password = "e99a18c428cb38d5f260853678922e03", // MD5 hash of "abc123"
+            userRole = UserRole.ADMIN
+        )
+
+        // When/Then
+        val exception = assertFailsWith<EmptyNameException> {
+            editUserUseCase.editUser(newUser, oldUser)
+        }
+        assertEquals("Name cannot be empty", exception.message)
+        coVerify(exactly = 0) { authenticationRepository.editUser(any()) }
+    }
+
+    @Test
+    fun `should throw EmptyPasswordException when newUser password is blank`() = runTest {
+        // Given
+        val oldUser = User(
+            userId = userId,
+            username = "amr",
+            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password"
+            userRole = UserRole.MATE
+        )
+        val newUser = User(
+            userId = userId,
+            username = "amr_updated",
+            password = " ",
+            userRole = UserRole.ADMIN
+        )
+
+        // When/Then
+        val exception = assertFailsWith<EmptyPasswordException> {
+            editUserUseCase.editUser(newUser, oldUser)
+        }
+        assertEquals("Password cannot be empty", exception.message)
         coVerify(exactly = 0) { authenticationRepository.editUser(any()) }
     }
 

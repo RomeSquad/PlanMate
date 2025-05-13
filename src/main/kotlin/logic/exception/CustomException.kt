@@ -16,6 +16,6 @@ class CantAddStateWithNoNameException(message: String) : Exception(message)
 
 class TaskNotFoundException(message: String) : Exception(message)
 class EntityNotChangedException(message: String) : Exception(message)
-class EmptyNameException : Exception("Name cannot be empty")
-class EmptyPasswordException : Exception("Password cannot be empty")
+class EmptyNameException(message: String) : Exception(message)
+class EmptyPasswordException(message: String) : Exception(message)
 class InvalidCredentialsException(message: String = "Invalid credentials") : Exception(message)
