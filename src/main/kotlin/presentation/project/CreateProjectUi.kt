@@ -60,7 +60,7 @@ class CreateProjectUi(
             )
             addChangeHistory.execute(
                 projectId = projectId,
-                taskId = UUID.fromString("0"),
+                taskId = UUID.randomUUID(),
                 authorId = currentUser.userId,
                 changeDate = Date(Date().time) ,
                 changeDescription = "Project created",
