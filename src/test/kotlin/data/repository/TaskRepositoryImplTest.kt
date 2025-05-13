@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.UUID
 import kotlin.test.BeforeTest
+import kotlin.test.assertTrue
 
 class TaskRepositoryImplTest {
 
@@ -47,7 +48,7 @@ class TaskRepositoryImplTest {
     }
 
     @Test
-    fun `should edit task when calling editTask`() = runTest {
+    fun `should edit task successfully when calling editTask`() = runTest {
         coEvery { taskDataSource.editTask(taskId, "new title", "new description", 20L) } just Runs
 
         taskRepository.editTask(taskId, "new title", "new description", 20L)
@@ -56,7 +57,7 @@ class TaskRepositoryImplTest {
     }
 
     @Test
-    fun `should delete task when calling deleteTask`() = runTest {
+    fun `should delete task successfully when calling deleteTask`() = runTest {
         coEvery { taskDataSource.deleteTask(projectId, taskId) } just Runs
 
         taskRepository.deleteTask(projectId, taskId)
@@ -75,52 +76,26 @@ class TaskRepositoryImplTest {
     }
 
     @Test
-    fun `getTasksByProject returns filtered tasks`() = runTest {
-        val taskId2 = UUID.fromString("123e4567-e89b-12d3-a456-426614174003")
-        val project2 = UUID.fromString("123e4567-e89b-12d3-a456-426614174004")
-        val tasks = listOf(sampleTask, sampleTask.copy(taskId = taskId2, projectId = project2))
-        coEvery { taskDataSource.getAllTasks() } returns tasks
+    fun `should return tasks by projectId when match tasks by projectId`() = runTest {
+        val matchTask = sampleTask.copy(taskId = UUID.randomUUID(), projectId = projectId)
+        val notMatchTask = sampleTask.copy(taskId = UUID.randomUUID(), projectId = UUID.randomUUID())
+        coEvery { taskDataSource.getAllTasks() } returns listOf(matchTask, notMatchTask)
 
         val result = taskRepository.getTasksByProject(projectId)
 
-        assertEquals(1, result.size)
-        assertEquals(taskId, result[0].taskId)
-    }
-
-    @Test
-    fun `when use getTaskByProject returns empty list when no tasks found`() = runTest {
-        coEvery { taskDataSource.getAllTasks() } returns emptyList()
-
-        val result = taskRepository.getTasksByProject(projectId)
-
-        assertEquals(0, result.size)
+        assertEquals(listOf(matchTask), result)
         coVerify { taskDataSource.getAllTasks() }
     }
 
     @Test
-    fun `when use getTasksByProject returns list of matching tasks when some match projectId`() = runTest {
-        val matchingTask = sampleTask.copy(taskId = UUID.randomUUID(), projectId = projectId)
-        val nonMatchingTask = sampleTask.copy(taskId = UUID.randomUUID(), projectId = UUID.randomUUID())
+    fun `should return empty list of tasks when no tasks match projectId`() = runTest {
+        val firstNotMatchTask = sampleTask.copy(taskId = UUID.randomUUID(), projectId = UUID.randomUUID())
+        val secondNotMatchTask = sampleTask.copy(taskId = UUID.randomUUID(), projectId = UUID.randomUUID())
+        coEvery { taskDataSource.getAllTasks() } returns listOf(firstNotMatchTask, secondNotMatchTask)
 
-        coEvery { taskDataSource.getAllTasks() } returns listOf(matchingTask, nonMatchingTask)
+        val result = taskRepository.getTasksByProject(UUID.randomUUID())
 
-        val result = taskRepository.getTasksByProject(projectId)
-
-        assertEquals(1, result.size)
-        assertEquals(matchingTask.taskId, result[0].taskId)
-        coVerify { taskDataSource.getAllTasks() }
-    }
-
-    @Test
-    fun `getTasksByProject returns empty list when no tasks match projectId`() = runTest {
-        val nonMatchingTask1 = sampleTask.copy(taskId = UUID.randomUUID(), projectId = UUID.randomUUID())
-        val nonMatchingTask2 = sampleTask.copy(taskId = UUID.randomUUID(), projectId = UUID.randomUUID())
-
-        coEvery { taskDataSource.getAllTasks() } returns listOf(nonMatchingTask1, nonMatchingTask2)
-
-        val result = taskRepository.getTasksByProject(projectId)
-
-        assertEquals(0, result.size)
+        assertTrue(result.isEmpty())
         coVerify { taskDataSource.getAllTasks() }
     }
 
