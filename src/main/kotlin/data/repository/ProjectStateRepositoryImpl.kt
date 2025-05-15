@@ -1,6 +1,7 @@
 import data.datasource.projectState.ProjectStateDataSource
 import org.example.logic.entity.ProjectState
 import org.example.logic.repository.ProjectStateRepository
+import org.example.logic.request.auth.ProjectStateEditRequest
 import java.util.*
 
 class ProjectStateRepositoryImpl(
@@ -15,8 +16,8 @@ class ProjectStateRepositoryImpl(
         return projectStateDataSource.addProjectState(state)
     }
 
-    override suspend fun editProjectState(projectId: UUID, newStateName: String) {
-        return projectStateDataSource.editProjectState(projectId, newStateName)
+    override suspend fun editProjectState(request: ProjectStateEditRequest) {
+        return projectStateDataSource.editProjectState(request)
     }
 
     override suspend fun deleteProjectState(projectId: UUID): Boolean {

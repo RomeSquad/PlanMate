@@ -1,11 +1,12 @@
 package org.example.logic.repository
 
 import org.example.logic.entity.ProjectState
+import org.example.logic.request.auth.ProjectStateEditRequest
 import java.util.*
 
 interface ProjectStateRepository {
     suspend fun addProjectState(state: ProjectState)
-    suspend fun editProjectState(projectId: UUID, newStateName: String)
+    suspend fun editProjectState(request: ProjectStateEditRequest)
     suspend fun deleteProjectState(projectId: UUID): Boolean
 
     suspend fun getProjectStateByTaskId(taskId: UUID): ProjectState

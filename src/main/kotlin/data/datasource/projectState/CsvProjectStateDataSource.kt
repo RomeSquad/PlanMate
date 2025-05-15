@@ -1,6 +1,7 @@
 package data.datasource.projectState
 
 import org.example.logic.entity.ProjectState
+import org.example.logic.request.auth.ProjectStateEditRequest
 import java.io.File
 import java.util.*
 
@@ -42,12 +43,12 @@ class CsvProjectStateDataSource : ProjectStateDataSource {
         }
     }
 
-    override suspend fun editProjectState(projectId: UUID, newStateName: String) {
+    override suspend fun editProjectState(request : ProjectStateEditRequest) {
         val allStates = getAllProjectStates().toMutableList()
-        val index = allStates.indexOfFirst { it.projectId == projectId }
+        val index = allStates.indexOfFirst { it.projectId == request.projectId }
 
         if (index != -1) {
-            allStates[index] = allStates[index].copy(stateName = newStateName)
+            allStates[index] = allStates[index].copy(stateName = request.newStateName)
             saveAllStates(allStates)
         }
     }

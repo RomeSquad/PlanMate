@@ -80,7 +80,7 @@ class ProjectStateRepositoryImplTest {
         stateRepository.editProjectState(ProjectStateEditRequest(projectId, newStateName))
 
         // Then
-        coVerify { stateProjectDataSource.editProjectState(projectId, newStateName) }
+        coVerify { stateProjectDataSource.editProjectState(ProjectStateEditRequest(projectId, newStateName)) }
     }
 
     @Test
