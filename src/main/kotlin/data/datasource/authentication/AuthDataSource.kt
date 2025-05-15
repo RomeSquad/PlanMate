@@ -1,9 +1,9 @@
 package org.example.data.datasource.authentication
 
 
-import logic.request.auth.CreateUserRequest
+import org.example.logic.request.CreateUserRequest
 import org.example.logic.entity.auth.User
-import org.example.logic.request.auth.LoginRequest
+import org.example.logic.request.LoginRequest
 import java.util.*
 
 interface AuthDataSource {
