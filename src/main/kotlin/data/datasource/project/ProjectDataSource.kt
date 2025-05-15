@@ -1,13 +1,13 @@
 package org.example.data.datasource.project
 
 import org.example.logic.entity.Project
-import org.example.logic.entity.auth.User
+import org.example.logic.request.auth.ProjectCreationRequest
 import java.util.*
 
 
 interface ProjectDataSource {
 
-    suspend fun createProject(project: Project, user: User): UUID
+    suspend fun createProject(request: ProjectCreationRequest): UUID
     suspend fun getAllProjects(): List<Project>
     suspend fun getProjectById(id: UUID): Project
     suspend fun saveAllProjects()

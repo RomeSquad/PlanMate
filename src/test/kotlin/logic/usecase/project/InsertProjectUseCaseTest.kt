@@ -9,6 +9,7 @@ import org.example.logic.entity.ProjectState
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.repository.ProjectRepository
+import org.example.logic.request.auth.ProjectCreationRequest
 import org.example.logic.usecase.project.InsertProjectUseCase
 import org.example.logic.usecase.project.ValidationProject
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -54,13 +55,13 @@ class InsertProjectUseCaseTest {
     @Test
     fun `insert project with valid project and user returns project ID`() = runTest {
         coEvery { validationProject.validateCreateProject(validProject, user) } returns Unit
-        coEvery { projectRepository.createProject(validProject, user) } returns projectId
+        coEvery { projectRepository.createProject(ProjectCreationRequest(validProject, user)) } returns projectId
 
         val result = insertProjectUseCase.insertProject(validProject, user)
 
         assertEquals(projectId, result)
         coVerify { validationProject.validateCreateProject(validProject, user) }
-        coVerify { projectRepository.createProject(validProject, user) }
+        coVerify { projectRepository.createProject(ProjectCreationRequest(validProject, user)) }
     }
 
     @Test
@@ -77,7 +78,7 @@ class InsertProjectUseCaseTest {
         }
         assertEquals("Project name cannot be blank", exception.message)
         coVerify { validationProject.validateCreateProject(emptyNameProject, user) }
-        coVerify(exactly = 0) { projectRepository.createProject(any(), any()) }
+        coVerify(exactly = 0) { projectRepository.createProject(any()) }
     }
 
     @Test
@@ -94,21 +95,21 @@ class InsertProjectUseCaseTest {
         }
         assertEquals("Project name cannot be blank", exception.message)
         coVerify { validationProject.validateCreateProject(whitespaceNameProject, user) }
-        coVerify(exactly = 0) { projectRepository.createProject(any(), any()) }
+        coVerify(exactly = 0) { projectRepository.createProject(any()) }
     }
 
     @Test
     fun `insert project throws exception when repository fails`() = runTest {
         coEvery { validationProject.validateCreateProject(validProject, user) } returns Unit
         val repositoryException = RuntimeException("Failed to insert project")
-        coEvery { projectRepository.createProject(validProject, user) } throws repositoryException
+        coEvery { projectRepository.createProject(ProjectCreationRequest(validProject, user)) } throws repositoryException
 
         val exception = assertThrows<RuntimeException> {
             insertProjectUseCase.insertProject(validProject, user)
         }
         assertEquals("Failed to insert project", exception.message)
         coVerify { validationProject.validateCreateProject(validProject, user) }
-        coVerify { projectRepository.createProject(validProject, user) }
+        coVerify { projectRepository.createProject(ProjectCreationRequest(validProject, user)) }
     }
 
     @Test
@@ -126,6 +127,6 @@ class InsertProjectUseCaseTest {
         }
         assertEquals("Invalid user", exception.message)
         coVerify { validationProject.validateCreateProject(validProject, invalidUser) }
-        coVerify(exactly = 0) { projectRepository.createProject(any(), any()) }
+        coVerify(exactly = 0) { projectRepository.createProject(any()) }
     }
 }

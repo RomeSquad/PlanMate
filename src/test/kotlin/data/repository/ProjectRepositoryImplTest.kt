@@ -10,6 +10,7 @@ import org.example.logic.entity.Project
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
+import org.example.logic.request.auth.ProjectCreationRequest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -51,14 +52,14 @@ class ProjectRepositoryImplTest {
     @Test
     fun `create project calls data source and returns project ID`() = runTest {
         // Given
-        coEvery { fakeDataSource.createProject(project, user) } returns projectId1
+        coEvery { fakeDataSource.createProject(ProjectCreationRequest(project, user)) } returns projectId1
 
         // When
-        val result = repository.createProject(project, user)
+        val result = repository.createProject(ProjectCreationRequest(project, user))
 
         // Then
         assertEquals(projectId1, result)
-        coVerify { fakeDataSource.createProject(project, user) }
+        coVerify { fakeDataSource.createProject(ProjectCreationRequest(project, user)) }
     }
 
     @Test

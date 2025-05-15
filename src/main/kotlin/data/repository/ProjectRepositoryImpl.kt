@@ -2,18 +2,15 @@ package org.example.data.repository
 
 import org.example.data.datasource.project.ProjectDataSource
 import org.example.logic.entity.Project
-import org.example.logic.entity.auth.User
 import org.example.logic.repository.ProjectRepository
+import org.example.logic.request.auth.ProjectCreationRequest
 import java.util.*
 
 class ProjectRepositoryImpl(
     private val projectDataSource: ProjectDataSource
 ) : ProjectRepository {
-    override suspend fun createProject(
-        project: Project,
-        user: User
-    ): UUID {
-        return projectDataSource.createProject(project, user)
+    override suspend fun createProject(request : ProjectCreationRequest): UUID {
+        return projectDataSource.createProject(request)
     }
 
     override suspend fun getAllProjects(): List<Project> {
