@@ -6,13 +6,9 @@ import com.mongodb.kotlin.client.coroutine.MongoCollection
 import data.datasource.authentication.dto.UserDto
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
-import org.example.logic.request.CreateUserRequest
 import org.example.data.datasource.mapper.toUser
 import org.example.data.datasource.mapper.toUserDto
-import org.example.data.utils.AuthConstants.PASSWORD
-import org.example.data.utils.AuthConstants.USER_ID
-import org.example.data.utils.AuthConstants.USER_NAME
-import org.example.data.utils.AuthConstants.USER_ROLE
+
 import org.example.data.utils.hashStringWithMD5
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
@@ -38,8 +34,8 @@ class MongoAuthDataSource(
     override suspend fun loginUser(request: LoginRequest): UserDto {
         val hashedPassword = hashStringWithMD5(request.password)
         val filter = Filters.and(
-            Filters.eq(User::username.name, request.username),
-            Filters.eq(User::password.name, hashedPassword)
+            Filters.eq(UserDto::username.name, request.username),
+            Filters.eq(UserDto::password.name, hashedPassword)
         )
         val user = userMongoCollection
             .find(filter)
@@ -49,7 +45,7 @@ class MongoAuthDataSource(
     }
 
     override suspend fun deleteUser(username: String): Boolean {
-        val filter = Filters.eq(User::username.name, username)
+        val filter = Filters.eq(UserDto::username.name, username)
         val deleteResult = userMongoCollection
             .deleteOne(filter)
         return if (deleteResult.wasAcknowledged()) {
@@ -62,27 +58,27 @@ class MongoAuthDataSource(
     override suspend fun editUser(request : EditUserRequest) {
         val hashedPassword = hashStringWithMD5(request.password)
 
-        val filter = Filters.eq(User::username.name, user.username)
+        val filter = Filters.eq(UserDto::username.name, request.username)
 
         userMongoCollection.find(filter).firstOrNull()
             ?: throw UserNotFoundException()
 
         val update = Updates.combine(
-            Updates.set(User::password.name, hashedPassword),
-            Updates.set(User::userRole.name, user.userRole),
+            Updates.set(UserDto::password.name, hashedPassword),
+            Updates.set(UserDto::userRole.name, request.userRole),
         )
 
         userMongoCollection.updateOne(filter, update)
 
     }
 
-    override suspend fun getUserByUserName(username: String): User? {
-        return userMongoCollection.find(Filters.eq(User::username.name, username)).firstOrNull()
+    override suspend fun getUserByUserName(username: String): UserDto? {
+        return userMongoCollection.find(Filters.eq(UserDto::username.name, username)).firstOrNull()
     }
 
 
     override suspend fun isUserNameExists(username: String) {
-        if (userMongoCollection.find(Filters.eq(User::username.name, username)).firstOrNull() != null) {
+        if (userMongoCollection.find(Filters.eq(UserDto::username.name, username)).firstOrNull() != null) {
             throw UserNameAlreadyExistsException()
         }
     }
@@ -92,9 +88,7 @@ class MongoAuthDataSource(
     }
 
     override suspend fun getUserById(id: UUID): UserDto? {
-        return userMongoCollection.find(Filters.eq(USER_ID, id)).firstOrNull()
-    override suspend fun getUserById(id: UUID): User? {
-        return userMongoCollection.find(Filters.eq(User::userId.name, id)).firstOrNull()
+        return userMongoCollection.find(Filters.eq(UserDto::userId.name, id)).firstOrNull()
     }
 
 }
