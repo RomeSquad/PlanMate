@@ -11,11 +11,11 @@ import org.example.data.utils.AuthConstants.PASSWORD
 import org.example.data.utils.AuthConstants.USER_ID
 import org.example.data.utils.AuthConstants.USER_NAME
 import org.example.data.utils.AuthConstants.USER_ROLE
+import org.example.data.utils.hashStringWithMD5
 import org.example.logic.entity.auth.User
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
 import org.example.logic.request.auth.LoginRequest
-import org.example.utils.hashPassword
 import java.util.*
 
 class MongoAuthDataSource(
@@ -33,7 +33,7 @@ class MongoAuthDataSource(
     }
 
     override suspend fun loginUser(request: LoginRequest): User {
-        val hashedPassword = hashPassword(request.password)
+        val hashedPassword = hashStringWithMD5(request.password)
         val filter = Filters.and(
             Filters.eq(USER_NAME, request.username),
             Filters.eq(PASSWORD, hashedPassword)
@@ -57,7 +57,7 @@ class MongoAuthDataSource(
     }
 
     override suspend fun editUser(user: User) {
-        val hashedPassword = hashPassword(user.password)
+        val hashedPassword = hashStringWithMD5(user.password)
 
         val filter = Filters.eq(USER_NAME, user.username)
 

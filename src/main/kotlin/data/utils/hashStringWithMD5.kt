@@ -1,8 +1,8 @@
-package org.example.utils
+package org.example.data.utils
 
 import java.security.MessageDigest
 
-fun hashPassword(password: String): String {
+fun hashStringWithMD5(password: String): String {
     val bytes = password.toByteArray()
     val md = MessageDigest.getInstance("MD5")
     val digest = md.digest(bytes)
