@@ -45,7 +45,6 @@ val logicModule = module {
     //endregion
 
     //region State
-    single { AddCustomProjectStateUseCase(get()) }
     single { AddProjectStatesUseCase(get()) }
     single { DefaultProjectStateUseCase(get()) }
     single { DeleteProjectStatesUseCase(get()) }
