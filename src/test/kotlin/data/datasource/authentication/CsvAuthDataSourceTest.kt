@@ -6,12 +6,12 @@ import logic.request.auth.CreateUserRequest
 import org.example.data.datasource.authentication.CsvAuthDataSource
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
+import org.example.data.utils.hashStringWithMD5
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
 import org.example.logic.request.auth.LoginRequest
-import org.example.utils.hashPassword
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -90,8 +90,8 @@ class CsvAuthDataSourceTest {
             userRole = UserRole.ADMIN
         )
 
-        mockkStatic(::hashPassword)
-        every { hashPassword(wrongPassword) } returns wrongPasswordHash
+        mockkStatic(::hashStringWithMD5)
+        every { hashStringWithMD5(wrongPassword) } returns wrongPasswordHash
 
         val existingUsers = listOf(
             listOf(user.userId.toString(), username, correctPasswordHash, UserRole.ADMIN.name)
@@ -108,7 +108,7 @@ class CsvAuthDataSourceTest {
             authDataSource.loginUser(loginRequest)
         }
 
-        unmockkStatic(::hashPassword)
+        unmockkStatic(::hashStringWithMD5)
     }
 
     @Test
@@ -117,8 +117,8 @@ class CsvAuthDataSourceTest {
         val nonExistingUsername = "nonExistingUser"
         val password = "password123"
 
-        mockkStatic(::hashPassword)
-        every { hashPassword(password) } returns "hashedPassword"
+        mockkStatic(::hashStringWithMD5)
+        every { hashStringWithMD5(password) } returns "hashedPassword"
 
         every { csvFileReader.readCsv(usersFile) } returns emptyList()
 
@@ -132,7 +132,7 @@ class CsvAuthDataSourceTest {
             authDataSource.loginUser(loginRequest)
         }
 
-        unmockkStatic(::hashPassword)
+        unmockkStatic(::hashStringWithMD5)
     }
 
 
@@ -223,8 +223,8 @@ class CsvAuthDataSourceTest {
         val userRow =
             listOf(UUID.randomUUID().toString(), username, hashedPassword, UserRole.ADMIN.name)
 
-        mockkStatic(::hashPassword)
-        every { hashPassword(password) } returns hashedPassword
+        mockkStatic(::hashStringWithMD5)
+        every { hashStringWithMD5(password) } returns hashedPassword
 
         every { csvFileReader.readCsv(usersFile) } returns listOf(userRow)
 
@@ -242,7 +242,7 @@ class CsvAuthDataSourceTest {
         Assertions.assertEquals(username, result.username)
         Assertions.assertEquals(UserRole.ADMIN, result.userRole)
 
-        unmockkStatic(::hashPassword)
+        unmockkStatic(::hashStringWithMD5)
     }
 
     @Test
