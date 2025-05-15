@@ -6,7 +6,6 @@ import java.util.*
 class ProjectStateRepositoryImpl(
     private val projectStateDataSource: ProjectStateDataSource
 ) : ProjectStateRepository {
-
     override suspend fun getAllProjectStates(): List<ProjectState> {
         return projectStateDataSource.getAllProjectStates()
     }

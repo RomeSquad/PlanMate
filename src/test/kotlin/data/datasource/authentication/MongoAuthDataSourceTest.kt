@@ -13,8 +13,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import logic.request.auth.CreateUserRequest
 import org.example.data.datasource.authentication.MongoAuthDataSource
-import org.example.logic.entity.auth.User
-import org.example.logic.entity.auth.UserRole
+import org.example.logic.entity.User
 import org.example.logic.exception.UserNotFoundException
 import org.example.logic.request.auth.LoginRequest
 import org.junit.jupiter.api.Assertions
@@ -37,7 +36,7 @@ class MongoAuthDataSourceTest {
     fun `should insert user with valid data when insertUser is called `() = runTest {
         // Given
         val username = "testUser"
-        val userRole = UserRole.ADMIN
+        val userRole = User.UserRole.ADMIN
         val request = CreateUserRequest(
             username = username,
             password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
@@ -108,7 +107,7 @@ class MongoAuthDataSourceTest {
             userId = UUID.randomUUID(),
             username = username,
             password = "newHashedPassword",
-            userRole = UserRole.ADMIN
+            userRole = User.UserRole.ADMIN
         )
         val filter = Filters.eq("username", username)
         coEvery { userMongoCollection.find(filter).firstOrNull() } returns null
@@ -127,7 +126,7 @@ class MongoAuthDataSourceTest {
             userId = UUID.randomUUID(),
             username = username,
             password = "newHashedPassword",
-            userRole = UserRole.ADMIN
+            userRole = User.UserRole.ADMIN
         )
         val filter = Filters.eq("username", username)
         coEvery { userMongoCollection.find(filter).firstOrNull() } returns user

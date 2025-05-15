@@ -14,7 +14,6 @@ class CsvTaskDataSource(
     private val csvFileWriter: CsvFileWriter,
     private val taskFile: File
 ) : TaskDataSource {
-
     override suspend fun createTask(task: Task) {
         val row = task.toCsvRow()
         csvFileWriter.writeCsv(taskFile, listOf(row))
@@ -46,9 +45,7 @@ class CsvTaskDataSource(
     override suspend fun deleteTask(projectId: UUID, taskId: UUID) {
         val allTasks = getAllTasks().toMutableList()
         val removed = allTasks.removeIf {
-            it.projectId == projectId
-                    &&
-                    it.taskId == taskId
+            it.projectId == projectId && it.taskId == taskId
         }
 
         if (!removed) {
@@ -56,7 +53,6 @@ class CsvTaskDataSource(
                 "Task with id $taskId in project $projectId not found"
             )
         }
-
         saveAllTasks(allTasks)
     }
 

@@ -2,8 +2,8 @@ package org.example.data.datasource.mapper
 
 import logic.request.auth.CreateUserRequest
 import org.example.data.utils.hashStringWithMD5
-import org.example.logic.entity.auth.User
-import org.example.logic.entity.auth.UserRole
+import org.example.logic.entity.User
+import org.example.logic.entity.User.UserRole
 import java.util.*
 
 fun User.toCsvRow(): List<String> {

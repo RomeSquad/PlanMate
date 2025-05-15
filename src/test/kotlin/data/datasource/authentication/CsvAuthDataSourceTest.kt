@@ -7,8 +7,7 @@ import org.example.data.datasource.authentication.CsvAuthDataSource
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.data.utils.hashStringWithMD5
-import org.example.logic.entity.auth.User
-import org.example.logic.entity.auth.UserRole
+import org.example.logic.entity.User
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
 import org.example.logic.request.auth.LoginRequest
@@ -55,7 +54,7 @@ class CsvAuthDataSourceTest {
     fun `should insert user with valid data`() = runTest {
         // Given
         val username = "testUser"
-        val userRole = UserRole.ADMIN
+        val userRole = User.UserRole.ADMIN
         val request = CreateUserRequest(
             username = username,
             password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
@@ -87,14 +86,14 @@ class CsvAuthDataSourceTest {
             userId = UUID.randomUUID(),
             username = username,
             password = correctPasswordHash,
-            userRole = UserRole.ADMIN
+            userRole = User.UserRole.ADMIN
         )
 
         mockkStatic(::hashStringWithMD5)
         every { hashStringWithMD5(wrongPassword) } returns wrongPasswordHash
 
         val existingUsers = listOf(
-            listOf(user.userId.toString(), username, correctPasswordHash, UserRole.ADMIN.name)
+            listOf(user.userId.toString(), username, correctPasswordHash, User.UserRole.ADMIN.name)
         )
         every { csvFileReader.readCsv(usersFile) } returns existingUsers
 
@@ -161,7 +160,7 @@ class CsvAuthDataSourceTest {
             userId = UUID.randomUUID(),
             username = nonExistingUsername,
             password = "hashedPassword",
-            userRole = UserRole.ADMIN
+            userRole = User.UserRole.ADMIN
         )
 
         // When/Then
@@ -176,7 +175,7 @@ class CsvAuthDataSourceTest {
         val username = "userToDelete"
         val userId = UUID.randomUUID()
 
-        val userRow = listOf(userId.toString(), username, "hashedPassword", UserRole.ADMIN.name)
+        val userRow = listOf(userId.toString(), username, "hashedPassword", User.UserRole.ADMIN.name)
 
         every { csvFileReader.readCsv(usersFile) } returns listOf(userRow)
         every { csvFileWriter.writeCsv(usersFile, any()) } just runs
@@ -195,7 +194,7 @@ class CsvAuthDataSourceTest {
         // Given
         val username = "existingUser"
         val existingUserRow =
-            listOf(UUID.randomUUID().toString(), username, "hashedPassword", UserRole.ADMIN.name)
+            listOf(UUID.randomUUID().toString(), username, "hashedPassword", User.UserRole.ADMIN.name)
 
         every { csvFileReader.readCsv(usersFile) } returns listOf(existingUserRow)
 
@@ -204,7 +203,7 @@ class CsvAuthDataSourceTest {
         val request = CreateUserRequest(
             username = username,
             password = "5f4dcc3b5aa765d61d8327deb882cf99",
-            userRole = UserRole.MATE
+            userRole = User.UserRole.MATE
         )
 
         // When/Then
@@ -221,7 +220,7 @@ class CsvAuthDataSourceTest {
         val hashedPassword = "5f4dcc3b5aa765d61d8327deb882cf99"
 
         val userRow =
-            listOf(UUID.randomUUID().toString(), username, hashedPassword, UserRole.ADMIN.name)
+            listOf(UUID.randomUUID().toString(), username, hashedPassword, User.UserRole.ADMIN.name)
 
         mockkStatic(::hashStringWithMD5)
         every { hashStringWithMD5(password) } returns hashedPassword
@@ -240,7 +239,7 @@ class CsvAuthDataSourceTest {
 
         // Then
         Assertions.assertEquals(username, result.username)
-        Assertions.assertEquals(UserRole.ADMIN, result.userRole)
+        Assertions.assertEquals(User.UserRole.ADMIN, result.userRole)
 
         unmockkStatic(::hashStringWithMD5)
     }
@@ -250,8 +249,8 @@ class CsvAuthDataSourceTest {
         // Given
         val username = "userToEdit"
         val userId = UUID.randomUUID()
-        val originalRole = UserRole.MATE
-        val newRole = UserRole.ADMIN
+        val originalRole = User.UserRole.MATE
+        val newRole = User.UserRole.ADMIN
 
         val userRow = listOf(userId.toString(), username, "hashedPassword", originalRole.name)
 
@@ -280,7 +279,7 @@ class CsvAuthDataSourceTest {
         val username = "existingUser"
         val userId = UUID.randomUUID()
 
-        val userRow = listOf(userId.toString(), username, "hashedPassword", UserRole.ADMIN.name)
+        val userRow = listOf(userId.toString(), username, "hashedPassword", User.UserRole.ADMIN.name)
 
         every { csvFileReader.readCsv(usersFile) } returns listOf(userRow)
 
@@ -315,13 +314,13 @@ class CsvAuthDataSourceTest {
             userId = UUID.randomUUID(),
             username = "user1",
             password = "hashedPassword1",
-            userRole = UserRole.ADMIN
+            userRole = User.UserRole.ADMIN
         )
         val user2 = User(
             userId = UUID.randomUUID(),
             username = "user2",
             password = "hashedPassword2",
-            userRole = UserRole.MATE
+            userRole = User.UserRole.MATE
         )
 
         val initialUsers = listOf(
@@ -359,12 +358,12 @@ val testUser1 = User(
     userId = UUID.fromString(readTestUser1List[0]),
     username = readTestUser1List[1],
     password = readTestUser1List[2],
-    userRole = UserRole.valueOf(readTestUser1List[3])
+    userRole = User.UserRole.valueOf(readTestUser1List[3])
 )
 
 val testUser2 = User(
     userId = UUID.fromString(readTestUser2List[0]),
     username = readTestUser2List[1],
     password = readTestUser2List[2],
-    userRole = UserRole.valueOf(readTestUser2List[3])
+    userRole = User.UserRole.valueOf(readTestUser2List[3])
 )

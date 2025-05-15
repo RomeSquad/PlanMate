@@ -6,7 +6,7 @@ import kotlinx.coroutines.test.runTest
 import logic.request.auth.CreateUserRequest
 import logic.usecase.validator.UserCredentialsValidator
 import org.example.data.datasource.mapper.toUser
-import org.example.logic.entity.auth.UserRole
+import org.example.logic.entity.User.UserRole
 import org.example.logic.exception.PasswordLengthException
 import org.example.logic.exception.UserNameOrPasswordEmptyException
 import org.example.logic.repository.AuthRepository

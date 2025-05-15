@@ -26,7 +26,7 @@ import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.Project
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
-import org.example.logic.entity.auth.User
+import org.example.logic.entity.User
 import org.example.logic.repository.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -34,6 +34,7 @@ import java.io.File
 
 
 val dataModule = module {
+
     single<File>(named("projectFile")) { File("project.csv") }
     single<File>(named("usersFile")) { File("users.csv") }
     single<File>(named("taskFile")) { File("task.csv") }
@@ -50,8 +51,6 @@ val dataModule = module {
     single<ProjectDataSource> { MongoProjectDataSource(get(named("projects-collection"))) }
     single<ProjectStateDataSource> { MongoProjectStateDataSource(get(named("states-collection"))) }
 
-
-    //TODO: add other data sources. Follow the same pattern as above
 
 
     single<ProjectRepository> { ProjectRepositoryImpl(get()) }

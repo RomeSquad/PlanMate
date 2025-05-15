@@ -2,7 +2,7 @@ package org.example.data.repository
 
 import org.example.data.datasource.project.ProjectDataSource
 import org.example.logic.entity.Project
-import org.example.logic.entity.auth.User
+import org.example.logic.entity.User
 import org.example.logic.repository.ProjectRepository
 import java.util.*
 

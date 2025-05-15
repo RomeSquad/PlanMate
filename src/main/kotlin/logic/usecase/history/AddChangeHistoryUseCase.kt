@@ -5,7 +5,6 @@ import org.example.logic.repository.ChangeHistoryRepository
 import java.util.*
 
 class AddChangeHistoryUseCase(private val repository: ChangeHistoryRepository) {
-
     suspend fun execute(
         projectId: UUID,
         taskId: UUID,

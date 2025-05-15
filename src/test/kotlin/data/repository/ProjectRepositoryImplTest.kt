@@ -8,8 +8,8 @@ import org.example.data.datasource.project.ProjectDataSource
 import org.example.data.repository.ProjectRepositoryImpl
 import org.example.logic.entity.Project
 import org.example.logic.entity.ProjectState
-import org.example.logic.entity.auth.User
-import org.example.logic.entity.auth.UserRole
+import org.example.logic.entity.User
+import org.example.logic.entity.User.UserRole
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

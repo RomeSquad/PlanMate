@@ -8,8 +8,9 @@ import java.util.*
 class TaskRepositoryImpl(
     private val taskDataSource: TaskDataSource,
 ) : TaskRepository {
-
-    override suspend fun createTask(task: Task) = taskDataSource.createTask(task)
+    override suspend fun createTask(task: Task) {
+        taskDataSource.createTask(task)
+    }
 
     override suspend fun editTask(
         taskId: UUID,
@@ -32,5 +33,7 @@ class TaskRepositoryImpl(
         return taskDataSource.getAllTasks().filter { it.projectId == projectId }
     }
 
-    override suspend fun getAllTasks(): List<Task> = taskDataSource.getAllTasks()
+    override suspend fun getAllTasks(): List<Task> {
+        return taskDataSource.getAllTasks()
+    }
 }

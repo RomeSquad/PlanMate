@@ -1,6 +1,6 @@
 package org.example.presentation.user.admin
 
-import org.example.logic.entity.auth.UserRole
+import org.example.logic.entity.User.UserRole
 import org.example.logic.usecase.auth.InsertUserUseCase
 import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer

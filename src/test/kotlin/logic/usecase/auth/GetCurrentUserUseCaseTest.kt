@@ -4,8 +4,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.example.logic.entity.auth.User
-import org.example.logic.entity.auth.UserRole
+import org.example.logic.entity.User
+import org.example.logic.entity.User.UserRole
 import org.example.logic.exception.UserNotFoundException
 import org.example.logic.repository.AuthRepository
 import org.example.logic.usecase.auth.GetCurrentUserUseCase

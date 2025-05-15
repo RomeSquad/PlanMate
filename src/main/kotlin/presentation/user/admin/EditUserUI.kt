@@ -1,7 +1,7 @@
 package org.example.presentation.user.admin
 
 
-import org.example.logic.entity.auth.UserRole
+import org.example.logic.entity.User.UserRole
 import org.example.logic.exception.EmptyPasswordException
 import org.example.logic.exception.EntityNotChangedException
 import org.example.logic.usecase.auth.EditUserUseCase

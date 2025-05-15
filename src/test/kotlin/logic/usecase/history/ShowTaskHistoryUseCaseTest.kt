@@ -1,10 +1,11 @@
-package org.example.logic.usecase.history
+package logic.usecase.history
 
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.repository.ChangeHistoryRepository
+import org.example.logic.usecase.history.ShowProjectHistoryUseCase
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

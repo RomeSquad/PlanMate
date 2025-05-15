@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class HashStringWithMD5Test {
-
     @Test
     fun `hashStringWithMD5 should return correct MD5 hash`() {
         // Given

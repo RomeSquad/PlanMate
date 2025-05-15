@@ -17,7 +17,6 @@ import java.util.*
 class MongoTaskDataSource(
     private val mongo: MongoCollection<Task>
 ) : TaskDataSource {
-
     override suspend fun createTask(task: Task) {
         mongo.insertOne(task)
     }
@@ -51,7 +50,6 @@ class MongoTaskDataSource(
             Filters.eq(TASK_ID, taskId),
             Filters.eq(PROJECT_ID, projectId)
         )
-
         mongo.deleteOne(filter)
     }
 

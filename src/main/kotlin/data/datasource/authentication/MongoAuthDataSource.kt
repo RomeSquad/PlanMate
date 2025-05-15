@@ -12,7 +12,7 @@ import org.example.data.utils.AuthConstants.USER_ID
 import org.example.data.utils.AuthConstants.USER_NAME
 import org.example.data.utils.AuthConstants.USER_ROLE
 import org.example.data.utils.hashStringWithMD5
-import org.example.logic.entity.auth.User
+import org.example.logic.entity.User
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
 import org.example.logic.request.auth.LoginRequest
@@ -61,8 +61,7 @@ class MongoAuthDataSource(
 
         val filter = Filters.eq(USER_NAME, user.username)
 
-        userMongoCollection.find(filter).firstOrNull()
-            ?: throw UserNotFoundException()
+        userMongoCollection.find(filter).firstOrNull() ?: throw UserNotFoundException()
 
         val update = Updates.combine(
             Updates.set(PASSWORD, hashedPassword),
@@ -76,7 +75,6 @@ class MongoAuthDataSource(
     override suspend fun getUserByUserName(username: String): User? {
         return userMongoCollection.find(Filters.eq(USER_NAME, username)).firstOrNull()
     }
-
 
     override suspend fun isUserNameExists(username: String) {
         if (userMongoCollection.find(Filters.eq(USER_NAME, username)).firstOrNull() != null) {

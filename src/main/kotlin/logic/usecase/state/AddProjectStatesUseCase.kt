@@ -9,12 +9,10 @@ class AddProjectStatesUseCase(
 ) {
     suspend fun execute(stateName: String, projectId: UUID) {
         require(stateName.isNotBlank()) { "State Name must not be blank" }
-
         val projectState = ProjectState(
             stateName = stateName,
             projectId = projectId
         )
-
         stateRepository.addProjectState(projectState)
     }
 }

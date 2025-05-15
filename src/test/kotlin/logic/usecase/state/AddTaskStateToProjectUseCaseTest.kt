@@ -6,8 +6,8 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.entity.ProjectState
-import org.example.logic.entity.auth.User
-import org.example.logic.entity.auth.UserRole
+import org.example.logic.entity.User
+import org.example.logic.entity.User.UserRole
 import org.example.logic.exception.CantAddStateWithNoNameException
 import org.example.logic.exception.NotAccessException
 import org.example.logic.repository.AuthRepository

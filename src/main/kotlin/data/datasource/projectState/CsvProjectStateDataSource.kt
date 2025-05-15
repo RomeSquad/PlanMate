@@ -6,7 +6,6 @@ import java.util.*
 
 class CsvProjectStateDataSource : ProjectStateDataSource {
     private val csvFile = File("state.csv")
-
     override suspend fun getAllProjectStates(): List<ProjectState> {
         val allStates = mutableListOf<ProjectState>()
 
@@ -55,12 +54,10 @@ class CsvProjectStateDataSource : ProjectStateDataSource {
     override suspend fun deleteProjectState(projectId: UUID): Boolean {
         val updatedStates = getAllProjectStates().filterNot { it.projectId == projectId }
         return saveAllStates(updatedStates)
-
     }
 
     override suspend fun getStateById(projectId: UUID): ProjectState {
         return getAllProjectStates().first { it.projectId == projectId }
-
     }
 
     private fun saveAllStates(states: List<ProjectState>): Boolean {

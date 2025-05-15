@@ -3,8 +3,7 @@ package logic.usecase.auth
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.example.logic.entity.auth.User
-import org.example.logic.entity.auth.UserRole
+import org.example.logic.entity.User
 import org.example.logic.exception.PasswordLengthException
 import org.example.logic.exception.UserNameOrPasswordEmptyException
 import org.example.logic.repository.AuthRepository
@@ -17,10 +16,8 @@ import kotlin.test.Test
 
 class LoginUseCaseTest {
 
-
     private val authRepository: AuthRepository = mockk()
     private val loginUseCase = LoginUseCase(authRepository)
-
 
     @Test
     fun `should login return user when authRepository returns successful login`() = runTest {
@@ -31,7 +28,7 @@ class LoginUseCaseTest {
             userId = UUID.randomUUID(),
             username = username,
             password = "5f4dcc3b5aa765d61d8327deb882cf99",
-            userRole = UserRole.ADMIN
+            userRole = User.UserRole.ADMIN
         )
         val request = LoginRequest(
             username = username,

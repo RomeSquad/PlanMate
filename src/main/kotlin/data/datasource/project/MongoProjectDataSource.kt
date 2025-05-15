@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.example.data.utils.ProjectConstants.PROJECT_ID
 import org.example.logic.entity.Project
-import org.example.logic.entity.auth.User
+import org.example.logic.entity.User
 import org.litote.kmongo.eq
 import java.util.*
 
@@ -56,7 +56,6 @@ class MongoProjectDataSource(
         val filter = Filters.and(
             Filters.eq(PROJECT_ID, id)
         )
-
         mongo.deleteOne(filter)
     }
 

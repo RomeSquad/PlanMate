@@ -8,7 +8,6 @@ import java.util.*
 class ChangeHistoryRepositoryImpl(
     private val dataSource: ChangeHistoryDataSource
 ) : ChangeHistoryRepository {
-
     override suspend fun addChangeHistory(changeHistory: ChangeHistory): ChangeHistory {
         return dataSource.addChangeHistory(changeHistory)
     }

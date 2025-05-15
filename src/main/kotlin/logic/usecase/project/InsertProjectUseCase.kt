@@ -1,7 +1,7 @@
 package org.example.logic.usecase.project
 
 import org.example.logic.entity.Project
-import org.example.logic.entity.auth.User
+import org.example.logic.entity.User
 import org.example.logic.repository.ProjectRepository
 import java.util.*
 

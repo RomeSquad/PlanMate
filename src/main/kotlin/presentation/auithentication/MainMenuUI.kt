@@ -1,6 +1,6 @@
 package org.example.presentation.auithentication
 
-import org.example.logic.entity.auth.UserRole
+import org.example.logic.entity.User.UserRole
 import org.example.logic.usecase.auth.GetCurrentUserUseCase
 import org.example.presentation.user.admin.AdminManagementUI
 import org.example.presentation.user.mate.MateManagementUI

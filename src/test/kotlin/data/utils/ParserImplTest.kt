@@ -11,19 +11,16 @@ import kotlin.test.assertTrue
 class ParserImplTest {
 
     private lateinit var parser: Parser
-
     @BeforeEach
     fun setUp() {
         parser = ParserImpl()
     }
-
 
     @Test
     fun `parse handles empty content by passing delimiter check`() {
         val result = parser.parseCsv("")
         assertTrue(result.isEmpty())
     }
-
 
     @Test
     fun `parse processes lines without header`() {

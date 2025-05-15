@@ -17,7 +17,6 @@ class CsvProjectStateDataSourceTest {
     private lateinit var csvProjectStateDataSource: CsvProjectStateDataSource
     private val projectStateFile = File("stateTest.csv")
 
-
     @BeforeEach
     fun setup() {
         csvProjectStateDataSource = CsvProjectStateDataSource()

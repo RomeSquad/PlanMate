@@ -3,8 +3,8 @@ package logic.usecase.state
 import io.mockk.*
 import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.ProjectState
-import org.example.logic.entity.auth.User
-import org.example.logic.entity.auth.UserRole
+import org.example.logic.entity.User
+import org.example.logic.entity.User.UserRole
 import org.example.logic.repository.ProjectStateRepository
 import org.example.logic.usecase.state.AddCustomProjectStateUseCase
 import org.junit.jupiter.api.BeforeEach

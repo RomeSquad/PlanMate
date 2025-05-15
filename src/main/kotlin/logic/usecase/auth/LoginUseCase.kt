@@ -1,6 +1,7 @@
 package org.example.logic.usecase.auth
 
-import org.example.logic.entity.auth.User
+
+import org.example.logic.entity.User
 import org.example.logic.repository.AuthRepository
 import org.example.logic.request.auth.LoginRequest
 

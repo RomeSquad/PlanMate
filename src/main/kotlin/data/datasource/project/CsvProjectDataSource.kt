@@ -5,7 +5,7 @@ import org.example.data.datasource.mapper.toCsvRow
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.logic.entity.Project
-import org.example.logic.entity.auth.User
+import org.example.logic.entity.User
 import java.io.File
 import java.util.*
 
