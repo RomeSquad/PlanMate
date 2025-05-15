@@ -30,7 +30,6 @@ class InsertProjectUseCaseTest {
     private val user = User(
         userId = userId,
         username = "Mohamed",
-        password = "password",
         userRole = UserRole.ADMIN
 
     )
@@ -55,13 +54,13 @@ class InsertProjectUseCaseTest {
     @Test
     fun `insert project with valid project and user returns project ID`() = runTest {
         coEvery { validationProject.validateCreateProject(validProject, user) } returns Unit
-        coEvery { projectRepository.createProject(ProjectCreationRequest(validProject, user)) } returns projectId
+        coEvery { projectRepository.createProject(ProjectCreationRequest(validProject)) } returns projectId
 
         val result = insertProjectUseCase.insertProject(validProject, user)
 
         assertEquals(projectId, result)
         coVerify { validationProject.validateCreateProject(validProject, user) }
-        coVerify { projectRepository.createProject(ProjectCreationRequest(validProject, user)) }
+        coVerify { projectRepository.createProject(ProjectCreationRequest(validProject)) }
     }
 
     @Test
@@ -102,14 +101,14 @@ class InsertProjectUseCaseTest {
     fun `insert project throws exception when repository fails`() = runTest {
         coEvery { validationProject.validateCreateProject(validProject, user) } returns Unit
         val repositoryException = RuntimeException("Failed to insert project")
-        coEvery { projectRepository.createProject(ProjectCreationRequest(validProject, user)) } throws repositoryException
+        coEvery { projectRepository.createProject(ProjectCreationRequest(validProject)) } throws repositoryException
 
         val exception = assertThrows<RuntimeException> {
             insertProjectUseCase.insertProject(validProject, user)
         }
         assertEquals("Failed to insert project", exception.message)
         coVerify { validationProject.validateCreateProject(validProject, user) }
-        coVerify { projectRepository.createProject(ProjectCreationRequest(validProject, user)) }
+        coVerify { projectRepository.createProject(ProjectCreationRequest(validProject)) }
     }
 
     @Test

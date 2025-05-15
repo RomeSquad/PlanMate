@@ -33,13 +33,11 @@ class AddTaskStateToProjectUseCaseTest {
         userId = userId,
         userRole = UserRole.ADMIN,
         username = "admin user",
-        password = "password"
     )
     private val nonAdminUser = User(
         userId = UUID.randomUUID(),
         userRole = UserRole.MATE,
         username = "non-admin user",
-        password = "password"
 
     )
     private val validState = ProjectState(

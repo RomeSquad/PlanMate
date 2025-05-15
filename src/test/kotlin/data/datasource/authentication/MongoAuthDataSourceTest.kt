@@ -5,6 +5,7 @@ import com.mongodb.client.model.Updates
 import com.mongodb.client.result.DeleteResult
 import com.mongodb.client.result.UpdateResult
 import com.mongodb.kotlin.client.coroutine.MongoCollection
+import data.datasource.authentication.dto.UserDto
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -16,6 +17,7 @@ import org.example.data.datasource.authentication.MongoAuthDataSource
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.exception.UserNotFoundException
+import org.example.logic.request.EditUserRequest
 import org.example.logic.request.LoginRequest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -25,7 +27,7 @@ import java.util.*
 
 class MongoAuthDataSourceTest {
     private lateinit var authDataSource: MongoAuthDataSource
-    private lateinit var userMongoCollection: MongoCollection<User>
+    private lateinit var userMongoCollection: MongoCollection<UserDto>
 
     @BeforeEach
     fun setup() {
@@ -55,7 +57,7 @@ class MongoAuthDataSourceTest {
     @Test
     fun `should return empty list when getAllUsers is called and no users exist`() = runTest {
         // Given
-        val expectedUsers = emptyList<User>()
+        val expectedUsers = emptyList<UserDto>()
         coEvery { userMongoCollection.find().toList() } returns expectedUsers
 
         // When
@@ -104,8 +106,7 @@ class MongoAuthDataSourceTest {
     fun `should throw UserNotFoundException when editUser is called with non-existing username`() = runTest {
         // Given
         val username = "testUser"
-        val user = User(
-            userId = UUID.randomUUID(),
+        val user = EditUserRequest(
             username = username,
             password = "newHashedPassword",
             userRole = UserRole.ADMIN
@@ -123,8 +124,12 @@ class MongoAuthDataSourceTest {
     fun `should throw UserNotFoundException when editUser is called and update is acknowledged`() = runTest {
         // Given
         val username = "testUser"
-        val user = User(
-            userId = UUID.randomUUID(),
+        val user = UserDto(
+            username = username,
+            password = "newHashedPassword",
+            userRole = UserRole.ADMIN
+        )
+        val request = EditUserRequest(
             username = username,
             password = "newHashedPassword",
             userRole = UserRole.ADMIN
@@ -146,7 +151,7 @@ class MongoAuthDataSourceTest {
 
         // When / Then
         assertThrows<UserNotFoundException> {
-            authDataSource.editUser(user)
+            authDataSource.editUser(request)
         }
     }
 

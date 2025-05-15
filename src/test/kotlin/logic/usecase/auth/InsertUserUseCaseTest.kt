@@ -6,6 +6,7 @@ import kotlinx.coroutines.test.runTest
 import org.example.logic.request.CreateUserRequest
 import logic.usecase.validator.UserCredentialsValidator
 import org.example.data.datasource.mapper.toUserDto
+import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.exception.PasswordLengthException
 import org.example.logic.exception.UserNameOrPasswordEmptyException
@@ -13,6 +14,7 @@ import org.example.logic.repository.AuthRepository
 import org.example.logic.usecase.auth.InsertUserUseCase
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.assertThrows
+import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -34,7 +36,11 @@ class InsertUserUseCaseTest {
                 password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
                 userRole = userRole
             )
-            val expectedUser = request.toUserDto()
+            val expectedUser = User(
+                userId = UUID.randomUUID(),
+                username = request.username,
+                userRole = request.userRole
+            )
             coEvery { authRepository.insertUser(any()) } returns expectedUser
 
             // When

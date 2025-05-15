@@ -12,7 +12,7 @@ class InsertProjectUseCase(
 ) {
     suspend fun insertProject(project: Project, user: User): UUID {
         validationProject.validateCreateProject(project, user)
-        val request= ProjectCreationRequest(project, user)
+        val request= ProjectCreationRequest(project)
         return projectRepository.createProject(request)
     }
 }
