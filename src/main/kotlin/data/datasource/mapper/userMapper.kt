@@ -1,9 +1,9 @@
 package org.example.data.datasource.mapper
 
 import logic.request.auth.CreateUserRequest
+import org.example.data.utils.hashStringWithMD5
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
-import org.example.utils.hashPassword
 import java.util.*
 
 fun User.toCsvRow(): List<String> {
@@ -22,6 +22,6 @@ fun List<String>.fromCsvRowToUser(): User {
 
 fun CreateUserRequest.toUser() = User(
     username = username,
-    password = hashPassword(password),
+    password = hashStringWithMD5(password),
     userRole = userRole
 )

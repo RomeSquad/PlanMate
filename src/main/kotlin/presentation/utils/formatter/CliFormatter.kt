@@ -1,7 +1,7 @@
 package org.example.presentation.utils.formatter
 
 
-class CliFormatter : Formatter {
+class CliFormatter {
 
     /**
      * If the message is longer than the width or the height, it will be truncated.
@@ -136,7 +136,7 @@ class CliFormatter : Formatter {
         return output.toString()
     }
 
-    fun tableLayout(messages: List<List<String>>) : String {
+    fun tableLayout(messages: List<List<String>>): String {
         val output = StringBuilder()
         messages.map {
             output.append(horizontalLayout(it))
