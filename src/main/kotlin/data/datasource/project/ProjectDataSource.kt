@@ -1,7 +1,7 @@
 package org.example.data.datasource.project
 
 import org.example.logic.entity.Project
-import org.example.logic.request.auth.ProjectCreationRequest
+import org.example.logic.request.ProjectCreationRequest
 import java.util.*
 
 

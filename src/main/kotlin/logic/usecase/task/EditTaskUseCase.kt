@@ -1,7 +1,7 @@
 package org.example.logic.usecase.task
 
 import org.example.logic.repository.TaskRepository
-import org.example.logic.request.auth.TaskEditRequest
+import org.example.logic.request.TaskEditRequest
 import java.util.*
 
 class EditTaskUseCase(

@@ -6,8 +6,8 @@ import org.example.data.datasource.task.TaskDataSource
 import org.example.data.repository.TaskRepositoryImpl
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
-import org.example.logic.request.auth.TaskDeletionRequest
-import org.example.logic.request.auth.TaskEditRequest
+import org.example.logic.request.TaskDeletionRequest
+import org.example.logic.request.TaskEditRequest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.*

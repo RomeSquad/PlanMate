@@ -3,7 +3,7 @@ package data.datasource.projectState
 
 import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.ProjectState
-import org.example.logic.request.auth.ProjectStateEditRequest
+import org.example.logic.request.ProjectStateEditRequest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach

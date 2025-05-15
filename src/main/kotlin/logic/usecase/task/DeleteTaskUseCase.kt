@@ -1,7 +1,7 @@
 package org.example.logic.usecase.task
 
 import org.example.logic.repository.TaskRepository
-import org.example.logic.request.auth.TaskDeletionRequest
+import org.example.logic.request.TaskDeletionRequest
 import java.util.*
 
 class DeleteTaskUseCase(

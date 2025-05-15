@@ -1,7 +1,7 @@
 package org.example.logic.usecase.state
 
 import org.example.logic.repository.ProjectStateRepository
-import org.example.logic.request.auth.ProjectStateEditRequest
+import org.example.logic.request.ProjectStateEditRequest
 import java.util.*
 
 class EditProjectStateUseCase(

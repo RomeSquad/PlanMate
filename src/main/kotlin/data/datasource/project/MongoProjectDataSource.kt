@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.example.data.utils.ProjectConstants.PROJECT_ID
 import org.example.logic.entity.Project
-import org.example.logic.request.auth.ProjectCreationRequest
+import org.example.logic.request.ProjectCreationRequest
 import org.litote.kmongo.eq
 import java.util.*
 

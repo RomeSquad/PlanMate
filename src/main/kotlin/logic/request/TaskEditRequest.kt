@@ -1,4 +1,4 @@
-package org.example.logic.request.auth
+package org.example.logic.request
 
 import java.util.*
 

@@ -1,4 +1,4 @@
-package org.example.logic.request.auth
+package org.example.logic.request
 
 data class LoginRequest(
     val username: String,

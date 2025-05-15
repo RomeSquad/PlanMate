@@ -12,8 +12,8 @@ import org.example.data.utils.TaskConstants.TASK_TITLE
 import org.example.data.utils.TaskConstants.TASK_UPDATED_AT
 import org.example.logic.entity.Task
 import org.example.logic.exception.TaskNotFoundException
-import org.example.logic.request.auth.TaskDeletionRequest
-import org.example.logic.request.auth.TaskEditRequest
+import org.example.logic.request.TaskDeletionRequest
+import org.example.logic.request.TaskEditRequest
 import java.util.*
 
 class MongoTaskDataSource(

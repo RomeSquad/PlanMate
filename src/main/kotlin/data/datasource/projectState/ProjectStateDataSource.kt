@@ -1,7 +1,7 @@
 package data.datasource.projectState
 
 import org.example.logic.entity.ProjectState
-import org.example.logic.request.auth.ProjectStateEditRequest
+import org.example.logic.request.ProjectStateEditRequest
 import java.util.*
 
 interface ProjectStateDataSource {

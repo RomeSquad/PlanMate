@@ -10,7 +10,7 @@ import org.example.logic.entity.Project
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
-import org.example.logic.request.auth.ProjectCreationRequest
+import org.example.logic.request.ProjectCreationRequest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

@@ -4,7 +4,7 @@ import io.mockk.*
 import kotlinx.coroutines.test.runTest
 import org.example.logic.exception.TaskNotFoundException
 import org.example.logic.repository.TaskRepository
-import org.example.logic.request.auth.TaskEditRequest
+import org.example.logic.request.TaskEditRequest
 import org.example.logic.usecase.task.EditTaskUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows

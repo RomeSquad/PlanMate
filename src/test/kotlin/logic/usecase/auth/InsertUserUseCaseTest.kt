@@ -3,7 +3,7 @@ package logic.usecase.auth
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import logic.request.auth.CreateUserRequest
+import org.example.logic.request.CreateUserRequest
 import logic.usecase.validator.UserCredentialsValidator
 import org.example.data.datasource.mapper.toUser
 import org.example.logic.entity.auth.UserRole

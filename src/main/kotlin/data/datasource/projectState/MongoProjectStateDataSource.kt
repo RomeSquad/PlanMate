@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import org.example.data.utils.ProjectConstants.PROJECT_ID
 import org.example.logic.entity.ProjectState
-import org.example.logic.request.auth.ProjectStateEditRequest
+import org.example.logic.request.ProjectStateEditRequest
 import java.util.*
 
 class MongoProjectStateDataSource(

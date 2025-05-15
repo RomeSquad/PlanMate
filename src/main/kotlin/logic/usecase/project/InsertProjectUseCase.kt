@@ -3,7 +3,7 @@ package org.example.logic.usecase.project
 import org.example.logic.entity.Project
 import org.example.logic.entity.auth.User
 import org.example.logic.repository.ProjectRepository
-import org.example.logic.request.auth.ProjectCreationRequest
+import org.example.logic.request.ProjectCreationRequest
 import java.util.*
 
 class InsertProjectUseCase(

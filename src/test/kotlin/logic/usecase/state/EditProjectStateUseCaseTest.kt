@@ -3,7 +3,7 @@ package logic.usecase.state
 import io.mockk.*
 import kotlinx.coroutines.test.runTest
 import org.example.logic.repository.ProjectStateRepository
-import org.example.logic.request.auth.ProjectStateEditRequest
+import org.example.logic.request.ProjectStateEditRequest
 import org.example.logic.usecase.state.EditProjectStateUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

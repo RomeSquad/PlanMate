@@ -5,7 +5,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.example.logic.repository.TaskRepository
-import org.example.logic.request.auth.TaskDeletionRequest
+import org.example.logic.request.TaskDeletionRequest
 import org.example.logic.usecase.task.DeleteTaskUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
