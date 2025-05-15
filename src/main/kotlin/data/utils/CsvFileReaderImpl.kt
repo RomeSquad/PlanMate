@@ -7,8 +7,8 @@ import java.io.IOException
 import java.nio.charset.Charset
 
 class CsvFileReaderImpl(
-    private val parser: Parser = ParserImpl(),
-    private val validator: FileValidator = FileValidator()
+    private val parser: Parser ,
+    private val validator: FileValidator
 ) : CsvFileReader {
     override fun readCsv(file: File, charset: Charset): List<List<String>> {
         validator.validateFile(file, allowedExtensions = setOf("csv"), isReadOperation = true)

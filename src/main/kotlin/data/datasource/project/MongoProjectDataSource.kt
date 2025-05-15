@@ -4,7 +4,6 @@ import com.mongodb.client.model.Filters
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
-import org.example.data.utils.ProjectConstants.PROJECT_ID
 import org.example.logic.entity.Project
 import org.example.logic.request.ProjectCreationRequest
 import org.litote.kmongo.eq
@@ -51,7 +50,7 @@ class MongoProjectDataSource(
 
     override suspend fun deleteProject(id: UUID) {
         val filter = Filters.and(
-            Filters.eq(PROJECT_ID, id)
+            Filters.eq(Project::projectId.name, id)
         )
 
         mongo.deleteOne(filter)
