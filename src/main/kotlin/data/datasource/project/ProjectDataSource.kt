@@ -13,6 +13,4 @@ interface ProjectDataSource {
     suspend fun saveAllProjects()
     suspend fun editProject(project: Project)
     suspend fun deleteProject(id: UUID)
-
-
 }
