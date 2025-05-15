@@ -7,11 +7,11 @@ import org.example.data.datasource.mapper.toCsvRow
 import org.example.data.datasource.mapper.toUser
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
+import org.example.data.utils.hashStringWithMD5
 import org.example.logic.entity.auth.User
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
 import org.example.logic.request.auth.LoginRequest
-import org.example.utils.hashPassword
 import java.io.File
 import java.util.*
 
@@ -37,7 +37,7 @@ class CsvAuthDataSource(
     }
 
     override suspend fun loginUser(request: LoginRequest): User {
-        val hashedPassword = hashPassword(request.password)
+        val hashedPassword = hashStringWithMD5(request.password)
         val user = users.find { it.username == request.username && it.password == hashedPassword }
             ?: throw UserNotFoundException()
         return user
