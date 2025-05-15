@@ -27,7 +27,7 @@ class MongoTaskDataSource(
         )
 
         val editedTask = mongo.updateOne(
-            filter = Filters.eq(TASK_ID, request.taskId),
+            filter = Filters.eq(Task::taskId.name, request.taskId),
             update = update
         )
 
