@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import logic.request.auth.CreateUserRequest
 import org.example.data.datasource.authentication.MongoAuthDataSource
+import org.example.data.utils.AuthConstants.USER_ID
 import org.example.logic.entity.User
 import org.example.logic.exception.UserNotFoundException
 import org.example.logic.request.auth.LoginRequest
@@ -157,6 +158,33 @@ class MongoAuthDataSourceTest {
 
         // When
         val result = authDataSource.getUserByUserName(username)
+
+        // Then
+        Assertions.assertNull(result)
+    }
+
+
+    @Test
+    fun `should return null when getCurrentUser is called and no user exists`() = runTest {
+        // Given
+        coEvery { userMongoCollection.find().firstOrNull() } returns null
+
+        // When
+        val result = authDataSource.getCurrentUser()
+
+        // Then
+        Assertions.assertNull(result)
+    }
+
+
+    @Test
+    fun `should return null when getUserById is called with non-existing ID`() = runTest {
+        // Given
+        val userId = UUID.randomUUID()
+        coEvery { userMongoCollection.find(Filters.eq(USER_ID, userId)).firstOrNull() } returns null
+
+        // When
+        val result = authDataSource.getUserById(userId)
 
         // Then
         Assertions.assertNull(result)
