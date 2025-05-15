@@ -1,6 +1,8 @@
 package org.example.presentation.auithentication
 
 import org.example.logic.exception.InvalidCredentialsException
+import org.example.logic.exception.PasswordLengthException
+import org.example.logic.exception.UserNameOrPasswordEmptyException
 import org.example.logic.usecase.auth.GetCurrentUserUseCase
 import org.example.logic.usecase.auth.LoginUseCase
 import org.example.presentation.utils.io.InputReader
@@ -35,11 +37,6 @@ class LoginManagementUI(
                         ui.displayMessage("🔹 Enter Password:")
                         val password = inputReader.readString("Password: ").trim()
 
-
-                        if (username.isEmpty() || password.isEmpty()) {
-                            ui.displayMessage("❌ Username and password cannot be empty.")
-                            continue
-                        }
                         val isLogin = loginUseCase.login(username, password)
                         val getCurrentUser = getCurrentUser.getCurrentUser()
 
@@ -52,8 +49,12 @@ class LoginManagementUI(
                         inputReader.readString("")
                         mainMenuUI.execute(ui, inputReader)
                         return
+                    } catch (e: UserNameOrPasswordEmptyException) {
+                        ui.displayMessage("❌ Error: ${e.message}")
+                    } catch (e: PasswordLengthException) {
+                        ui.displayMessage("❌ Error: ${e.message}")
                     } catch (e: InvalidCredentialsException) {
-                        ui.displayMessage("❌ Invalid username or password${e.message}.")
+                        ui.displayMessage("❌ Invalid username or password: ${e.message}")
                     } catch (e: Exception) {
                         ui.displayMessage("❌ An unexpected error occurred: ${e.message}")
                     }

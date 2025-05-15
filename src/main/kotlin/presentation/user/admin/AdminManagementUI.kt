@@ -1,5 +1,6 @@
 package org.example.presentation.user.admin
 
+import org.example.logic.usecase.auth.GetCurrentUserUseCase
 import org.example.presentation.history.ShowHistoryManagementUI
 import org.example.presentation.project.ProjectManagementUI
 import org.example.presentation.task.TaskManagementUI
@@ -15,16 +16,28 @@ class AdminManagementUI(
     private val deleteUserUi: DeleteUserUi,
     private val editUserUI: EditUserUI,
     private val viewAllUserUI: ViewAllUserUI,
-    private val changeHistoryManagementUI: ShowHistoryManagementUI
+    private val changeHistoryManagementUI: ShowHistoryManagementUI,
+    private val getCurrentUser: GetCurrentUserUseCase
 ) : MenuAction {
+
     override val description: String = """
         ╔════════════════════════╗
         ║  Admin Control Center  ║
         ╚════════════════════════╝
-        """.trimIndent()
+    """.trimIndent()
+
     override val menu: Menu = Menu()
 
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
+        val user = getCurrentUser.getCurrentUser()
+
+        if (user == null) {
+            ui.displayMessage("❌ No authenticated user found! Please log in first.")
+            return
+        }
+
+        ui.displayMessage("👤 Welcome Admin ${user.username} (${user.userRole})!")
+
         while (true) {
             ui.displayMessage(description)
             ui.displayMessage(
@@ -34,9 +47,9 @@ class AdminManagementUI(
                 ✅ 3. Manage Tasks
                 📜 4. View Audit Logs
                 🚪 5. Logout
-                🛠️ Select an option (1-5):
                 """.trimIndent()
             )
+            ui.displayMessage("🔹 Select an option (1-5):")
             val choice = inputReader.readString("Choice: ").trim().toIntOrNull()
 
             when (choice) {
@@ -48,9 +61,9 @@ class AdminManagementUI(
                     ui.displayMessage("🔙 Logging out...")
                     return
                 }
-
-                else -> ui.displayMessage("❌ Invalid option. Please select a number between 1 and 3.")
+                else -> ui.displayMessage("❌ Invalid option. Please select a number between 1 and 5.")
             }
+
             ui.displayMessage("🔄 Press Enter to continue...")
             inputReader.readString("")
         }
@@ -68,13 +81,13 @@ class AdminManagementUI(
             ui.displayMessage(
                 """
                 ➕ 1. Create User
-                🗑️ 2. Delete User
+                🗑 2. Delete User
                 ✏️ 3. Edit User
                 📜 4. View All Users
                 ⬅️ 5. Back
-                🔹 Select an option (1-5):
                 """.trimIndent()
             )
+            ui.displayMessage("🔹 Select an option (1-5):")
             val choice = inputReader.readString("Choice: ").trim().toIntOrNull()
 
             when (choice) {
@@ -85,6 +98,7 @@ class AdminManagementUI(
                 5 -> return
                 else -> ui.displayMessage("❌ Invalid option. Please select a number between 1 and 5.")
             }
+
             ui.displayMessage("🔄 Press Enter to continue...")
             inputReader.readString("")
         }
