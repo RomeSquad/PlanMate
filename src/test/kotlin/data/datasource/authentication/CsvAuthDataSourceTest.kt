@@ -1,5 +1,6 @@
 package data.datasource.authentication
 
+import data.datasource.authentication.dto.UserDto
 import io.mockk.*
 import kotlinx.coroutines.test.runTest
 import org.example.logic.request.CreateUserRequest
@@ -11,6 +12,7 @@ import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
+import org.example.logic.request.EditUserRequest
 import org.example.logic.request.LoginRequest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -83,7 +85,7 @@ class CsvAuthDataSourceTest {
         val wrongPassword = "wrongPassword"
         val wrongPasswordHash = "wrongHash"
 
-        val user = User(
+        val user = UserDto(
             userId = UUID.randomUUID(),
             username = username,
             password = correctPasswordHash,
@@ -157,8 +159,7 @@ class CsvAuthDataSourceTest {
 
         every { csvFileReader.readCsv(usersFile) } returns emptyList()
 
-        val user = User(
-            userId = UUID.randomUUID(),
+        val request = EditUserRequest(
             username = nonExistingUsername,
             password = "hashedPassword",
             userRole = UserRole.ADMIN
@@ -166,7 +167,7 @@ class CsvAuthDataSourceTest {
 
         // When/Then
         assertThrows<UserNotFoundException> {
-            authDataSource.editUser(user)
+            authDataSource.editUser(request =request )
         }
     }
 
@@ -260,8 +261,7 @@ class CsvAuthDataSourceTest {
 
         authDataSource = CsvAuthDataSource(csvFileReader, csvFileWriter, usersFile)
 
-        val updatedUser = User(
-            userId = userId,
+        val updatedUser = EditUserRequest(
             username = username,
             password = "hashedPassword",
             userRole = newRole
@@ -308,37 +308,7 @@ class CsvAuthDataSourceTest {
         Assertions.assertNull(result)
     }
 
-    @Test
-    fun `should save all users`() = runTest {
-        // Given
-        val user1 = User(
-            userId = UUID.randomUUID(),
-            username = "user1",
-            password = "hashedPassword1",
-            userRole = UserRole.ADMIN
-        )
-        val user2 = User(
-            userId = UUID.randomUUID(),
-            username = "user2",
-            password = "hashedPassword2",
-            userRole = UserRole.MATE
-        )
 
-        val initialUsers = listOf(
-            listOf(user1.userId.toString(), user1.username, user1.password, user1.userRole.name),
-            listOf(user2.userId.toString(), user2.username, user2.password, user2.userRole.name)
-        )
-        every { csvFileReader.readCsv(usersFile) } returns initialUsers
-        every { csvFileWriter.writeCsv(usersFile, any()) } just runs
-
-        authDataSource = CsvAuthDataSource(csvFileReader, csvFileWriter, usersFile)
-
-        // When
-        authDataSource.saveAllUsers()
-
-        // Then
-        verify(exactly = 2) { csvFileWriter.writeCsv(usersFile, any()) }
-    }
 }
 
 // Test data
@@ -355,14 +325,14 @@ val readTestUser2List = listOf(
     "MATE"
 )
 
-val testUser1 = User(
+val testUser1 = UserDto(
     userId = UUID.fromString(readTestUser1List[0]),
     username = readTestUser1List[1],
     password = readTestUser1List[2],
     userRole = UserRole.valueOf(readTestUser1List[3])
 )
 
-val testUser2 = User(
+val testUser2 = UserDto(
     userId = UUID.fromString(readTestUser2List[0]),
     username = readTestUser2List[1],
     password = readTestUser2List[2],

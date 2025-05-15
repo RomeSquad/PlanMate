@@ -29,7 +29,6 @@ class GetUserByUsernameUseCaseTest {
         val expectedUser = User(
             userId = UUID.randomUUID(),
             username = username,
-            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password"
             userRole = UserRole.MATE
         )
         coEvery { authRepository.getUserByUserName(username) } returns expectedUser

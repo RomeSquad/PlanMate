@@ -31,13 +31,11 @@ class GetAllUsersUseCaseTest {
             User(
                 userId = UUID.randomUUID(),
                 username = "amr",
-                password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password"
                 userRole = UserRole.MATE
             ),
             User(
                 userId = UUID.randomUUID(),
                 username = "nasser",
-                password = "e99a18c428cb38d5f260853678922e03", // MD5 hash of "abc123"
                 userRole = UserRole.ADMIN
             )
         )

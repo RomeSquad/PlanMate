@@ -30,7 +30,6 @@ class LoginUseCaseTest {
         val expectedUser = User(
             userId = UUID.randomUUID(),
             username = username,
-            password = "5f4dcc3b5aa765d61d8327deb882cf99",
             userRole = UserRole.ADMIN
         )
         val request = LoginRequest(

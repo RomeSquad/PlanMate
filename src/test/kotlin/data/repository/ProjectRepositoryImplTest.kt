@@ -1,5 +1,6 @@
 package data.repository
 
+import data.datasource.authentication.dto.UserDto
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -27,7 +28,7 @@ class ProjectRepositoryImplTest {
     private val notExistProjectId = UUID.fromString("123e4567-e89b-12d3-a456-426614174002")
     private val userId = UUID.randomUUID()
 
-    private val user = User(
+    private val user = UserDto(
         userId = userId,
         username = "Test User",
         password = "password",
@@ -52,14 +53,14 @@ class ProjectRepositoryImplTest {
     @Test
     fun `create project calls data source and returns project ID`() = runTest {
         // Given
-        coEvery { fakeDataSource.createProject(ProjectCreationRequest(project, user)) } returns projectId1
+        coEvery { fakeDataSource.createProject(ProjectCreationRequest(project)) } returns projectId1
 
         // When
-        val result = repository.createProject(ProjectCreationRequest(project, user))
+        val result = repository.createProject(ProjectCreationRequest(project))
 
         // Then
         assertEquals(projectId1, result)
-        coVerify { fakeDataSource.createProject(ProjectCreationRequest(project, user)) }
+        coVerify { fakeDataSource.createProject(ProjectCreationRequest(project)) }
     }
 
     @Test

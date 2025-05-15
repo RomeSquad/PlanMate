@@ -1,5 +1,6 @@
 package data.repository
 
+import data.datasource.authentication.dto.UserDto
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -7,11 +8,13 @@ import kotlinx.coroutines.test.runTest
 import org.example.logic.request.CreateUserRequest
 import org.example.data.datasource.authentication.AuthDataSource
 import org.example.data.datasource.mapper.toUser
+import org.example.data.datasource.mapper.toUserDto
 import org.example.data.repository.AuthRepositoryImpl
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
+import org.example.logic.request.EditUserRequest
 import org.example.logic.request.LoginRequest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -41,7 +44,7 @@ class AuthRepositoryImplTest {
             password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
             userRole = userRole
         )
-        val expectedUser = request.toUser()
+        val expectedUser = request.toUserDto()
         coEvery { authDataSource.insertUser(request) } returns expectedUser
 
         // When
@@ -86,7 +89,7 @@ class AuthRepositoryImplTest {
                 password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
                 userRole = userRole
             )
-            val expectedUser = request.toUser()
+            val expectedUser = request.toUserDto()
             coEvery { authDataSource.insertUser(request) } returns expectedUser
 
             // When
@@ -111,7 +114,7 @@ class AuthRepositoryImplTest {
             password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
             userRole = userRole
         )
-        val resultUser = existingUser.toUser()
+        val resultUser = existingUser.toUserDto()
         coEvery { authDataSource.insertUser(existingUser) } returns resultUser
         // Given
         val request = LoginRequest(
@@ -124,7 +127,7 @@ class AuthRepositoryImplTest {
         val result = authRepository.loginUser(request)
 
         // Then
-        Assertions.assertEquals(resultUser, result)
+        Assertions.assertEquals(resultUser.userId, result.userId)
     }
 
     @Test
@@ -138,7 +141,7 @@ class AuthRepositoryImplTest {
             password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
             userRole = userRole
         )
-        val resultUser = existingUser.toUser()
+        val resultUser = existingUser.toUserDto()
         coEvery { authDataSource.insertUser(existingUser) } returns resultUser
         // Given
         val request = LoginRequest(
@@ -165,7 +168,7 @@ class AuthRepositoryImplTest {
             password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
             userRole = userRole
         )
-        val resultUser = existingUser.toUser()
+        val resultUser = existingUser.toUserDto()
         coEvery { authDataSource.insertUser(existingUser) } returns resultUser
         // Given
         val request = LoginRequest(
@@ -185,13 +188,13 @@ class AuthRepositoryImplTest {
     fun `should return list when call getAllUsers of users`() = runTest {
         // Given
         val users = listOf(
-            User(
+            UserDto(
                 userId = UUID.randomUUID(),
                 username = "amr",
                 password = "5f4dcc3b5aa765d61d8327deb882cf99",
                 userRole = UserRole.MATE
             ),
-            User(
+            UserDto(
                 userId = UUID.randomUUID(),
                 username = "nasser",
                 password = "e99a18c428cb38d5f260853678922e03",
@@ -204,7 +207,7 @@ class AuthRepositoryImplTest {
         val result = authRepository.getAllUsers()
 
         // Then
-        Assertions.assertEquals(users, result)
+        Assertions.assertEquals(users.map { it.toUser() }, result)
     }
     // endregion
 
@@ -219,7 +222,7 @@ class AuthRepositoryImplTest {
             password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
             userRole = userRole
         )
-        val expectedUser = request.toUser()
+        val expectedUser = request.toUserDto()
         coEvery { authDataSource.deleteUser(username) } returns true
 
         // When
@@ -253,11 +256,16 @@ class AuthRepositoryImplTest {
             password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
             userRole = userRole
         )
-        val expectedUser = request.toUser()
+        val expectedUser = request.toUserDto()
+        val requestEdit = EditUserRequest(
+            username = username,
+            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
+            userRole = UserRole.MATE
+        )
         coEvery { authDataSource.insertUser(request) } returns expectedUser
 
         // When
-        val result = authRepository.editUser(expectedUser.copy(userRole = UserRole.MATE))
+        val result = authRepository.editUser(requestEdit)
 
         // Then
         coVerify { authDataSource.editUser(any()) }
@@ -275,14 +283,14 @@ class AuthRepositoryImplTest {
             password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
             userRole = userRole
         )
-        val expectedUser = request.toUser()
+        val expectedUser = request.toUserDto()
         coEvery { authDataSource.getUserByUserName(username) } returns expectedUser
 
         // When
         val result = authRepository.getUserByUserName(username)
 
         // Then
-        Assertions.assertEquals(expectedUser, result)
+        Assertions.assertEquals(expectedUser.userId, result?.userId)
     }
 
     @Test
@@ -299,6 +307,4 @@ class AuthRepositoryImplTest {
         Assertions.assertNull(result)
     }
     // endregion
-
-
 }

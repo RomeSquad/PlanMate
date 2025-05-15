@@ -6,6 +6,7 @@ import com.mongodb.MongoClientSettings
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import data.datasource.authentication.dto.UserDto
 import data.datasource.projectState.ProjectStateDataSource
 import org.bson.UuidRepresentation
 import org.example.data.datasource.authentication.AuthDataSource
@@ -71,8 +72,8 @@ val dataModule = module {
         val client = MongoClient.create(settings)
         client.getDatabase("plan-mate")
     }
-    single<MongoCollection<User>>(named("users-collection")) {
-        get<MongoDatabase>().getCollection<User>("users")
+    single<MongoCollection<UserDto>>(named("users-collection")) {
+        get<MongoDatabase>().getCollection<UserDto>("users")
     }
     single<MongoCollection<Project>>(named("projects-collection")) {
         get<MongoDatabase>().getCollection<Project>("projects")
