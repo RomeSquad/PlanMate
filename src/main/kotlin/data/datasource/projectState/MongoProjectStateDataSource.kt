@@ -5,8 +5,9 @@ import com.mongodb.kotlin.client.coroutine.MongoCollection
 import data.datasource.projectState.ProjectStateDataSource
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
-import org.example.data.utils.ProjectConstants.PROJECT_ID
+import org.example.logic.entity.Project
 import org.example.logic.entity.ProjectState
+import org.example.logic.request.ProjectStateEditRequest
 import java.util.*
 
 class MongoProjectStateDataSource(
@@ -21,21 +22,21 @@ class MongoProjectStateDataSource(
         mongo.insertOne(state)
     }
 
-    override suspend fun editProjectState(projectId: UUID, newStateName: String) {
-        val projectState = mongo.find(Filters.eq(PROJECT_ID, projectId)).firstOrNull()
+    override suspend fun editProjectState(request: ProjectStateEditRequest) {
+        val projectState = mongo.find(Filters.eq(Project::projectId.name, request.projectId)).firstOrNull()
         if (projectState != null) {
-            val updatedProjectState = projectState.copy(stateName = newStateName)
-            mongo.replaceOne(Filters.eq(PROJECT_ID, projectId), updatedProjectState)
+            val updatedProjectState = projectState.copy(stateName = request.newStateName)
+            mongo.replaceOne(Filters.eq(Project::projectId.name, request.projectId), updatedProjectState)
         }
     }
 
     override suspend fun deleteProjectState(projectId: UUID): Boolean {
-        mongo.deleteOne(Filters.eq(PROJECT_ID, projectId))
+        mongo.deleteOne(Filters.eq(Project::projectId.name, projectId))
         return true
     }
 
     override suspend fun getStateById(projectId: UUID): ProjectState {
-        return mongo.find(Filters.eq(PROJECT_ID, projectId)).firstOrNull()
+        return mongo.find(Filters.eq(Project::projectId.name, projectId)).firstOrNull()
             ?: throw IllegalArgumentException("ProjectState with id $projectId not found")
     }
 }

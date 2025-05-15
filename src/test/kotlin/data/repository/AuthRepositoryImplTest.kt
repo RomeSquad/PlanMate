@@ -4,7 +4,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import logic.request.auth.CreateUserRequest
+import org.example.logic.request.CreateUserRequest
 import org.example.data.datasource.authentication.AuthDataSource
 import org.example.data.datasource.mapper.toUser
 import org.example.data.repository.AuthRepositoryImpl
@@ -12,7 +12,7 @@ import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
-import org.example.logic.request.auth.LoginRequest
+import org.example.logic.request.LoginRequest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
