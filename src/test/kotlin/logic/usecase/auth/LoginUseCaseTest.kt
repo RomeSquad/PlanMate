@@ -8,7 +8,7 @@ import org.example.logic.entity.auth.UserRole
 import org.example.logic.exception.PasswordLengthException
 import org.example.logic.exception.UserNameOrPasswordEmptyException
 import org.example.logic.repository.AuthRepository
-import org.example.logic.request.auth.LoginRequest
+import org.example.logic.request.LoginRequest
 import org.example.logic.usecase.auth.LoginUseCase
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.assertThrows

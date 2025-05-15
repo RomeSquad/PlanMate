@@ -5,7 +5,7 @@ import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.example.logic.entity.Project
-import org.example.logic.entity.auth.User
+import org.example.logic.request.ProjectCreationRequest
 import org.litote.kmongo.eq
 import java.util.*
 
@@ -20,12 +20,9 @@ class MongoProjectDataSource(
         }
     }
 
-    override suspend fun createProject(
-        project: Project,
-        user: User
-    ): UUID {
+    override suspend fun createProject(request : ProjectCreationRequest): UUID {
         val projectId = UUID.randomUUID()
-        val newProject = project.copy(projectId = projectId)
+        val newProject = request.project.copy(projectId = projectId)
         projects.add(newProject)
         mongo.insertOne(newProject)
         return projectId

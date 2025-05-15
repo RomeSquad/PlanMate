@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toList
 import org.example.logic.entity.Task
 import org.example.logic.exception.TaskNotFoundException
+import org.example.logic.request.TaskDeletionRequest
+import org.example.logic.request.TaskEditRequest
 import java.util.*
 
 class MongoTaskDataSource(
@@ -17,34 +19,29 @@ class MongoTaskDataSource(
         mongo.insertOne(task)
     }
 
-    override suspend fun editTask(
-        taskId: UUID,
-        title: String,
-        description: String,
-        updatedAt: Long
-    ) {
+    override suspend fun editTask(request : TaskEditRequest) {
         val update = Updates.combine(
-            Updates.set(Task::title.name, title),
-            Updates.set(Task::description.name, description),
-            Updates.set(Task::updatedAt.name, updatedAt)
+            Updates.set(Task::title.name, request.title),
+            Updates.set(Task::description.name, request.description),
+            Updates.set(Task::updatedAt.name, request.updatedAt)
         )
 
         val editedTask = mongo.updateOne(
-            filter = Filters.eq(Task::taskId.name, taskId),
+            filter = Filters.eq(TASK_ID, request.taskId),
             update = update
         )
 
         if (editedTask.matchedCount == 0L) {
             throw TaskNotFoundException(
-                "Task with id $taskId not found"
+                "Task with id ${request.taskId} not found"
             )
         }
     }
 
-    override suspend fun deleteTask(projectId: UUID, taskId: UUID) {
+    override suspend fun deleteTask(request: TaskDeletionRequest) {
         val filter = Filters.and(
-            Filters.eq(Task::taskId.name, taskId),
-            Filters.eq(Task::projectId.name, projectId)
+            Filters.eq(Task::taskId.name, request.taskId),
+            Filters.eq(Task::projectId.name, request.projectId)
         )
 
         mongo.deleteOne(filter)

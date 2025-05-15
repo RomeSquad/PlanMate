@@ -51,9 +51,6 @@ val dataModule = module {
     single<ProjectStateDataSource> { MongoProjectStateDataSource(get(named("states-collection"))) }
 
 
-    //TODO: add other data sources. Follow the same pattern as above
-
-
     single<ProjectRepository> { ProjectRepositoryImpl(get()) }
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<TaskRepository> { TaskRepositoryImpl(get()) }

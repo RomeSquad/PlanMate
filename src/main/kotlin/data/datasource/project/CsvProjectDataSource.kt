@@ -5,7 +5,7 @@ import org.example.data.datasource.mapper.toCsvRow
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.logic.entity.Project
-import org.example.logic.entity.auth.User
+import org.example.logic.request.ProjectCreationRequest
 import java.io.File
 import java.util.*
 
@@ -14,13 +14,10 @@ class CsvProjectDataSource(
     private val csvFileWriter: CsvFileWriter,
     private val projectsFile: File
 ) : ProjectDataSource {
-    override suspend fun createProject(
-        project: Project,
-        user: User
-    ): UUID {
-        val row = project.toCsvRow()
+    override suspend fun createProject(request: ProjectCreationRequest): UUID {
+        val row = request.project.toCsvRow()
         csvFileWriter.writeCsv(projectsFile, listOf(row))
-        return project.projectId
+        return request.project.projectId
     }
 
     override suspend fun getAllProjects(): List<Project> {
