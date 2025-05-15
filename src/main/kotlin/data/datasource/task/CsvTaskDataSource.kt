@@ -6,6 +6,8 @@ import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.logic.entity.Task
 import org.example.logic.exception.TaskNotFoundException
+import org.example.logic.request.auth.TaskDeletionRequest
+import org.example.logic.request.auth.TaskEditRequest
 import java.io.File
 import java.util.*
 
@@ -20,40 +22,35 @@ class CsvTaskDataSource(
         csvFileWriter.writeCsv(taskFile, listOf(row))
     }
 
-    override suspend fun editTask(
-        taskId: UUID,
-        title: String,
-        description: String,
-        updatedAt: Long
-    ) {
+    override suspend fun editTask(request: TaskEditRequest) {
         val tasks = getAllTasks().toMutableList()
-        val index = tasks.indexOfFirst { it.taskId == taskId }
+        val index = tasks.indexOfFirst { it.taskId == request.taskId }
 
         if (index == -1) {
-            throw TaskNotFoundException("Task with id $taskId not found")
+            throw TaskNotFoundException("Task with id ${request.taskId} not found")
         }
 
         val task = tasks[index]
         tasks[index] = task.copy(
-            title = title,
-            description = description,
-            updatedAt = updatedAt
+            title = request.title,
+            description = request.description,
+            updatedAt = request.updatedAt
         )
 
         saveAllTasks(tasks)
     }
 
-    override suspend fun deleteTask(projectId: UUID, taskId: UUID) {
+    override suspend fun deleteTask(request: TaskDeletionRequest) {
         val allTasks = getAllTasks().toMutableList()
         val removed = allTasks.removeIf {
-            it.projectId == projectId
+            it.projectId == request.projectId
                     &&
-                    it.taskId == taskId
+                    it.taskId == request.taskId
         }
 
         if (!removed) {
             throw TaskNotFoundException(
-                "Task with id $taskId in project $projectId not found"
+                "Task with id ${request.taskId} in project {$request.projectId} not found"
             )
         }
 

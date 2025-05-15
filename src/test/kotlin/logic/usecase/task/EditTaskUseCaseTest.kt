@@ -4,6 +4,7 @@ import io.mockk.*
 import kotlinx.coroutines.test.runTest
 import org.example.logic.exception.TaskNotFoundException
 import org.example.logic.repository.TaskRepository
+import org.example.logic.request.auth.TaskEditRequest
 import org.example.logic.usecase.task.EditTaskUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
@@ -74,7 +75,7 @@ class EditTaskUseCaseTest {
             projectId = projectId,
         )
         coEvery {
-            taskRepository.editTask(task.taskId, task.title, task.description, task.updatedAt)
+            taskRepository.editTask(TaskEditRequest(task.taskId, task.title, task.description, task.updatedAt))
         } throws TaskNotFoundException("Task not found")
 
         assertThrows<IllegalArgumentException> {
@@ -99,7 +100,7 @@ class EditTaskUseCaseTest {
         )
 
         coEvery {
-            taskRepository.editTask(task.taskId, task.title, task.description, task.updatedAt)
+            taskRepository.editTask(TaskEditRequest(task.taskId, task.title, task.description, task.updatedAt))
         } just Runs
 
         editTaskUseCase.editTask(
@@ -110,10 +111,12 @@ class EditTaskUseCaseTest {
         )
         coVerify {
             taskRepository.editTask(
-                task.taskId,
-                task.title,
-                task.description,
-                task.updatedAt
+                TaskEditRequest(
+                    task.taskId,
+                    task.title,
+                    task.description,
+                    task.updatedAt
+                )
             )
         }
     }

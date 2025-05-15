@@ -3,6 +3,8 @@ package org.example.data.repository
 import org.example.data.datasource.task.TaskDataSource
 import org.example.logic.entity.Task
 import org.example.logic.repository.TaskRepository
+import org.example.logic.request.auth.TaskDeletionRequest
+import org.example.logic.request.auth.TaskEditRequest
 import java.util.*
 
 class TaskRepositoryImpl(
@@ -11,17 +13,12 @@ class TaskRepositoryImpl(
 
     override suspend fun createTask(task: Task) = taskDataSource.createTask(task)
 
-    override suspend fun editTask(
-        taskId: UUID,
-        title: String,
-        description: String,
-        updatedAt: Long
-    ) {
-        taskDataSource.editTask(taskId, title, description, updatedAt)
+    override suspend fun editTask(request: TaskEditRequest) {
+        taskDataSource.editTask(request)
     }
 
-    override suspend fun deleteTask(projectId: UUID, taskId: UUID) {
-        taskDataSource.deleteTask(projectId, taskId)
+    override suspend fun deleteTask(request: TaskDeletionRequest) {
+        taskDataSource.deleteTask(request)
     }
 
     override suspend fun getTaskById(taskId: UUID): Task {

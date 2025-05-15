@@ -5,6 +5,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.example.logic.repository.TaskRepository
+import org.example.logic.request.auth.TaskDeletionRequest
 import org.example.logic.usecase.task.DeleteTaskUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -31,13 +32,13 @@ class DeleteTaskUseCaseTest {
     @Test
     fun `should delete task successfully`() = runTest {
         // Given
-        coEvery { taskRepository.deleteTask(projectId, taskId) } returns Unit
+        coEvery { taskRepository.deleteTask(TaskDeletionRequest(projectId, taskId)) } returns Unit
 
         // When
         deleteTaskUseCase.deleteTask(projectId, taskId)
 
         // Then
-        coVerify(exactly = 1) { taskRepository.deleteTask(projectId, taskId) }
+        coVerify(exactly = 1) { taskRepository.deleteTask(TaskDeletionRequest(projectId, taskId)) }
     }
 
     @Test
@@ -45,8 +46,10 @@ class DeleteTaskUseCaseTest {
         // Given
         coEvery {
             taskRepository.deleteTask(
-                projectId,
-                nonExistentTaskId
+                TaskDeletionRequest(
+                    projectId,
+                    nonExistentTaskId
+                )
             )
         } throws NoSuchElementException("Task with id $nonExistentTaskId not found")
 
@@ -55,7 +58,7 @@ class DeleteTaskUseCaseTest {
             deleteTaskUseCase.deleteTask(projectId, nonExistentTaskId)
         }
         assertEquals("Task with id $nonExistentTaskId not found", exception.message)
-        coVerify(exactly = 1) { taskRepository.deleteTask(projectId, nonExistentTaskId) }
+        coVerify(exactly = 1) { taskRepository.deleteTask((TaskDeletionRequest(projectId, nonExistentTaskId))) }
     }
 
     @Test
@@ -63,8 +66,10 @@ class DeleteTaskUseCaseTest {
         // Given
         coEvery {
             taskRepository.deleteTask(
-                nonExistentProjectId,
-                taskId
+                TaskDeletionRequest(
+                    nonExistentProjectId,
+                    taskId
+                )
             )
         } throws NoSuchElementException("Project with id $nonExistentProjectId not found")
 
@@ -73,20 +78,20 @@ class DeleteTaskUseCaseTest {
             deleteTaskUseCase.deleteTask(nonExistentProjectId, taskId)
         }
         assertEquals("Project with id $nonExistentProjectId not found", exception.message)
-        coVerify(exactly = 1) { taskRepository.deleteTask(nonExistentProjectId, taskId) }
+        coVerify(exactly = 1) { taskRepository.deleteTask(TaskDeletionRequest(nonExistentProjectId, taskId)) }
     }
 
     @Test
     fun `should propagate RuntimeException from repository`() = runTest {
         // Given
         val repositoryException = RuntimeException("Database error")
-        coEvery { taskRepository.deleteTask(projectId, taskId) } throws repositoryException
+        coEvery { taskRepository.deleteTask(TaskDeletionRequest(projectId, taskId)) } throws repositoryException
 
         // When/Then
         val exception = assertThrows<RuntimeException> {
             deleteTaskUseCase.deleteTask(projectId, taskId)
         }
         assertEquals("Database error", exception.message)
-        coVerify(exactly = 1) { taskRepository.deleteTask(projectId, taskId) }
+        coVerify(exactly = 1) { taskRepository.deleteTask(TaskDeletionRequest(projectId, taskId)) }
     }
 }
