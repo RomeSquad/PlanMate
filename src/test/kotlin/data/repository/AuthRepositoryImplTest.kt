@@ -256,6 +256,9 @@ class AuthRepositoryImplTest {
         val expectedUser = request.toUser()
         coEvery { authDataSource.insertUser(request) } returns expectedUser
 
+        // When
+        val result = authRepository.editUser(expectedUser.copy(userRole = UserRole.MATE))
+
         // Then
         coVerify { authDataSource.editUser(any()) }
     }
