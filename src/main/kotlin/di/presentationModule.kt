@@ -47,10 +47,12 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get()
         )
     }
     single {
         MateManagementUI(
+            get(),
             get()
         )
     }
@@ -86,6 +88,7 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get()
         )
     }
     single {
@@ -125,6 +128,7 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get()
         )
     }
     single {
@@ -167,6 +171,7 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get()
         )
     }
     single {
@@ -238,4 +243,5 @@ val presentationModule = module {
             get(),
         )
     }
+
 }
