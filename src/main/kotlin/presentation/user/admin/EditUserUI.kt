@@ -4,6 +4,7 @@ package org.example.presentation.user.admin
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.exception.EmptyPasswordException
 import org.example.logic.exception.EntityNotChangedException
+import org.example.logic.request.EditUserRequest
 import org.example.logic.usecase.auth.EditUserUseCase
 import org.example.logic.usecase.auth.GetAllUsersUseCase
 import org.example.presentation.utils.io.InputReader
@@ -57,7 +58,7 @@ class EditUserUI(
             }
             ui.displayMessage("🔹 Editing user '${selectedUser.username}'...")
             ui.displayMessage("🔹 Enter New Password (leave empty to keep current):")
-            val newPassword = inputReader.readString("New Password: ").trim().ifBlank { selectedUser.password }
+            val newPassword = inputReader.readString("New Password: ").trim()
             ui.displayMessage("🔹 Select New User Role (current: ${selectedUser.userRole}):")
             ui.displayMessage("1. ADMIN\n2. MATE")
             val roleChoice = inputReader.readString("Role (1-2, leave empty to keep current): ").trim()
@@ -67,10 +68,7 @@ class EditUserUI(
                 roleChoice.toIntOrNull() == 2 -> UserRole.MATE
                 else -> throw IllegalArgumentException("Invalid role selection. Choose 1, 2, or leave empty.")
             }
-            val newUser = selectedUser.copy(
-                password = newPassword,
-                userRole = newRole
-            )
+
             ui.displayMessage("⚠️ Update user '${selectedUser.username}'' with role '$newRole'? [y/n]")
             val editConfirmation = inputReader.readString("Confirm: ").trim().lowercase()
             if (editConfirmation != "y") {
@@ -81,8 +79,11 @@ class EditUserUI(
             }
             ui.displayMessage("🔹 Updating user '${selectedUser.username}'...")
             editUserUseCase.editUser(
-                newUser = newUser,
-                oldUser = selectedUser
+                request = EditUserRequest(
+                    username = selectedUser.username,
+                    password = newPassword,
+                    userRole = newRole
+                )
             )
             ui.displayMessage("✅ User '${selectedUser.username}' updated successfully!")
             ui.displayMessage("🔄 Press Enter to continue...")

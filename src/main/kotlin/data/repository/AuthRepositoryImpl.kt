@@ -1,10 +1,12 @@
 package org.example.data.repository
 
+import data.datasource.authentication.dto.UserDto
 import org.example.logic.request.CreateUserRequest
 import org.example.data.datasource.authentication.AuthDataSource
 import org.example.data.datasource.mapper.toUser
 import org.example.logic.entity.auth.User
 import org.example.logic.repository.AuthRepository
+import org.example.logic.request.EditUserRequest
 import org.example.logic.request.LoginRequest
 import java.util.*
 
@@ -20,7 +22,7 @@ class AuthRepositoryImpl(
 
     override suspend fun deleteUser(username: String): Boolean = authDataSource.deleteUser(username)
 
-    override suspend fun editUser(user: User) = authDataSource.editUser(user)
+    override suspend fun editUser(request : EditUserRequest) = authDataSource.editUser(request)
 
     override suspend fun getUserByUserName(username: String): User? = authDataSource.getUserByUserName(username)?.toUser()
 

@@ -6,20 +6,18 @@ import com.mongodb.kotlin.client.coroutine.MongoCollection
 import data.datasource.authentication.dto.UserDto
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
-import logic.request.auth.CreateUserRequest
 import org.example.data.datasource.mapper.toUserDto
-import org.example.logic.request.CreateUserRequest
-import org.example.data.datasource.mapper.toUser
 import org.example.data.utils.AuthConstants.PASSWORD
 import org.example.data.utils.AuthConstants.USER_ID
 import org.example.data.utils.AuthConstants.USER_NAME
 import org.example.data.utils.AuthConstants.USER_ROLE
 import org.example.data.utils.hashStringWithMD5
-import org.example.logic.entity.auth.User
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
+import org.example.logic.request.CreateUserRequest
+import org.example.logic.request.EditUserRequest
 import org.example.logic.request.LoginRequest
-import java.util.*
+import java.util.UUID
 
 class MongoAuthDataSource(
     private val userMongoCollection: MongoCollection<UserDto>
@@ -59,17 +57,17 @@ class MongoAuthDataSource(
         }
     }
 
-    override suspend fun editUser(user: UserDto) {
-        val hashedPassword = hashStringWithMD5(user.password)
+    override suspend fun editUser(request : EditUserRequest) {
+        val hashedPassword = hashStringWithMD5(request.password)
 
-        val filter = Filters.eq(USER_NAME, user.username)
+        val filter = Filters.eq(USER_NAME, request.username)
 
         userMongoCollection.find(filter).firstOrNull()
             ?: throw UserNotFoundException()
 
         val update = Updates.combine(
             Updates.set(PASSWORD, hashedPassword),
-            Updates.set(USER_ROLE, user.userRole),
+            Updates.set(USER_ROLE, request.userRole),
         )
 
         userMongoCollection.updateOne(filter, update)

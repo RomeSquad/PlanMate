@@ -30,7 +30,7 @@ val logicModule = module {
     single { LoginUseCase(get()) }
     single { GetAllUsersUseCase(get()) }
     single { DeleteUserUseCase(get()) }
-    single { EditUserUseCase(get()) }
+    single { EditUserUseCase(get(), get())}
     single { GetUserByUsernameUseCase(get()) }
     single { GetCurrentUserUseCase(get()) }
     //endregion

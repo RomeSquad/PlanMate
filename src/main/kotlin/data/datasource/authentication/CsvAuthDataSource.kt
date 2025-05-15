@@ -12,6 +12,7 @@ import org.example.data.utils.hashStringWithMD5
 import org.example.logic.entity.auth.User
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
+import org.example.logic.request.EditUserRequest
 import org.example.logic.request.LoginRequest
 import java.io.File
 import java.util.*
@@ -50,10 +51,10 @@ class CsvAuthDataSource(
         return true
     }
 
-    override suspend fun editUser(user: UserDto) {
-        val existingUser = users.find { it.username == user.username } ?: throw UserNotFoundException()
+    override suspend fun editUser(request : EditUserRequest) {
+        val existingUser = users.find { it.username == request.username } ?: throw UserNotFoundException()
         users.remove(existingUser)
-        users.add(user)
+        users.add(request.toUserDto())
         saveAllUsers()
     }
 
