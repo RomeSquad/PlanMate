@@ -9,6 +9,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.ProjectState
 import org.example.logic.repository.ProjectStateRepository
+import org.example.logic.request.ProjectStateEditRequest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -76,10 +77,10 @@ class ProjectStateRepositoryImplTest {
         val newStateName = "UpdatedState"
 
         // When
-        stateRepository.editProjectState(projectId, newStateName)
+        stateRepository.editProjectState(ProjectStateEditRequest(projectId, newStateName))
 
         // Then
-        coVerify { stateProjectDataSource.editProjectState(projectId, newStateName) }
+        coVerify { stateProjectDataSource.editProjectState(ProjectStateEditRequest(projectId, newStateName)) }
     }
 
     @Test

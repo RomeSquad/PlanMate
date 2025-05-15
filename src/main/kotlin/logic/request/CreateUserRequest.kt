@@ -1,4 +1,4 @@
-package logic.request.auth
+package org.example.logic.request
 
 import org.example.logic.entity.auth.UserRole
 

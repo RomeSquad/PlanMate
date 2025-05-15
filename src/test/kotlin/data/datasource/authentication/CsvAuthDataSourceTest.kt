@@ -2,7 +2,7 @@ package data.datasource.authentication
 
 import io.mockk.*
 import kotlinx.coroutines.test.runTest
-import logic.request.auth.CreateUserRequest
+import org.example.logic.request.CreateUserRequest
 import org.example.data.datasource.authentication.CsvAuthDataSource
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
@@ -11,7 +11,7 @@ import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
-import org.example.logic.request.auth.LoginRequest
+import org.example.logic.request.LoginRequest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

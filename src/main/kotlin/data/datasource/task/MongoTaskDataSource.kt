@@ -12,6 +12,8 @@ import org.example.data.utils.TaskConstants.TASK_TITLE
 import org.example.data.utils.TaskConstants.TASK_UPDATED_AT
 import org.example.logic.entity.Task
 import org.example.logic.exception.TaskNotFoundException
+import org.example.logic.request.TaskDeletionRequest
+import org.example.logic.request.TaskEditRequest
 import java.util.*
 
 class MongoTaskDataSource(
@@ -22,34 +24,29 @@ class MongoTaskDataSource(
         mongo.insertOne(task)
     }
 
-    override suspend fun editTask(
-        taskId: UUID,
-        title: String,
-        description: String,
-        updatedAt: Long
-    ) {
+    override suspend fun editTask(request : TaskEditRequest) {
         val update = Updates.combine(
-            Updates.set(TASK_TITLE, title),
-            Updates.set(TASK_DESCRIPTION, description),
-            Updates.set(TASK_UPDATED_AT, updatedAt)
+            Updates.set(TASK_TITLE, request.title),
+            Updates.set(TASK_DESCRIPTION, request.description),
+            Updates.set(TASK_UPDATED_AT, request.updatedAt)
         )
 
         val editedTask = mongo.updateOne(
-            filter = Filters.eq(TASK_ID, taskId),
+            filter = Filters.eq(TASK_ID, request.taskId),
             update = update
         )
 
         if (editedTask.matchedCount == 0L) {
             throw TaskNotFoundException(
-                "Task with id $taskId not found"
+                "Task with id ${request.taskId} not found"
             )
         }
     }
 
-    override suspend fun deleteTask(projectId: UUID, taskId: UUID) {
+    override suspend fun deleteTask(request: TaskDeletionRequest) {
         val filter = Filters.and(
-            Filters.eq(TASK_ID, taskId),
-            Filters.eq(PROJECT_ID, projectId)
+            Filters.eq(TASK_ID, request.taskId),
+            Filters.eq(PROJECT_ID, request.projectId)
         )
 
         mongo.deleteOne(filter)

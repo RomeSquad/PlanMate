@@ -1,5 +1,6 @@
 package org.example.data.datasource.mapper
 
+import org.example.logic.request.CreateUserRequest
 import data.datasource.authentication.dto.UserDto
 import logic.request.auth.CreateUserRequest
 import org.example.data.utils.hashStringWithMD5

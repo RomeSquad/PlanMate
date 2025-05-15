@@ -1,6 +1,6 @@
 package org.example.logic.usecase.auth
 
-import logic.request.auth.CreateUserRequest
+import org.example.logic.request.CreateUserRequest
 import logic.usecase.validator.UserCredentialsValidator
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole

@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import logic.request.auth.CreateUserRequest
 import org.example.data.datasource.mapper.toUserDto
+import org.example.logic.request.CreateUserRequest
+import org.example.data.datasource.mapper.toUser
 import org.example.data.utils.AuthConstants.PASSWORD
 import org.example.data.utils.AuthConstants.USER_ID
 import org.example.data.utils.AuthConstants.USER_NAME
@@ -16,7 +18,7 @@ import org.example.data.utils.hashStringWithMD5
 import org.example.logic.entity.auth.User
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
-import org.example.logic.request.auth.LoginRequest
+import org.example.logic.request.LoginRequest
 import java.util.*
 
 class MongoAuthDataSource(
