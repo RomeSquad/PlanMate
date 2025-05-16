@@ -7,7 +7,6 @@ import org.example.logic.usecase.auth.GetCurrentUserUseCase
 import org.example.logic.usecase.history.AddChangeHistoryUseCase
 import org.example.logic.usecase.project.InsertProjectUseCase
 import org.example.logic.usecase.state.AddProjectStatesUseCase
-import org.example.logic.usecase.state.DefaultProjectStateUseCase
 import org.example.logic.usecase.task.CreateTaskUseCase
 import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
@@ -18,7 +17,6 @@ import java.util.*
 
 class CreateProjectUi(
     private val insertProjectUseCase: InsertProjectUseCase,
-    private val defaultProjectStateUseCase: DefaultProjectStateUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val createTaskUseCase: CreateTaskUseCase,
     private val addProjectStatesUseCase: AddProjectStatesUseCase,
@@ -67,9 +65,7 @@ class CreateProjectUi(
             )
 
             ui.displayMessage("✅ Project '${name}' created successfully! 🎉")
-            defaultProjectStateUseCase.initializeProjectState(
-                projectId = projectId
-            )
+            addProjectStatesUseCase.execute(projectId,projectState.stateName)
             handleTaskCreation(
                 ui = ui,
                 inputReader = inputReader,
