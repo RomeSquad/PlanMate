@@ -5,13 +5,10 @@ import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toList
-import org.example.data.utils.TaskConstants.PROJECT_ID
-import org.example.data.utils.TaskConstants.TASK_DESCRIPTION
-import org.example.data.utils.TaskConstants.TASK_ID
-import org.example.data.utils.TaskConstants.TASK_TITLE
-import org.example.data.utils.TaskConstants.TASK_UPDATED_AT
 import org.example.logic.entity.Task
 import org.example.logic.exception.TaskNotFoundException
+import org.example.logic.request.TaskDeletionRequest
+import org.example.logic.request.TaskEditRequest
 import java.util.*
 
 class MongoTaskDataSource(
@@ -22,45 +19,40 @@ class MongoTaskDataSource(
         mongo.insertOne(task)
     }
 
-    override suspend fun editTask(
-        taskId: UUID,
-        title: String,
-        description: String,
-        updatedAt: Long
-    ) {
+    override suspend fun editTask(request : TaskEditRequest) {
         val update = Updates.combine(
-            Updates.set(TASK_TITLE, title),
-            Updates.set(TASK_DESCRIPTION, description),
-            Updates.set(TASK_UPDATED_AT, updatedAt)
+            Updates.set(Task::title.name, request.title),
+            Updates.set(Task::description.name, request.description),
+            Updates.set(Task::updatedAt.name, request.updatedAt)
         )
 
         val editedTask = mongo.updateOne(
-            filter = Filters.eq(TASK_ID, taskId),
+            filter = Filters.eq(Task::taskId.name, request.taskId),
             update = update
         )
 
         if (editedTask.matchedCount == 0L) {
             throw TaskNotFoundException(
-                "Task with id $taskId not found"
+                "Task with id ${request.taskId} not found"
             )
         }
     }
 
-    override suspend fun deleteTask(projectId: UUID, taskId: UUID) {
+    override suspend fun deleteTask(request: TaskDeletionRequest) {
         val filter = Filters.and(
-            Filters.eq(TASK_ID, taskId),
-            Filters.eq(PROJECT_ID, projectId)
+            Filters.eq(Task::taskId.name, request.taskId),
+            Filters.eq(Task::projectId.name, request.projectId)
         )
 
         mongo.deleteOne(filter)
     }
 
     override suspend fun getTaskByIdFromFile(taskId: UUID): Task {
-        return mongo.find(Filters.eq(TASK_ID, taskId)).first()
+        return mongo.find(Filters.eq(Task::taskId.name, taskId)).first()
     }
 
     override suspend fun getTasksByProjectId(projectId: UUID): List<Task> {
-        return mongo.find(Filters.eq(PROJECT_ID, projectId)).toList()
+        return mongo.find(Filters.eq(Task::projectId.name, projectId)).toList()
     }
 
     override suspend fun getAllTasks(): List<Task> {

@@ -21,7 +21,6 @@ import java.util.*
 import kotlin.test.assertEquals
 
 class AddTaskStateToProjectUseCaseTest {
-
     private val projectStatesRepository: ProjectStateRepository = mockk()
     private val changeHistoryRepository: ChangeHistoryRepository = mockk()
     private val authRepository: AuthRepository = mockk()
@@ -33,13 +32,11 @@ class AddTaskStateToProjectUseCaseTest {
         userId = userId,
         userRole = UserRole.ADMIN,
         username = "admin user",
-        password = "password"
     )
     private val nonAdminUser = User(
         userId = UUID.randomUUID(),
         userRole = UserRole.MATE,
         username = "non-admin user",
-        password = "password"
 
     )
     private val validState = ProjectState(
@@ -140,7 +137,7 @@ class AddTaskStateToProjectUseCaseTest {
         assertEquals(projectId, audit.taskID)
         assertEquals(userId, audit.authorID)
         assertEquals("create ${validState.stateName} state is created successfully", audit.changeDescription)
-        // Verify changeDate is recent (within 1 second)
+
         val currentTime = Date().time
         assert(currentTime - audit.changeDate.time <= 1000) { "changeDate should be recent" }
     }

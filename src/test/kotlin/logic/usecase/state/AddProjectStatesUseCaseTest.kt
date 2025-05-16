@@ -34,5 +34,4 @@ class AddProjectStatesUseCaseTest {
 
         coVerify(exactly = 1) { projectStateRepository.addProjectState(any()) }
     }
-
 }

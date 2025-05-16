@@ -16,10 +16,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class GetAllTasksUseCaseTest {
-
     private lateinit var getAllTasksUseCase: GetAllTasksUseCase
     private lateinit var taskRepository: TaskRepository
-
     private val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
 
     @BeforeEach
@@ -30,7 +28,6 @@ class GetAllTasksUseCaseTest {
 
     @Test
     fun `should return list of tasks when repository returns tasks`() = runTest {
-        // Given
         val tasks = listOf(
             Task(
                 taskId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f"),
@@ -61,10 +58,8 @@ class GetAllTasksUseCaseTest {
         )
         coEvery { taskRepository.getAllTasks() } returns tasks
 
-        // When
         val result = getAllTasksUseCase.getAllTasks()
 
-        // Then
         coVerify(exactly = 1) { taskRepository.getAllTasks() }
         assertEquals(tasks, result, "Task lists do not match")
         assertEquals(2, result.size, "Expected 2 tasks")
@@ -78,24 +73,19 @@ class GetAllTasksUseCaseTest {
 
     @Test
     fun `should return empty list when repository returns no tasks`() = runTest {
-        // Given
         coEvery { taskRepository.getAllTasks() } returns emptyList()
 
-        // When
         val result = getAllTasksUseCase.getAllTasks()
 
-        // Then
         coVerify(exactly = 1) { taskRepository.getAllTasks() }
         assertTrue(result.isEmpty(), "Expected empty task list")
     }
 
     @Test
     fun `should throw exception when repository fails`() = runTest {
-        // Given
         val exception = RuntimeException("Database error")
         coEvery { taskRepository.getAllTasks() } throws exception
 
-        // When/Then
         val thrownException = assertThrows<RuntimeException> {
             getAllTasksUseCase.getAllTasks()
         }

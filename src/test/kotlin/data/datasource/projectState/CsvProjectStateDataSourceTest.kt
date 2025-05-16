@@ -3,6 +3,7 @@ package data.datasource.projectState
 
 import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.ProjectState
+import org.example.logic.request.ProjectStateEditRequest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -13,10 +14,8 @@ import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
 class CsvProjectStateDataSourceTest {
-
     private lateinit var csvProjectStateDataSource: CsvProjectStateDataSource
     private val projectStateFile = File("stateTest.csv")
-
 
     @BeforeEach
     fun setup() {
@@ -94,7 +93,7 @@ class CsvProjectStateDataSourceTest {
         val state = ProjectState(id, "Pending")
         csvProjectStateDataSource.addProjectState(state)
 
-        csvProjectStateDataSource.editProjectState(id, "done")
+        csvProjectStateDataSource.editProjectState(ProjectStateEditRequest(id, "done"))
 
         val result = csvProjectStateDataSource.getStateById(id)
         assertEquals("done", result.stateName)
@@ -105,7 +104,7 @@ class CsvProjectStateDataSourceTest {
         val unrelatedState = ProjectState(UUID.randomUUID(), "state1")
         csvProjectStateDataSource.addProjectState(unrelatedState)
 
-        csvProjectStateDataSource.editProjectState(UUID.randomUUID(), "state2")
+        csvProjectStateDataSource.editProjectState(ProjectStateEditRequest(UUID.randomUUID(), "state2"))
 
         val all = csvProjectStateDataSource.getAllProjectStates()
         assertEquals(1, all.size)
@@ -137,7 +136,6 @@ class CsvProjectStateDataSourceTest {
         val result = csvProjectStateDataSource.getStateById(state2.projectId)
         assertEquals("Review", result.stateName)
     }
-
 
 }
 

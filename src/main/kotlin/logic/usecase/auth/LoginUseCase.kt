@@ -5,7 +5,7 @@ import org.example.logic.exception.InvalidCredentialsException
 import org.example.logic.exception.PasswordLengthException
 import org.example.logic.exception.UserNameOrPasswordEmptyException
 import org.example.logic.repository.AuthRepository
-import org.example.logic.request.auth.LoginRequest
+import org.example.logic.request.LoginRequest
 
 class LoginUseCase(
     private val authRepository: AuthRepository

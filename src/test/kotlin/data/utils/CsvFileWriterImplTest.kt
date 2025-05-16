@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets
 import kotlin.test.Test
 
 class CsvFileWriterImplTest {
-
     private lateinit var writer: CsvFileWriterImpl
     private lateinit var validator: FileValidator
 
