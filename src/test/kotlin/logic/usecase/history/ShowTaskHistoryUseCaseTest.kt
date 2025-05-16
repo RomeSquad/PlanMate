@@ -44,6 +44,7 @@ class ShowProjectHistoryUseCaseTest {
 
         assertTrue(exception.message!!.contains("Invalid Project ID"))
     }
+
     private val dummyChangeHistoryData = listOf(
         ModificationLog(
             projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
