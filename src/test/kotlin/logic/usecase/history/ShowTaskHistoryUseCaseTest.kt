@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test
 import java.util.*
 
 class ShowProjectHistoryUseCaseTest {
-
     private lateinit var repository: ChangeHistoryRepository
     private lateinit var useCase: ShowProjectHistoryUseCase
 
@@ -24,24 +23,19 @@ class ShowProjectHistoryUseCaseTest {
 
     @Test
     fun `should return change history for valid project ID`() = runBlocking {
-        // Given
         val projectId = UUID.fromString("11111111-1111-1111-1111-111111111111")
         coEvery { repository.getHistoryByProjectID(projectId) } returns dummyChangeHistoryData
 
-        // When
         val result = useCase.execute(projectId)
 
-        // Then
         assertEquals(dummyChangeHistoryData, result)
     }
 
     @Test
     fun `should throw IllegalArgumentException when repository fails`() = runBlocking {
-        // Given
         val projectId = UUID.fromString("11111111-1111-1111-1111-111111111111")
         coEvery { repository.getHistoryByProjectID(projectId) } throws RuntimeException("DB Failure")
 
-        // When & Then
         val exception = assertThrows(IllegalArgumentException::class.java) {
             runBlocking {
                 useCase.execute(projectId)
