@@ -11,7 +11,6 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class CsvFileReaderImplTest {
-
     private lateinit var reader: CsvFileReaderImpl
     private lateinit var parser: Parser
     private lateinit var validator: FileValidator
@@ -26,13 +25,11 @@ class CsvFileReaderImplTest {
         reader = CsvFileReaderImpl(parser, validator)
     }
 
-    private fun createCustomFile(
-        filename: String,
-    ): File = File(tempDir, filename)
+    private fun String.createCustomFile(): File = File(tempDir, this)
 
     @Test
     fun `reads CSV without header using default delimiter`() {
-        val csvFile = createCustomFile("test.csv")
+        val csvFile = "test.csv".createCustomFile()
         csvFile.writeText("Alice,25\nBob,30")
         val result = reader.readCsv(csvFile)
         assertEquals(listOf(listOf("Alice", "25"), listOf("Bob", "30")), result)
@@ -40,7 +37,7 @@ class CsvFileReaderImplTest {
 
     @Test
     fun `reads CSV with custom delimiter `() {
-        val csvFile = createCustomFile("test.csv")
+        val csvFile = "test.csv".createCustomFile()
         csvFile.writeText("Alice,25\nBob,30")
         val result = reader.readCsv(csvFile)
         assertEquals(listOf(listOf("Alice", "25"), listOf("Bob", "30")), result)
@@ -48,7 +45,7 @@ class CsvFileReaderImplTest {
 
     @Test
     fun `reads CSV skipping empty lines`() {
-        val csvFile = createCustomFile("test.csv")
+        val csvFile = "test.csv".createCustomFile()
         csvFile.writeText("Alice,25\n\nBob,30")
         val result = reader.readCsv(csvFile)
         assertEquals(listOf(listOf("Alice", "25"), listOf("Bob", "30")), result)
@@ -56,7 +53,7 @@ class CsvFileReaderImplTest {
 
     @Test
     fun `reads CSV with null charset using UTF-8`() {
-        val csvFile = createCustomFile("test.csv")
+        val csvFile = "test.csv".createCustomFile()
         csvFile.writeText("Alice,25")
         val result = reader.readCsv(csvFile)
         assertEquals(listOf(listOf("Alice", "25")), result)

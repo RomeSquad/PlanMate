@@ -15,10 +15,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class CreateTaskUseCaseTest {
-
     private lateinit var taskRepository: TaskRepository
     private lateinit var createTaskUseCase: CreateTaskUseCase
-
     private val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
     private val taskId = UUID.randomUUID()
 
@@ -46,16 +44,13 @@ class CreateTaskUseCaseTest {
         )
         coEvery { taskRepository.createTask(task) } returns Unit
 
-        // When
         createTaskUseCase.createTask(task)
 
-        // Then
         coVerify(exactly = 1) { taskRepository.createTask(task) }
     }
 
     @Test
     fun `should throw IllegalArgumentException when title is empty`() = runTest {
-        // Given
         val task = Task(
             taskId = taskId,
             title = "",
@@ -70,7 +65,6 @@ class CreateTaskUseCaseTest {
             updatedAt = System.currentTimeMillis()
         )
 
-        // When/Then
         val exception = assertThrows<IllegalArgumentException> {
             createTaskUseCase.createTask(task)
         }
@@ -80,7 +74,6 @@ class CreateTaskUseCaseTest {
 
     @Test
     fun `should throw IllegalArgumentException when description is empty`() = runTest {
-        // Given
         val task = Task(
             taskId = taskId,
             title = "title",

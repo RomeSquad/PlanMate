@@ -1,6 +1,7 @@
 package org.example.logic.usecase.task
 
 import org.example.logic.repository.TaskRepository
+import org.example.logic.request.TaskEditRequest
 import java.util.*
 
 class EditTaskUseCase(
@@ -19,7 +20,7 @@ class EditTaskUseCase(
         if (description.isBlank()) {
             throw IllegalArgumentException("description must not be blank")
         }
-
-        taskRepository.editTask(taskId, title, description, updatedAt)
+        val request = TaskEditRequest(taskId, title, description, updatedAt)
+        taskRepository.editTask(request)
     }
 }

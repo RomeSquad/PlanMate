@@ -1,36 +1,25 @@
 package org.example.logic.usecase.auth
 
 
+import data.datasource.authentication.dto.UserDto
+import logic.usecase.validator.UserCredentialsValidator
 import org.example.logic.entity.auth.User
 import org.example.logic.exception.EmptyNameException
 import org.example.logic.exception.EmptyPasswordException
 import org.example.logic.exception.EntityNotChangedException
 import org.example.logic.repository.AuthRepository
+import org.example.logic.request.EditUserRequest
 
 
 class EditUserUseCase(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val userCredentialsValidator: UserCredentialsValidator
 ) {
-    suspend fun editUser(newUser: User, oldUser: User) {
-        validateUserInputs(
-            newUser = newUser,
-            oldUser = oldUser
-        )
-        authRepository.editUser(user = newUser)
-    }
+    suspend fun editUser(
+        request : EditUserRequest
+    ) {
+        userCredentialsValidator.validatePasswordStrength(request.password)
 
-    private fun validateUserInputs(newUser: User, oldUser: User) {
-        if (newUser.username.trim().isEmpty()) {
-            throw EmptyNameException("Name cannot be empty")
-        }
-        if (newUser.password.trim().isEmpty()) {
-            throw EmptyPasswordException("Password cannot be empty")
-        }
-        if (newUser.username.trim() == oldUser.username.trim() &&
-            newUser.password.trim() == oldUser.password.trim() &&
-            newUser.userRole == oldUser.userRole
-        ) {
-            throw EntityNotChangedException("Entity not changed")
-        }
+        authRepository.editUser(request = request)
     }
 }

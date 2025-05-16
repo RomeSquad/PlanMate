@@ -48,5 +48,4 @@ class DefaultProjectProjectStateUseCaseTest {
 
         assertEquals(3, getStates.size)
     }
-
 }

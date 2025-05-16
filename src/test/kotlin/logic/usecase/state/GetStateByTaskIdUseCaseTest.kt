@@ -34,12 +34,4 @@ class GetProjectStateByTaskIdUseCaseTest {
 
         assertEquals("todo", result.stateName)
     }
-
-//    @Test
-//    fun ` should throw exception when task id equal to zero`() = runTest {
-//        assertThrows<IllegalArgumentException> {
-//            getStateByTaskIdUseCase.execute(0)
-//        }
-//    }
-
 }

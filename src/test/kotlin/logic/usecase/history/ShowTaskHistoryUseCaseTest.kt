@@ -1,21 +1,51 @@
-package org.example.logic.usecase.history
+package logic.usecase.history
 
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.example.logic.entity.ModificationLog
 import org.example.logic.repository.ChangeHistoryRepository
+import org.example.logic.usecase.history.ShowProjectHistoryUseCase
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
 
 class ShowProjectHistoryUseCaseTest {
-
     private lateinit var repository: ChangeHistoryRepository
     private lateinit var useCase: ShowProjectHistoryUseCase
 
-    private val fakeHistory = listOf(
+    @BeforeEach
+    fun setUp() {
+        repository = mockk()
+        useCase = ShowProjectHistoryUseCase(repository)
+    }
+
+    @Test
+    fun `should return change history for valid project ID`() = runBlocking {
+        val projectId = UUID.fromString("11111111-1111-1111-1111-111111111111")
+        coEvery { repository.getHistoryByProjectID(projectId) } returns dummyChangeHistoryData
+
+        val result = useCase.execute(projectId)
+
+        assertEquals(dummyChangeHistoryData, result)
+    }
+
+    @Test
+    fun `should throw IllegalArgumentException when repository fails`() = runBlocking {
+        val projectId = UUID.fromString("11111111-1111-1111-1111-111111111111")
+        coEvery { repository.getHistoryByProjectID(projectId) } throws RuntimeException("DB Failure")
+
+        val exception = assertThrows(IllegalArgumentException::class.java) {
+            runBlocking {
+                useCase.execute(projectId)
+            }
+        }
+
+        assertTrue(exception.message!!.contains("Invalid Project ID"))
+    }
+
+    private val dummyChangeHistoryData = listOf(
         ModificationLog(
             projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
             taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
@@ -31,39 +61,4 @@ class ShowProjectHistoryUseCaseTest {
             changeDescription = "Assigned new dev"
         )
     )
-
-    @BeforeEach
-    fun setUp() {
-        repository = mockk()
-        useCase = ShowProjectHistoryUseCase(repository)
-    }
-
-    @Test
-    fun `should return change history for valid project ID`() = runBlocking {
-        // Given
-        val projectId = UUID.fromString("11111111-1111-1111-1111-111111111111")
-        coEvery { repository.getHistoryByProjectID(projectId) } returns fakeHistory
-
-        // When
-        val result = useCase.execute(projectId)
-
-        // Then
-        assertEquals(fakeHistory, result)
-    }
-
-    @Test
-    fun `should throw IllegalArgumentException when repository fails`() = runBlocking {
-        // Given
-        val projectId = UUID.fromString("11111111-1111-1111-1111-111111111111")
-        coEvery { repository.getHistoryByProjectID(projectId) } throws RuntimeException("DB Failure")
-
-        // When & Then
-        val exception = assertThrows(IllegalArgumentException::class.java) {
-            runBlocking {
-                useCase.execute(projectId)
-            }
-        }
-
-        assertTrue(exception.message!!.contains("Invalid Project ID"))
-    }
 }

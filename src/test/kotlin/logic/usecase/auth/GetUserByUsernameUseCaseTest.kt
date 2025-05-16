@@ -24,20 +24,16 @@ class GetUserByUsernameUseCaseTest {
 
     @Test
     fun `should return user when repository finds user by username`() = runTest {
-        // Given
         val username = "amr"
         val expectedUser = User(
             userId = UUID.randomUUID(),
             username = username,
-            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password"
             userRole = UserRole.MATE
         )
         coEvery { authRepository.getUserByUserName(username) } returns expectedUser
 
-        // When
         val result = getUserByUsernameUseCase.getUserByUsername(username)
 
-        // Then
         Assertions.assertNotNull(result)
         Assertions.assertEquals(expectedUser, result)
         Assertions.assertEquals(username, result?.username)
@@ -45,27 +41,21 @@ class GetUserByUsernameUseCaseTest {
 
     @Test
     fun `should return null when repository does not find user by username`() = runTest {
-        // Given
         val username = "nonexistent"
         coEvery { authRepository.getUserByUserName(username) } returns null
 
-        // When
         val result = getUserByUsernameUseCase.getUserByUsername(username)
 
-        // Then
         Assertions.assertNull(result)
     }
 
     @Test
     fun `should return null when username is empty`() = runTest {
-        // Given
         val username = ""
         coEvery { authRepository.getUserByUserName(username) } returns null
 
-        // When
         val result = getUserByUsernameUseCase.getUserByUsername(username)
 
-        // Then
         Assertions.assertNull(result)
     }
 }

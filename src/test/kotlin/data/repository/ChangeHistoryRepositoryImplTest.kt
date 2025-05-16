@@ -13,10 +13,9 @@ import java.util.*
 import kotlin.test.assertEquals
 
 class ChangeHistoryRepositoryImplTest {
-
     private lateinit var changeHistoryDataSource: MongoChangeHistoryDataSource
     private lateinit var changeHistoryRepository: ChangeHistoryRepository
-    private val fakeChangeHistoryData = getFakeChangeHistoryData()
+    private val dummyChangeHistoryData = getDummyChangHistoryData()
 
     @BeforeEach
     fun setup() {
@@ -26,34 +25,31 @@ class ChangeHistoryRepositoryImplTest {
 
     @Test
     fun `should return change history for a valid project ID`() = runBlocking {
-
-        //given
         val projectID = UUID.fromString("11111111-1111-1111-1111-111111111111")
-        val expected = fakeChangeHistoryData.filter { it.projectID == projectID }
+        val expected = dummyChangeHistoryData.filter { it.projectID == projectID }
         coEvery { changeHistoryDataSource.getByProjectId(projectID) } returns expected
 
-        //when
         val result = changeHistoryRepository.getHistoryByProjectID(projectID)
-        //then
+
         assertEquals(expected, result)
     }
 
     @Test
     fun `should return empty list when project ID is invalid`() = runBlocking {
-        //then
         val projectId = UUID.fromString("33333333-3333-3333-3333-333333333333")
         val expected = emptyList<ModificationLog>()
+
         coEvery { changeHistoryDataSource.getByProjectId(projectId) } returns expected
-        //when
+
         val result = changeHistoryRepository.getHistoryByProjectID(projectId)
-        //then
+
         assertEquals(expected, result)
     }
 
     @Test
     fun `should return change history for existing task ID`() = runBlocking {
         val taskId = UUID.fromString("22222222-2222-2222-2222-222222222222")
-        val expected = fakeChangeHistoryData.filter { it.taskID == taskId }
+        val expected = dummyChangeHistoryData.filter { it.taskID == taskId }
         coEvery { changeHistoryDataSource.getByTaskId(taskId) } returns expected
 
         val result = changeHistoryRepository.getHistoryByTaskID(taskId)
@@ -63,16 +59,13 @@ class ChangeHistoryRepositoryImplTest {
 
     @Test
     fun `should return empty list for invalid task ID`() = runBlocking {
-        //given
         val taskId = UUID.fromString("33333333-3333-3333-3333-333333333333")
         val expected = emptyList<ModificationLog>()
 
         coEvery { changeHistoryDataSource.getByTaskId(taskId) } returns expected
 
-        //when
         val result = changeHistoryRepository.getHistoryByTaskID(taskId)
 
-        //then
         assertEquals(expected, result)
     }
 
@@ -107,7 +100,8 @@ class ChangeHistoryRepositoryImplTest {
     }
 
     //helper
-    private fun getFakeChangeHistoryData(): List<ModificationLog> {
+    private fun getDummyChangHistoryData(): List<ModificationLog> {
+
         val fakeDate = Date(1234)
         return listOf(
             ModificationLog(
@@ -126,4 +120,5 @@ class ChangeHistoryRepositoryImplTest {
             )
         )
     }
+
 }
