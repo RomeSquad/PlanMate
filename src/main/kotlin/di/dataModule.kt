@@ -22,7 +22,7 @@ import org.example.data.repository.ChangeHistoryRepositoryImpl
 import org.example.data.repository.ProjectRepositoryImpl
 import org.example.data.repository.TaskRepositoryImpl
 import org.example.data.utils.*
-import org.example.logic.entity.ChangeHistory
+import org.example.logic.entity.ModificationLog
 import org.example.logic.entity.Project
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
@@ -86,7 +86,7 @@ val dataModule = module {
     single<MongoCollection<ProjectState>>(named("states-collection")) {
         get<MongoDatabase>().getCollection<ProjectState>("states")
     }
-    single<MongoCollection<ChangeHistory>>(named("change-history-collection")) {
-        get<MongoDatabase>().getCollection<ChangeHistory>("change-history")
+    single<MongoCollection<ModificationLog>>(named("change-history-collection")) {
+        get<MongoDatabase>().getCollection<ModificationLog>("change-history")
     }
 }

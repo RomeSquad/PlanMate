@@ -1,6 +1,6 @@
 package org.example.logic.usecase.state
 
-import org.example.logic.entity.ChangeHistory
+import org.example.logic.entity.ModificationLog
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
@@ -29,9 +29,9 @@ class AddTaskStateToProjectUseCase(
         changeHistoryRepository.addChangeHistory(audit)
     }
 
-    private fun createAudit(state: ProjectState, user: User): ChangeHistory {
+    private fun createAudit(state: ProjectState, user: User): ModificationLog {
         val description = "create ${state.stateName} state is created successfully"
-        return ChangeHistory(
+        return ModificationLog(
             projectID = state.projectId,
             taskID = state.projectId,
             authorID = user.userId,

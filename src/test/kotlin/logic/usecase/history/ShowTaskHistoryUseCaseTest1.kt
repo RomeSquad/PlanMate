@@ -3,7 +3,7 @@ package org.example.logic.usecase.history
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import org.example.logic.entity.ChangeHistory
+import org.example.logic.entity.ModificationLog
 import org.example.logic.repository.ChangeHistoryRepository
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -50,21 +50,21 @@ class ShowTaskHistoryUseCaseTest {
     }
 
 
-    private fun fakeChangeHistoryList(): List<ChangeHistory> {
+    private fun fakeChangeHistoryList(): List<ModificationLog> {
 
         val fakeDate = Date(123)
         val taskId = UUID.fromString("11111111-1111-1111-1111-111111111111")
 
 
         return listOf(
-            ChangeHistory(
+            ModificationLog(
                 projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
                 taskID = taskId,
                 authorID = UUID.fromString("11111111-1111-1111-1111-111111111110"),
                 changeDate = fakeDate,
                 changeDescription = "Task created"
             ),
-            ChangeHistory(
+            ModificationLog(
                 projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
                 taskID = taskId,
                 authorID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
