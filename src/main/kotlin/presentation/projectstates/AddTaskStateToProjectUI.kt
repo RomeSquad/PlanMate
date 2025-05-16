@@ -69,7 +69,6 @@ class AddTaskStateToProjectUI(
         }
     }
 
-
     private fun tryAddState(state: ProjectState, userId: UUID, ui: UiDisplayer) {
         try {
             runBlocking {

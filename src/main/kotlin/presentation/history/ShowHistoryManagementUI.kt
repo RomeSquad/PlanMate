@@ -11,7 +11,7 @@ class ShowHistoryManagementUI(
 ) : MenuAction {
     override val description: String = """
         ╔════════════════════════════════════╗
-        ║      History Management Menu      ║
+        ║      History Management Menu       ║
         ╚════════════════════════════════════╝
         """.trimIndent()
     override val menu: Menu = Menu()

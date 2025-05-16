@@ -47,13 +47,11 @@ class ShowProjectHistoryUI(
             val result = logs.map { it.format() }
             val formatter = CliFormatter()
             ui.displayMessage("📜 Change History for Project: '${selectedProject.name}'")
-            ui.displayMessage("🔍 Change History Details:")
             val show = formatter.verticalLayout(
                 messages = result,
                 width = 100,
                 height = 2
             )
-            ui.displayMessage("✅ Change History Details:")
             ui.displayMessage(show)
         } catch (e: IllegalArgumentException) {
             ui.displayMessage("❌ Error: ${e.message}")
@@ -65,4 +63,3 @@ class ShowProjectHistoryUI(
         }
     }
 }
-

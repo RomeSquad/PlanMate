@@ -35,7 +35,6 @@ class LoginManagementUI(
                         ui.displayMessage("🔹 Enter Password:")
                         val password = inputReader.readString("Password: ").trim()
 
-
                         if (username.isEmpty() || password.isEmpty()) {
                             ui.displayMessage("❌ Username and password cannot be empty.")
                             continue
@@ -73,4 +72,3 @@ class LoginManagementUI(
         }
     }
 }
-

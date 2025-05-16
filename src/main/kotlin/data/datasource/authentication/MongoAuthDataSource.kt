@@ -55,7 +55,7 @@ class MongoAuthDataSource(
         }
     }
 
-    override suspend fun editUser(request : EditUserRequest) {
+    override suspend fun editUser(request: EditUserRequest) {
         val hashedPassword = hashStringWithMD5(request.password)
 
         val filter = Filters.eq(UserDto::username.name, request.username)
@@ -75,7 +75,6 @@ class MongoAuthDataSource(
     override suspend fun getUserByUserName(username: String): UserDto? {
         return userMongoCollection.find(Filters.eq(UserDto::username.name, username)).firstOrNull()
     }
-
 
     override suspend fun isUserNameExists(username: String) {
         if (userMongoCollection.find(Filters.eq(UserDto::username.name, username)).firstOrNull() != null) {

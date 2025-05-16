@@ -8,7 +8,6 @@ import org.example.logic.entity.ProjectState
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 fun Project.toCsvRow(): List<String> {
     return listOf(
         projectId.toString(),
@@ -23,18 +22,14 @@ fun ChangeHistory.toCsvCell() = listOf(projectID, taskID, authorID, changeDescri
 fun ProjectState.toCsvCell() = listOf(projectId, stateName).toString()
 val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
 
-
 fun List<String>.fromCsvRowToProject(): Project {
     return Project(
         projectId = UUID.fromString(this[0].trim()),
         name = this[1],
         description = this[2],
         state = this[3].parseState()
-
-
     )
 }
-
 
 fun String.parseState(): ProjectState {
     val parser = ParserImpl()

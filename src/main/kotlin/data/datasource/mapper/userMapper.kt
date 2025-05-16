@@ -31,7 +31,6 @@ fun UserDto.toUser() = User(
     userRole = userRole
 )
 
-
 fun CreateUserRequest.toUserDto() = UserDto(
     username = username,
     password = hashStringWithMD5(password),

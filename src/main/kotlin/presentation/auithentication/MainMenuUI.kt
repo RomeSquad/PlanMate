@@ -9,7 +9,6 @@ import org.example.presentation.utils.io.UiDisplayer
 import org.example.presentation.utils.menus.Menu
 import org.example.presentation.utils.menus.MenuAction
 
-
 class MainMenuUI(
     private val adminManagementUI: AdminManagementUI,
     private val mateManagementUI: MateManagementUI,
@@ -32,9 +31,7 @@ class MainMenuUI(
             }
             ui.displayMessage("🔹 Welcome, ${currentUser.username}!")
             ui.displayMessage("🔹 Your role: ${currentUser.userRole}")
-            val options = if (
-                currentUser.userRole == UserRole.ADMIN
-            ) mutableListOf(
+            val options = if (currentUser.userRole == UserRole.ADMIN) mutableListOf(
                 "👑 1. Admin Management",
                 "📋 2. Mate Management",
                 "🚪 3. Logout"
@@ -49,10 +46,7 @@ class MainMenuUI(
             val choice = inputReader.readString("Choice: ").trim().toIntOrNull()
 
             when (choice) {
-
-                1 -> if (
-                    currentUser.userRole == UserRole.ADMIN
-                ) {
+                1 -> if (currentUser.userRole == UserRole.ADMIN) {
                     adminManagementUI.execute(ui, inputReader)
                 } else {
                     mateManagementUI.execute(ui, inputReader)
@@ -64,7 +58,6 @@ class MainMenuUI(
                     ui.displayMessage("🔙 Logging out...")
                     return
                 }
-
 
                 3 -> if (currentUser.userRole == UserRole.ADMIN) {
                     ui.displayMessage("🔙 Logging out...")

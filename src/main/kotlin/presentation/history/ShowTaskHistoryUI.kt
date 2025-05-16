@@ -56,21 +56,16 @@ class ShowTaskHistoryUI(
             val selectedTask = tasks[taskIndex]
             ui.displayMessage("🔍 Fetching change history for task '${selectedTask.title}'...")
             val result = showTaskHistoryUseCase.execute(selectedTask.taskId)
-            ui.displayMessage("🔍 Fetching change history details...")
             if (result.isEmpty()) {
                 ui.displayMessage("❌ No change history details found.")
                 return
             }
-            ui.displayMessage("🔍 Formatting change history details...")
             val formatter = CliFormatter()
             val show = formatter.verticalLayout(
                 messages = result.map { it.format() },
                 width = 100,
                 height = 2
             )
-            ui.displayMessage("🔍 Formatting completed.")
-            ui.displayMessage("🔍 Displaying change history details...")
-            ui.displayMessage("🔍 Change history details retrieved successfully.")
             ui.displayMessage("📜 Change History for '${selectedTask.title}':")
             ui.displayMessage(show)
         } catch (e: IllegalArgumentException) {

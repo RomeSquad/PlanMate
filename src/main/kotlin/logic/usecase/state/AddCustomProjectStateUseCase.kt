@@ -9,7 +9,6 @@ import java.util.*
 class AddCustomProjectStateUseCase(
     private val stateRepository: ProjectStateRepository
 ) {
-
     suspend fun execute(currentUser: User, stateName: String, projectId: UUID) {
         require(stateName.isNotBlank()) { "state name must not be blank" }
 

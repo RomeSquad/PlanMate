@@ -7,7 +7,7 @@ import java.util.*
 
 interface TaskDataSource {
     suspend fun createTask(task: Task)
-    suspend fun editTask(request : TaskEditRequest)
+    suspend fun editTask(request: TaskEditRequest)
     suspend fun deleteTask(request: TaskDeletionRequest)
 
     suspend fun getTaskByIdFromFile(taskId: UUID): Task

@@ -83,11 +83,9 @@ class CsvAuthDataSource(
         return users.find { it.userId == id }
     }
 
-
     override suspend fun getAllUsers(): List<UserDto> {
         val data = csvFileReader.readCsv(userFile)
         val users = data.map { it.fromCsvRowToUser() }
         return users
     }
-
 }
