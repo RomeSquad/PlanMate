@@ -1,3 +1,5 @@
+package data.datasource.changelog
+
 import com.mongodb.client.model.Filters
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import io.mockk.coEvery
@@ -12,6 +14,7 @@ import java.util.*
 import kotlin.test.assertEquals
 
 class MongoChangeHistoryDataSourceTest {
+
     private lateinit var dataSource: MongoChangeHistoryDataSource
     private lateinit var mongoCollection: MongoCollection<ChangeHistory>
 
@@ -23,65 +26,82 @@ class MongoChangeHistoryDataSourceTest {
 
     @Test
     fun `should add change history successfully`() = runBlocking {
-        val history = fakeChangeHistoryData()
 
-        coEvery { mongoCollection.insertOne(history) } returns mockk() // لا يهم القيمة الراجعة
+        // Given
+        val history = changeHistoryDummyData()
+        coEvery { mongoCollection.insertOne(history) } returns mockk()
 
+        // When
         val result = dataSource.addChangeHistory(history)
 
+        // Then
         assertEquals(history, result)
     }
 
     @Test
     fun `should return list of change history by taskId`() = runBlocking {
-        val expected = listOfFakeChangeHistoryData()
+
+        // given
+        val expected = listOfDummyData()
         val taskId = UUID.fromString("22222222-2222-2222-2222-222222222222")
 
         val mockDataSource = mockk<MongoChangeHistoryDataSource>()
         coEvery { mockDataSource.getByTaskId(taskId) } returns expected
 
+        // when
         val result = mockDataSource.getByTaskId(taskId)
 
+        // then
         assertEquals(expected, result)
     }
 
     @Test
     fun `should return list of change history by projectId`() = runBlocking {
-        val expected = listOfFakeChangeHistoryData()
+        // given
+        val expected = listOfDummyData()
         val projectId = UUID.fromString("11111111-1111-1111-1111-111111111111")
-
-
         val mockDataSource = mockk<MongoChangeHistoryDataSource>()
+
         coEvery { mockDataSource.getByProjectId(projectId) } returns expected
 
+        // when
         val result = mockDataSource.getByProjectId(projectId)
 
+        // then
         assertEquals(expected, result)
     }
 
     @Test
     fun `should return empty list if no change history found by projectId`() = runBlocking {
+
+        //given
         val projectId = UUID.fromString("11111111-1111-1111-1111-111111111199")
 
         coEvery { mongoCollection.find(Filters.eq("projectID", projectId)).toList() } returns emptyList()
 
+        //when
         val result = dataSource.getByProjectId(projectId)
 
+        //then
         assertEquals(emptyList(), result)
     }
 
     @Test
     fun `should return empty list if no change history found by taskId`() = runBlocking {
+
+        //given
         val taskId = UUID.fromString("22222222-2222-2222-2222-222222222999")
 
         coEvery { mongoCollection.find(Filters.eq("taskID", taskId)).toList() } returns emptyList()
 
+        //when
         val result = dataSource.getByTaskId(taskId)
 
+        //then
         assertEquals(emptyList(), result)
     }
 
-    private fun listOfFakeChangeHistoryData(): List<ChangeHistory> {
+    private fun listOfDummyData(): List<ChangeHistory> {
         return listOf(
             ChangeHistory(
                 projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
@@ -100,7 +120,7 @@ class MongoChangeHistoryDataSourceTest {
 
     }
 
-    private fun fakeChangeHistoryData(): ChangeHistory {
+    private fun changeHistoryDummyData(): ChangeHistory {
         return ChangeHistory(
             projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
             taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
