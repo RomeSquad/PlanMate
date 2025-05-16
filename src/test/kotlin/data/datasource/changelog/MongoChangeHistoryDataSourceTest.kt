@@ -7,7 +7,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.example.data.datasource.changelog.MongoChangeHistoryDataSource
-import org.example.logic.entity.ChangeHistory
+import org.example.logic.entity.ModificationLog
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -15,7 +15,7 @@ import kotlin.test.assertEquals
 
 class MongoChangeHistoryDataSourceTest {
     private lateinit var dataSource: MongoChangeHistoryDataSource
-    private lateinit var mongoCollection: MongoCollection<ChangeHistory>
+    private lateinit var mongoCollection: MongoCollection<ModificationLog>
 
     @BeforeEach
     fun setup() {
@@ -81,15 +81,15 @@ class MongoChangeHistoryDataSourceTest {
         assertEquals(emptyList(), result)
     }
 
-    private fun listOfDummyData(): List<ChangeHistory> {
+    private fun listOfDummyData(): List<ModificationLog> {
         return listOf(
-            ChangeHistory(
+            ModificationLog(
                 projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
                 taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
                 authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
                 changeDate = Date(11),
                 changeDescription = "  "
-            ), ChangeHistory(
+            ), ModificationLog(
                 projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
                 taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
                 authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
@@ -100,8 +100,8 @@ class MongoChangeHistoryDataSourceTest {
 
     }
 
-    private fun changeHistoryDummyData(): ChangeHistory {
-        return ChangeHistory(
+    private fun changeHistoryDummyData(): ModificationLog {
+        return ModificationLog(
             projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
             taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
             authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
