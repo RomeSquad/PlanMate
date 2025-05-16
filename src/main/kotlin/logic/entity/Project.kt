@@ -19,16 +19,3 @@ data class CreateProjectRequest(
 data class CreateProjectResponse(
     val id: UUID,
 )
-
-fun CreateProjectRequest.toProject(): Project {
-    val id = UUID.randomUUID()
-    return Project(
-        projectId = id,
-        name = name,
-        description = description,
-        state = ProjectState(
-            projectId = id,
-            stateName = "InProgress"
-        )
-    )
-}
