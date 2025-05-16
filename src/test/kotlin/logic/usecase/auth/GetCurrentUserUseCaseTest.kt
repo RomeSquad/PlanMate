@@ -15,7 +15,6 @@ import java.util.*
 import kotlin.test.Test
 
 class GetCurrentUserUseCaseTest {
-
     private lateinit var authenticationRepository: AuthRepository
     private lateinit var getCurrentUserUseCase: GetCurrentUserUseCase
 
@@ -27,24 +26,19 @@ class GetCurrentUserUseCaseTest {
 
     @Test
     fun ` should getCurrentUser return current user when it exists(successful)`() = runTest {
-        // Given
         val user = User(userId = UUID(1, 1), username = "abanoub", userRole = UserRole.ADMIN)
         coEvery { authenticationRepository.getCurrentUser() } returns user
 
-        // When
         val result = getCurrentUserUseCase.getCurrentUser()
 
-        // Then
         assert(result != null)
         coVerify(exactly = 1) { authenticationRepository.getCurrentUser() }
     }
 
     @Test
     fun `getCurrentUser should throw DtoNotFoundException when user is not found`() = runTest {
-        // Given
         coEvery { authenticationRepository.getCurrentUser() } throws UserNotFoundException()
 
-        // When & Then
         assertThrows<UserNotFoundException> {
             getCurrentUserUseCase.getCurrentUser()
         }

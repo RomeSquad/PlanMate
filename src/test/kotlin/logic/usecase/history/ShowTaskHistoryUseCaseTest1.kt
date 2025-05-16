@@ -1,17 +1,17 @@
-package org.example.logic.usecase.history
+package logic.usecase.history
 
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.repository.ChangeHistoryRepository
+import org.example.logic.usecase.history.ShowTaskHistoryUseCase
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
 
 class ShowTaskHistoryUseCaseTest {
-
     private lateinit var repository: ChangeHistoryRepository
     private lateinit var useCase: ShowTaskHistoryUseCase
     private val taskId = UUID.fromString("11111111-1111-1111-1111-111111111111")
@@ -24,22 +24,17 @@ class ShowTaskHistoryUseCaseTest {
 
     @Test
     fun `should return task history for valid task ID`() = runBlocking {
-        // Given
         coEvery { repository.getHistoryByTaskID(taskId) } returns fakeChangeHistoryList()
 
-        // When
         val result = useCase.execute(taskId)
 
-        // Then
         assertEquals(fakeChangeHistoryList(), result)
     }
 
     @Test
     fun `should throw IllegalArgumentException when repository throws exception`() = runBlocking {
-        // Given
         coEvery { repository.getHistoryByTaskID(taskId) } throws RuntimeException("DB Failed")
 
-        // When & Then
         val exception = assertThrows(IllegalArgumentException::class.java) {
             runBlocking {
                 useCase.execute(taskId)

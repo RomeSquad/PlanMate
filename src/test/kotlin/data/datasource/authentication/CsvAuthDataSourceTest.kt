@@ -3,15 +3,14 @@ package data.datasource.authentication
 import data.datasource.authentication.dto.UserDto
 import io.mockk.*
 import kotlinx.coroutines.test.runTest
-import org.example.logic.request.CreateUserRequest
 import org.example.data.datasource.authentication.CsvAuthDataSource
 import org.example.data.utils.CsvFileReader
 import org.example.data.utils.CsvFileWriter
 import org.example.data.utils.hashStringWithMD5
-import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
+import org.example.logic.request.CreateUserRequest
 import org.example.logic.request.EditUserRequest
 import org.example.logic.request.LoginRequest
 import org.junit.jupiter.api.Assertions
@@ -22,7 +21,6 @@ import java.io.File
 import java.util.*
 
 class CsvAuthDataSourceTest {
-
     private lateinit var authDataSource: CsvAuthDataSource
     private lateinit var csvFileReader: CsvFileReader
     private lateinit var csvFileWriter: CsvFileWriter
@@ -40,14 +38,11 @@ class CsvAuthDataSourceTest {
 
     @Test
     fun `should return list of users from CSV data when getAllUsers is called`() = runTest {
-        // Given
         val csvRows = listOf(readTestUser1List, readTestUser2List)
         every { csvFileReader.readCsv(usersFile) } returns csvRows
 
-        // When
         val result = authDataSource.getAllUsers()
 
-        // Then
         Assertions.assertEquals(2, result.size)
         Assertions.assertEquals(testUser1.userId, result[0].userId)
         Assertions.assertEquals(testUser2.userId, result[1].userId)
@@ -55,7 +50,6 @@ class CsvAuthDataSourceTest {
 
     @Test
     fun `should insert user with valid data`() = runTest {
-        // Given
         val username = "testUser"
         val userRole = UserRole.ADMIN
         val request = CreateUserRequest(
@@ -67,10 +61,8 @@ class CsvAuthDataSourceTest {
         every { csvFileReader.readCsv(usersFile) } returns emptyList()
         every { csvFileWriter.writeCsv(usersFile, any()) } just runs
 
-        // When
         val result = authDataSource.insertUser(request)
 
-        // Then
         Assertions.assertEquals(username, result.username)
         Assertions.assertEquals(userRole, result.userRole)
         verify { csvFileWriter.writeCsv(usersFile, any()) }
@@ -79,7 +71,6 @@ class CsvAuthDataSourceTest {
 
     @Test
     fun `should throw exception when login with incorrect password`() = runTest {
-        // Given
         val username = "testUser"
         val correctPasswordHash = "5f4dcc3b5aa765d61d8327deb882cf99"
         val wrongPassword = "wrongPassword"
@@ -105,7 +96,6 @@ class CsvAuthDataSourceTest {
             password = wrongPassword
         )
 
-        // When/Then
         assertThrows<UserNotFoundException> {
             authDataSource.loginUser(loginRequest)
         }
@@ -115,7 +105,6 @@ class CsvAuthDataSourceTest {
 
     @Test
     fun `should throw exception when login with non-existing username`() = runTest {
-        // Given
         val nonExistingUsername = "nonExistingUser"
         val password = "password123"
 
@@ -129,7 +118,6 @@ class CsvAuthDataSourceTest {
             password = password
         )
 
-        // When/Then
         assertThrows<UserNotFoundException> {
             authDataSource.loginUser(loginRequest)
         }
@@ -140,12 +128,10 @@ class CsvAuthDataSourceTest {
 
     @Test
     fun `should throw exception when deleting non-existing user`() = runTest {
-        // Given
         val nonExistingUsername = "nonExistingUser"
 
         every { csvFileReader.readCsv(usersFile) } returns emptyList()
 
-        // When/Then
         assertThrows<UserNotFoundException> {
             authDataSource.deleteUser(nonExistingUsername)
         }
@@ -154,7 +140,6 @@ class CsvAuthDataSourceTest {
 
     @Test
     fun `should throw exception when editing non-existing user`() = runTest {
-        // Given
         val nonExistingUsername = "nonExistingUser"
 
         every { csvFileReader.readCsv(usersFile) } returns emptyList()
@@ -165,7 +150,6 @@ class CsvAuthDataSourceTest {
             userRole = UserRole.ADMIN
         )
 
-        // When/Then
         assertThrows<UserNotFoundException> {
             authDataSource.editUser(request =request )
         }
@@ -173,7 +157,6 @@ class CsvAuthDataSourceTest {
 
     @Test
     fun `should delete user when username exists`() = runTest {
-        // Given
         val username = "userToDelete"
         val userId = UUID.randomUUID()
 
@@ -184,16 +167,13 @@ class CsvAuthDataSourceTest {
 
         authDataSource = CsvAuthDataSource(csvFileReader, csvFileWriter, usersFile)
 
-        // When
         val result = authDataSource.deleteUser(username)
 
-        // Then
         Assertions.assertTrue(result)
     }
 
     @Test
     fun `should throw exception when inserting user with existing username`() = runTest {
-        // Given
         val username = "existingUser"
         val existingUserRow =
             listOf(UUID.randomUUID().toString(), username, "hashedPassword", UserRole.ADMIN.name)
@@ -208,7 +188,6 @@ class CsvAuthDataSourceTest {
             userRole = UserRole.MATE
         )
 
-        // When/Then
         assertThrows<UserNameAlreadyExistsException> {
             authDataSource.insertUser(request)
         }
@@ -216,7 +195,6 @@ class CsvAuthDataSourceTest {
 
     @Test
     fun `should login user with valid credentials`() = runTest {
-        // Given
         val username = "testUser"
         val password = "password123"
         val hashedPassword = "5f4dcc3b5aa765d61d8327deb882cf99"
@@ -236,10 +214,8 @@ class CsvAuthDataSourceTest {
             password = password
         )
 
-        // When
         val result = authDataSource.loginUser(loginRequest)
 
-        // Then
         Assertions.assertEquals(username, result.username)
         Assertions.assertEquals(UserRole.ADMIN, result.userRole)
 
@@ -248,7 +224,6 @@ class CsvAuthDataSourceTest {
 
     @Test
     fun `should edit user when username exists`() = runTest {
-        // Given
         val username = "userToEdit"
         val userId = UUID.randomUUID()
         val originalRole = UserRole.MATE
@@ -267,16 +242,13 @@ class CsvAuthDataSourceTest {
             userRole = newRole
         )
 
-        // When
         authDataSource.editUser(updatedUser)
 
-        // Then
         verify { csvFileWriter.writeCsv(usersFile, any()) }
     }
 
     @Test
     fun `should return user when getUserByUsername with existing username`() = runTest {
-        // Given
         val username = "existingUser"
         val userId = UUID.randomUUID()
 
@@ -286,28 +258,22 @@ class CsvAuthDataSourceTest {
 
         authDataSource = CsvAuthDataSource(csvFileReader, csvFileWriter, usersFile)
 
-        // When
         val result = authDataSource.getUserByUserName(username)
 
-        // Then
         Assertions.assertNotNull(result)
         Assertions.assertEquals(username, result?.username)
     }
 
     @Test
     fun `should return null when getUserByUsername with non-existing username`() = runTest {
-        // Given
         val nonExistingUsername = "nonExistingUser"
 
         every { csvFileReader.readCsv(usersFile) } returns emptyList()
 
-        // When
         val result = authDataSource.getUserByUserName(nonExistingUsername)
 
-        // Then
         Assertions.assertNull(result)
     }
-
 
 }
 

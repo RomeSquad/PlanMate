@@ -16,7 +16,6 @@ import org.junit.jupiter.api.assertThrows
 import java.util.*
 
 class GetTasksByProjectIdUseCaseTest {
-
     private lateinit var taskRepository: TaskRepository
     private lateinit var getTasksByProjectIdUseCase: GetTasksByProjectIdUseCase
 
@@ -57,10 +56,8 @@ class GetTasksByProjectIdUseCaseTest {
         )
         coEvery { taskRepository.getTasksByProject(projectId) } returns tasks
 
-        // When
         val result = getTasksByProjectIdUseCase.getTasksByProjectId(projectId)
 
-        // Then
         coVerify(exactly = 1) { taskRepository.getTasksByProject(projectId) }
         assertEquals(tasks, result, "Task lists do not match")
         assertEquals(2, result.size, "Expected 2 tasks")
@@ -70,24 +67,19 @@ class GetTasksByProjectIdUseCaseTest {
 
     @Test
     fun `should return empty list when no tasks found for projectId`() = runTest {
-        // Given
         coEvery { taskRepository.getTasksByProject(projectId) } returns emptyList()
 
-        // When
         val result = getTasksByProjectIdUseCase.getTasksByProjectId(projectId)
 
-        // Then
         coVerify(exactly = 1) { taskRepository.getTasksByProject(projectId) }
         assertTrue(result.isEmpty(), "Expected empty task list")
     }
 
     @Test
     fun `should throw exception when repository fails`() = runTest {
-        // Given
         val exception = RuntimeException("Database error")
         coEvery { taskRepository.getTasksByProject(projectId) } throws exception
 
-        // When/Then
         val thrownException = assertThrows<RuntimeException> {
             getTasksByProjectIdUseCase.getTasksByProjectId(projectId)
         }

@@ -21,7 +21,6 @@ class EditProjectProjectStateUseCaseTest {
         editProjectStateUseCase = EditProjectStateUseCase(projectStateRepository)
     }
 
-
     @Test
     fun ` should throw exception when new state name is blank`() = runTest {
         val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
@@ -40,5 +39,4 @@ class EditProjectProjectStateUseCaseTest {
 
         coVerify(exactly = 1) { editProjectStateUseCase.execute(projectId, newStateName) }
     }
-
 }

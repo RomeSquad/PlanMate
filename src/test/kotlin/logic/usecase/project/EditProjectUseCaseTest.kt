@@ -15,7 +15,6 @@ import java.util.*
 
 
 class EditProjectUseCaseTest {
-
     private lateinit var editProjectUseCase: EditProjectUseCase
     private lateinit var projectRepository: ProjectRepository
 
@@ -37,25 +36,20 @@ class EditProjectUseCaseTest {
 
     @Test
     fun `execute updates project successfully`() = runTest {
-        // Given
         coEvery { projectRepository.editProject(updatedProject) } returns Unit
 
-        // When
         val result = editProjectUseCase.execute(updatedProject)
 
-        // Then
         assertEquals(Unit, result)
         coVerify(exactly = 2) { projectRepository.editProject(updatedProject) }
     }
 
     @Test
     fun `execute throws exception when project ID is invalid`() = runTest {
-        // Given
         val invalidProject = updatedProject.copy(projectId = invalidProjectId)
         val exception = Exception("Project with id 99 not found")
         coEvery { projectRepository.editProject(invalidProject) } throws exception
 
-        // When/Then
         val thrownException = assertThrows<Exception> {
             editProjectUseCase.execute(invalidProject)
         }

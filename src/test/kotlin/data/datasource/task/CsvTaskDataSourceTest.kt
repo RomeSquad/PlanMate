@@ -19,7 +19,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class CsvTaskDataSourceTest {
-
     private lateinit var csvTaskDataSource: CsvTaskDataSource
     private lateinit var csvFileReader: CsvFileReader
     private lateinit var csvFileWriter: CsvFileWriter
