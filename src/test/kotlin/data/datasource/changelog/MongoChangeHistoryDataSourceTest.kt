@@ -25,10 +25,8 @@ class MongoChangeHistoryDataSourceTest {
     @Test
     fun `should add change history successfully`() = runBlocking {
         // Given
-        val history = fakeChangeHistoryData()
-
-        // Mock insertOne to just succeed
-        coEvery { mongoCollection.insertOne(history) } returns mockk() // لا يهم القيمة الراجعة
+        val history = changeHistoryDummyData()
+        coEvery { mongoCollection.insertOne(history) } returns mockk()
 
         // When
         val result = dataSource.addChangeHistory(history)
@@ -40,7 +38,7 @@ class MongoChangeHistoryDataSourceTest {
     @Test
     fun `should return list of change history by taskId`() = runBlocking {
         // given
-        val expected = listOfFakeChangeHistoryData()
+        val expected = listOfDummyData()
         val taskId = UUID.fromString("22222222-2222-2222-2222-222222222222")
 
         val mockDataSource = mockk<MongoChangeHistoryDataSource>()
@@ -56,11 +54,10 @@ class MongoChangeHistoryDataSourceTest {
     @Test
     fun `should return list of change history by projectId`() = runBlocking {
         // given
-        val expected = listOfFakeChangeHistoryData()
+        val expected = listOfDummyData()
         val projectId = UUID.fromString("11111111-1111-1111-1111-111111111111")
-
-
         val mockDataSource = mockk<MongoChangeHistoryDataSource>()
+
         coEvery { mockDataSource.getByProjectId(projectId) } returns expected
 
         // when
@@ -92,7 +89,7 @@ class MongoChangeHistoryDataSourceTest {
         assertEquals(emptyList(), result)
     }
 
-    private fun listOfFakeChangeHistoryData(): List<ChangeHistory> {
+    private fun listOfDummyData(): List<ChangeHistory> {
         return listOf(
             ChangeHistory(
                 projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
@@ -111,7 +108,7 @@ class MongoChangeHistoryDataSourceTest {
 
     }
 
-    private fun fakeChangeHistoryData(): ChangeHistory {
+    private fun changeHistoryDummyData(): ChangeHistory {
         return ChangeHistory(
             projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
             taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
