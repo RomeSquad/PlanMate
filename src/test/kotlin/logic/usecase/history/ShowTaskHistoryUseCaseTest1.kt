@@ -1,10 +1,11 @@
-package org.example.logic.usecase.history
+package logic.usecase.history
 
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.example.logic.entity.ChangeHistory
 import org.example.logic.repository.ChangeHistoryRepository
+import org.example.logic.usecase.history.ShowTaskHistoryUseCase
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -25,13 +26,13 @@ class ShowTaskHistoryUseCaseTest {
     @Test
     fun `should return task history for valid task ID`() = runBlocking {
         // Given
-        coEvery { repository.getHistoryByTaskID(taskId) } returns fakeChangeHistoryList()
+        coEvery { repository.getHistoryByTaskID(taskId) } returns dummyChangeHistoryData()
 
         // When
         val result = useCase.execute(taskId)
 
         // Then
-        assertEquals(fakeChangeHistoryList(), result)
+        assertEquals(dummyChangeHistoryData(), result)
     }
 
     @Test
@@ -49,8 +50,7 @@ class ShowTaskHistoryUseCaseTest {
         assertTrue(exception.message!!.contains("Invalid Task ID"))
     }
 
-
-    private fun fakeChangeHistoryList(): List<ChangeHistory> {
+    private fun dummyChangeHistoryData(): List<ChangeHistory> {
 
         val fakeDate = Date(123)
         val taskId = UUID.fromString("11111111-1111-1111-1111-111111111111")
