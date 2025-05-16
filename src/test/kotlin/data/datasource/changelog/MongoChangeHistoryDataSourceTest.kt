@@ -24,6 +24,7 @@ class MongoChangeHistoryDataSourceTest {
 
     @Test
     fun `should add change history successfully`() = runBlocking {
+
         // Given
         val history = changeHistoryDummyData()
         coEvery { mongoCollection.insertOne(history) } returns mockk()
@@ -37,6 +38,7 @@ class MongoChangeHistoryDataSourceTest {
 
     @Test
     fun `should return list of change history by taskId`() = runBlocking {
+
         // given
         val expected = listOfDummyData()
         val taskId = UUID.fromString("22222222-2222-2222-2222-222222222222")
@@ -69,23 +71,31 @@ class MongoChangeHistoryDataSourceTest {
 
     @Test
     fun `should return empty list if no change history found by projectId`() = runBlocking {
+
+        //given
         val projectId = UUID.fromString("11111111-1111-1111-1111-111111111199")
 
         coEvery { mongoCollection.find(Filters.eq("projectID", projectId)).toList() } returns emptyList()
 
+        //when
         val result = dataSource.getByProjectId(projectId)
 
+        //then
         assertEquals(emptyList(), result)
     }
 
     @Test
     fun `should return empty list if no change history found by taskId`() = runBlocking {
+
+        //given
         val taskId = UUID.fromString("22222222-2222-2222-2222-222222222999")
 
         coEvery { mongoCollection.find(Filters.eq("taskID", taskId)).toList() } returns emptyList()
 
+        //when
         val result = dataSource.getByTaskId(taskId)
 
+        //then
         assertEquals(emptyList(), result)
     }
 

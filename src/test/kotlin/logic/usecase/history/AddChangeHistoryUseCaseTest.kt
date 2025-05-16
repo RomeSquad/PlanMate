@@ -15,15 +15,6 @@ class AddChangeHistoryUseCaseTest {
     private lateinit var repository: ChangeHistoryRepository
     private lateinit var useCase: AddChangeHistoryUseCase
 
-    private val fakeDate = Date(123)
-
-    private val fakeChange = ChangeHistory(
-        projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
-        taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
-        authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
-        changeDate = fakeDate,
-        changeDescription = "Changed status to InProgress"
-    )
 
     @BeforeEach
     fun setUp() {
@@ -33,8 +24,9 @@ class AddChangeHistoryUseCaseTest {
 
     @Test
     fun `should add change history successfully`() = runBlocking {
+
         // Given
-        coEvery { repository.addChangeHistory(fakeChange) } returns fakeChange
+        coEvery { repository.addChangeHistory(dummyChangeHistoryData) } returns dummyChangeHistoryData
 
         // When
         val result = useCase.execute(
@@ -46,7 +38,7 @@ class AddChangeHistoryUseCaseTest {
         )
 
         // Then
-        assertEquals(fakeChange, result)
+        assertEquals(dummyChangeHistoryData, result)
     }
 
     @Test
@@ -69,4 +61,13 @@ class AddChangeHistoryUseCaseTest {
 
         assertTrue(exception.message!!.contains("Invalid Change History data"))
     }
+    private val fakeDate = Date(123)
+
+    private val dummyChangeHistoryData = ChangeHistory(
+        projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
+        taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
+        authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
+        changeDate = fakeDate,
+        changeDescription = "Changed status to InProgress"
+    )
 }

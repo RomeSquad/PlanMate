@@ -15,23 +15,6 @@ class ShowProjectHistoryUseCaseTest {
     private lateinit var repository: ChangeHistoryRepository
     private lateinit var useCase: ShowProjectHistoryUseCase
 
-    private val fakeHistory = listOf(
-        ChangeHistory(
-            projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
-            taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
-            authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
-            changeDate = Date(1234),
-            changeDescription = "Status changed"
-        ),
-        ChangeHistory(
-            projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
-            taskID = UUID.fromString("44444444-4444-4444-4444-444444444444"),
-            authorID = UUID.fromString("55555555-5555-5555-5555-555555555555"),
-            changeDate = Date(1234),
-            changeDescription = "Assigned new dev"
-        )
-    )
-
     @BeforeEach
     fun setUp() {
         repository = mockk()
@@ -42,13 +25,13 @@ class ShowProjectHistoryUseCaseTest {
     fun `should return change history for valid project ID`() = runBlocking {
         // Given
         val projectId = UUID.fromString("11111111-1111-1111-1111-111111111111")
-        coEvery { repository.getHistoryByProjectID(projectId) } returns fakeHistory
+        coEvery { repository.getHistoryByProjectID(projectId) } returns dummyChangeHistoryData
 
         // When
         val result = useCase.execute(projectId)
 
         // Then
-        assertEquals(fakeHistory, result)
+        assertEquals(dummyChangeHistoryData, result)
     }
 
     @Test
@@ -66,4 +49,20 @@ class ShowProjectHistoryUseCaseTest {
 
         assertTrue(exception.message!!.contains("Invalid Project ID"))
     }
+    private val dummyChangeHistoryData = listOf(
+        ChangeHistory(
+            projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
+            taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
+            authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
+            changeDate = Date(1234),
+            changeDescription = "Status changed"
+        ),
+        ChangeHistory(
+            projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
+            taskID = UUID.fromString("44444444-4444-4444-4444-444444444444"),
+            authorID = UUID.fromString("55555555-5555-5555-5555-555555555555"),
+            changeDate = Date(1234),
+            changeDescription = "Assigned new dev"
+        )
+    )
 }
