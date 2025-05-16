@@ -1,6 +1,7 @@
 package logic.usecase.project
 
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.Project
@@ -14,12 +15,10 @@ import org.junit.jupiter.api.assertThrows
 import java.util.*
 
 class GetProjectByIdUseCaseTest {
-
     private lateinit var getProjectByIdUseCase: GetProjectByIdUseCase
     private lateinit var projectRepository: ProjectRepository
-
     private val projectId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
-
+    private val nonExistentId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001")
 
     private val project = Project(
         projectId = projectId,
@@ -35,49 +34,28 @@ class GetProjectByIdUseCaseTest {
     }
 
     @Test
-    fun `get project by valid id returns project`() = runTest {
-        // Given
+    fun `get project by valid ID returns correct project`() = runTest {
         coEvery { projectRepository.getProjectById(projectId) } returns project
 
-        // When
         val result = getProjectByIdUseCase.getProjectById(projectId)
 
-        // Then
         assertEquals(project, result)
         assertEquals(projectId, result.projectId)
         assertEquals("Test Project", result.name)
+        assertEquals("Test Description", result.description)
         assertEquals("Active", result.state.stateName)
+        coVerify { projectRepository.getProjectById(projectId) }
     }
 
-//    @Test
-//    fun `get project by zero id throws IllegalArgumentException`() = runTest {
-//        // When/Then
-//        val exception = assertThrows<IllegalArgumentException> {
-//            getProjectByIdUseCase.getProjectById(0)
-//        }
-//        assertEquals("Project id must be greater than zero", exception.message)
-//    }
-
-//    @Test
-//    fun `get project by negative id throws IllegalArgumentException`() = runTest {
-//        // When/Then
-//        val exception = assertThrows<IllegalArgumentException> {
-//            getProjectByIdUseCase.getProjectById(-1)
-//        }
-//        assertEquals("Project id must be greater than zero", exception.message)
-//    }
-
     @Test
-    fun `get project by non-existent id throws exception`() = runTest {
-        // Given
-        val invalidId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001")
-        val exception = Exception("Project with id $invalidId not found")
-        coEvery { projectRepository.getProjectById(invalidId) } throws exception
+    fun `get project by non-existent ID throws NotFoundException`() = runTest {
+        val exception = Exception("Project with id $nonExistentId not found")
+        coEvery { projectRepository.getProjectById(nonExistentId) } throws exception
 
-        // When/Then
         val thrownException = assertThrows<Exception> {
-            getProjectByIdUseCase.getProjectById(invalidId)
+            getProjectByIdUseCase.getProjectById(nonExistentId)
         }
-        assertEquals("Project with id $invalidId not found", thrownException.message)
+        assertEquals("Project with id $nonExistentId not found", thrownException.message)
+        coVerify { projectRepository.getProjectById(nonExistentId) }
     }
 }

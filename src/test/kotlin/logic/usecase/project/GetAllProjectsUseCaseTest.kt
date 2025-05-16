@@ -15,7 +15,6 @@ import org.junit.jupiter.api.assertThrows
 import java.util.*
 
 class GetAllProjectsUseCaseTest {
-
     private lateinit var getAllProjectsUseCase: GetAllProjectsUseCase
     private lateinit var projectRepository: ProjectRepository
 
@@ -44,14 +43,11 @@ class GetAllProjectsUseCaseTest {
 
     @Test
     fun `get all projects returns list when repository returns projects`() = runTest {
-        // Given
         val projects = listOf(project1, project2)
         coEvery { projectRepository.getAllProjects() } returns projects
 
-        // When
         val result = getAllProjectsUseCase.getAllProjects()
 
-        // Then
         assertEquals(projects, result)
         assertEquals(2, result.size)
         assertEquals("Project 1", result[0].name)
@@ -62,24 +58,19 @@ class GetAllProjectsUseCaseTest {
 
     @Test
     fun `get all projects returns empty list when repository returns no projects`() = runTest {
-        // Given
         coEvery { projectRepository.getAllProjects() } returns emptyList()
 
-        // When
         val result = getAllProjectsUseCase.getAllProjects()
 
-        // Then
         assertEquals(emptyList<Project>(), result)
         assertTrue(result.isEmpty())
     }
 
     @Test
     fun `get all projects throws exception when repository fails`() = runTest {
-        // Given
         val exception = RuntimeException("Failed to fetch projects")
         coEvery { projectRepository.getAllProjects() } throws exception
 
-        // When/Then
         val thrownException = assertThrows<RuntimeException> {
             getAllProjectsUseCase.getAllProjects()
         }

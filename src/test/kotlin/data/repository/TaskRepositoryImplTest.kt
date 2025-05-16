@@ -15,7 +15,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.assertTrue
 
 class TaskRepositoryImplTest {
-
     private lateinit var taskDataSource: TaskDataSource
     private lateinit var taskRepository: TaskRepositoryImpl
 

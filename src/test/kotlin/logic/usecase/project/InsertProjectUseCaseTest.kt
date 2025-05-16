@@ -19,28 +19,23 @@ import org.junit.jupiter.api.assertThrows
 import java.util.*
 
 class InsertProjectUseCaseTest {
-
     private lateinit var insertProjectUseCase: InsertProjectUseCase
     private lateinit var projectRepository: ProjectRepository
     private lateinit var validationProject: ValidationProject
-
     private val userId = UUID.randomUUID()
     private val projectId = UUID.randomUUID()
-
     private val user = User(
         userId = userId,
         username = "Mohamed",
         userRole = UserRole.ADMIN
 
     )
-
     private val validProject = Project(
         projectId = projectId,
         name = "Test Project",
         description = "Test Description",
         state = ProjectState(projectId = projectId, stateName = "InProgress")
     )
-
     private val emptyNameProject = validProject.copy(name = "")
     private val whitespaceNameProject = validProject.copy(name = "   ")
 

@@ -12,7 +12,6 @@ import java.util.*
 import kotlin.test.Test
 
 class EditTaskUseCaseTest {
-
     private lateinit var taskRepository: TaskRepository
     private lateinit var editTaskUseCase: EditTaskUseCase
 

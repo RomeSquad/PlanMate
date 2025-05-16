@@ -22,25 +22,20 @@ class DeleteUserUseCaseTest {
 
     @Test
     fun `should return true when repository deletes user successfully`() = runTest {
-        // Given
         val username = "amr"
         coEvery { authenticationRepository.deleteUser(username) } returns true
 
-        // When
         val result = deleteUserUseCase.deleteUser(username)
 
-        // Then
         Assertions.assertTrue(result)
     }
 
     @Test
     fun `should throw exception when repository fails to delete user`() = runTest {
-        // Given
         val username = "amr"
         val exception = Exception("User not found")
         coEvery { authenticationRepository.deleteUser(username) } throws exception
 
-        // When/Then
         val thrownException = assertThrows<Exception> {
             deleteUserUseCase.deleteUser(username)
         }

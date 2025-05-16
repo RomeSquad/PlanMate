@@ -14,10 +14,8 @@ import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
 class CsvProjectStateDataSourceTest {
-
     private lateinit var csvProjectStateDataSource: CsvProjectStateDataSource
     private val projectStateFile = File("stateTest.csv")
-
 
     @BeforeEach
     fun setup() {
@@ -138,7 +136,6 @@ class CsvProjectStateDataSourceTest {
         val result = csvProjectStateDataSource.getStateById(state2.projectId)
         assertEquals("Review", result.stateName)
     }
-
 
 }
 

@@ -14,10 +14,8 @@ import java.util.*
 import kotlin.test.assertEquals
 
 class DeleteTaskUseCaseTest {
-
     private lateinit var taskRepository: TaskRepository
     private lateinit var deleteTaskUseCase: DeleteTaskUseCase
-
     private val projectId = UUID.fromString("f3b0c4a2-5d6e-4c8b-9f1e-7a2b3c4d5e6f")
     private val taskId = UUID.fromString("a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d")
     private val nonExistentTaskId = UUID.fromString("b2c3d4e5-6f7a-8b9c-0d1e-2f3a4b5c6d7e")
@@ -31,19 +29,15 @@ class DeleteTaskUseCaseTest {
 
     @Test
     fun `should delete task successfully`() = runTest {
-        // Given
         coEvery { taskRepository.deleteTask(TaskDeletionRequest(projectId, taskId)) } returns Unit
 
-        // When
         deleteTaskUseCase.deleteTask(projectId, taskId)
 
-        // Then
         coVerify(exactly = 1) { taskRepository.deleteTask(TaskDeletionRequest(projectId, taskId)) }
     }
 
     @Test
     fun `should throw NoSuchElementException when task does not exist`() = runTest {
-        // Given
         coEvery {
             taskRepository.deleteTask(
                 TaskDeletionRequest(
@@ -53,7 +47,6 @@ class DeleteTaskUseCaseTest {
             )
         } throws NoSuchElementException("Task with id $nonExistentTaskId not found")
 
-        // When/Then
         val exception = assertThrows<NoSuchElementException> {
             deleteTaskUseCase.deleteTask(projectId, nonExistentTaskId)
         }
@@ -63,7 +56,6 @@ class DeleteTaskUseCaseTest {
 
     @Test
     fun `should throw NoSuchElementException when project does not exist`() = runTest {
-        // Given
         coEvery {
             taskRepository.deleteTask(
                 TaskDeletionRequest(
@@ -73,7 +65,6 @@ class DeleteTaskUseCaseTest {
             )
         } throws NoSuchElementException("Project with id $nonExistentProjectId not found")
 
-        // When/Then
         val exception = assertThrows<NoSuchElementException> {
             deleteTaskUseCase.deleteTask(nonExistentProjectId, taskId)
         }
@@ -83,11 +74,9 @@ class DeleteTaskUseCaseTest {
 
     @Test
     fun `should propagate RuntimeException from repository`() = runTest {
-        // Given
         val repositoryException = RuntimeException("Database error")
         coEvery { taskRepository.deleteTask(TaskDeletionRequest(projectId, taskId)) } throws repositoryException
 
-        // When/Then
         val exception = assertThrows<RuntimeException> {
             deleteTaskUseCase.deleteTask(projectId, taskId)
         }
