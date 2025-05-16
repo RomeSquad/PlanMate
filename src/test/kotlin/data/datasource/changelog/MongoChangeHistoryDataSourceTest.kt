@@ -1,3 +1,5 @@
+package data.datasource.changelog
+
 import com.mongodb.client.model.Filters
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import io.mockk.coEvery
@@ -5,16 +7,15 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.example.data.datasource.changelog.MongoChangeHistoryDataSource
-import org.example.logic.entity.ModificationLog
+import org.example.logic.entity.ChangeHistory
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.test.assertEquals
 
 class MongoChangeHistoryDataSourceTest {
-
     private lateinit var dataSource: MongoChangeHistoryDataSource
-    private lateinit var mongoCollection: MongoCollection<ModificationLog>
+    private lateinit var mongoCollection: MongoCollection<ChangeHistory>
 
     @BeforeEach
     fun setup() {
@@ -24,49 +25,37 @@ class MongoChangeHistoryDataSourceTest {
 
     @Test
     fun `should add change history successfully`() = runBlocking {
-        // Given
-        val history = fakeChangeHistoryData()
+        val history = changeHistoryDummyData()
+        coEvery { mongoCollection.insertOne(history) } returns mockk()
 
-        // Mock insertOne to just succeed
-        coEvery { mongoCollection.insertOne(history) } returns mockk() // لا يهم القيمة الراجعة
-
-        // When
         val result = dataSource.addChangeHistory(history)
 
-        // Then
         assertEquals(history, result)
     }
 
     @Test
     fun `should return list of change history by taskId`() = runBlocking {
-        // given
-        val expected = listOfFakeChangeHistoryData()
+        val expected = listOfDummyData()
         val taskId = UUID.fromString("22222222-2222-2222-2222-222222222222")
 
         val mockDataSource = mockk<MongoChangeHistoryDataSource>()
         coEvery { mockDataSource.getByTaskId(taskId) } returns expected
 
-        // when
         val result = mockDataSource.getByTaskId(taskId)
 
-        // then
         assertEquals(expected, result)
     }
 
     @Test
     fun `should return list of change history by projectId`() = runBlocking {
-        // given
-        val expected = listOfFakeChangeHistoryData()
+        val expected = listOfDummyData()
         val projectId = UUID.fromString("11111111-1111-1111-1111-111111111111")
-
-
         val mockDataSource = mockk<MongoChangeHistoryDataSource>()
+
         coEvery { mockDataSource.getByProjectId(projectId) } returns expected
 
-        // when
         val result = mockDataSource.getByProjectId(projectId)
 
-        // then
         assertEquals(expected, result)
     }
 
@@ -92,15 +81,15 @@ class MongoChangeHistoryDataSourceTest {
         assertEquals(emptyList(), result)
     }
 
-    private fun listOfFakeChangeHistoryData(): List<ModificationLog> {
+    private fun listOfDummyData(): List<ChangeHistory> {
         return listOf(
-            ModificationLog(
+            ChangeHistory(
                 projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
                 taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
                 authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
                 changeDate = Date(11),
                 changeDescription = "  "
-            ), ModificationLog(
+            ), ChangeHistory(
                 projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
                 taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
                 authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
@@ -111,8 +100,8 @@ class MongoChangeHistoryDataSourceTest {
 
     }
 
-    private fun fakeChangeHistoryData(): ModificationLog {
-        return ModificationLog(
+    private fun changeHistoryDummyData(): ChangeHistory {
+        return ChangeHistory(
             projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
             taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
             authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),

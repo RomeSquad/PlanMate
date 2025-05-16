@@ -26,27 +26,22 @@ class GetAllUsersUseCaseTest {
 
     @Test
     fun `should return list of users when repository returns users successfully`() = runTest {
-        // Given
         val users = listOf(
             User(
                 userId = UUID.randomUUID(),
                 username = "amr",
-                password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password"
                 userRole = UserRole.MATE
             ),
             User(
                 userId = UUID.randomUUID(),
                 username = "nasser",
-                password = "e99a18c428cb38d5f260853678922e03", // MD5 hash of "abc123"
                 userRole = UserRole.ADMIN
             )
         )
         coEvery { authenticationRepository.getAllUsers() } returns users
 
-        // When
         val result = getAllUsersUseCase.getAllUsers()
 
-        // Then
         Assertions.assertEquals(users, result)
         Assertions.assertEquals(2, result.size)
         Assertions.assertEquals("amr", result[0].username)
@@ -55,25 +50,20 @@ class GetAllUsersUseCaseTest {
 
     @Test
     fun `should return empty list when repository returns no users`() = runTest {
-        // Given
         val users = emptyList<User>()
         coEvery { authenticationRepository.getAllUsers() } returns users
 
-        // When
         val result = getAllUsersUseCase.getAllUsers()
 
-        // Then
         Assertions.assertEquals(users, result)
         Assertions.assertTrue(result.isEmpty())
     }
 
     @Test
     fun `should throw exception when repository fails to fetch users`() = runTest {
-        // Given
         val exception = RuntimeException("Failed to fetch users")
         coEvery { authenticationRepository.getAllUsers() } throws exception
 
-        // When/Then
         val thrownException = assertThrows<RuntimeException> {
             getAllUsersUseCase.getAllUsers()
         }

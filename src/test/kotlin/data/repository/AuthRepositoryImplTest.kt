@@ -1,304 +1,239 @@
 package data.repository
 
+import data.datasource.authentication.dto.UserDto
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import logic.request.auth.CreateUserRequest
 import org.example.data.datasource.authentication.AuthDataSource
 import org.example.data.datasource.mapper.toUser
 import org.example.data.repository.AuthRepositoryImpl
-import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.exception.UserNameAlreadyExistsException
 import org.example.logic.exception.UserNotFoundException
-import org.example.logic.request.auth.LoginRequest
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.example.logic.request.CreateUserRequest
+import org.example.logic.request.EditUserRequest
+import org.example.logic.request.LoginRequest
 import org.junit.jupiter.api.assertThrows
 import java.util.*
+import kotlin.test.*
 
 class AuthRepositoryImplTest {
     private lateinit var authRepository: AuthRepositoryImpl
     private lateinit var authDataSource: AuthDataSource
+    private val userId = UUID.randomUUID()
+    private val username = "amr"
+    private val passwordHash = "5f4dcc3b5aa765d61d8327deb882cf99" // MD5 hash of "password123"
+    private val userRole = UserRole.ADMIN
 
-    @BeforeEach
+    private val createUserRequest = CreateUserRequest(
+        username = username,
+        password = passwordHash,
+        userRole = userRole
+    )
+
+    private val userDto = UserDto(
+        userId = userId,
+        username = username,
+        password = passwordHash,
+        userRole = userRole
+    )
+
+    private val user = userDto.toUser()
+
+    @BeforeTest
     fun setup() {
-        authDataSource = mockk<AuthDataSource>(relaxed = true)
+        authDataSource = mockk()
         authRepository = AuthRepositoryImpl(authDataSource)
-        coEvery { authDataSource.getAllUsers() } returns emptyList()
     }
 
-    // region insertUser
     @Test
-    fun `should return user info when insertUser with valid user`() = runTest {
-        // Given
-        val username = "amr"
-        val userRole = UserRole.ADMIN
-        val request = CreateUserRequest(
-            username = username,
-            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
-            userRole = userRole
-        )
-        val expectedUser = request.toUser()
-        coEvery { authDataSource.insertUser(request) } returns expectedUser
+    fun `insertUser with valid request returns user info`() = runTest {
+        coEvery { authDataSource.insertUser(createUserRequest) } returns userDto
 
-        // When
+        val result = authRepository.insertUser(createUserRequest)
+
+        assertEquals(user.userId, result.userId)
+        assertEquals(user.username, result.username)
+        assertEquals(user.userRole, result.userRole)
+        coVerify { authDataSource.insertUser(createUserRequest) }
+    }
+
+    @Test
+    fun `insertUser with existing username throws UserNameAlreadyExistsException`() = runTest {
+        coEvery { authDataSource.insertUser(createUserRequest) } throws UserNameAlreadyExistsException()
+
+        val exception = assertThrows<UserNameAlreadyExistsException> {
+            authRepository.insertUser(createUserRequest)
+        }
+        assertEquals("Username already exists", exception.message)
+        coVerify { authDataSource.insertUser(createUserRequest) }
+    }
+
+    @Test
+    fun `insertUser with username containing special characters returns user info`() = runTest {
+        val specialUsername = "amr@123"
+        val request = createUserRequest.copy(username = specialUsername)
+        val expectedUserDto = userDto.copy(username = specialUsername)
+        coEvery { authDataSource.insertUser(request) } returns expectedUserDto
+
         val result = authRepository.insertUser(request)
 
-        // Then
-        Assertions.assertEquals(expectedUser.userId, result.userId)
-        Assertions.assertEquals(expectedUser.username, result.username)
-        Assertions.assertEquals(expectedUser.userRole, result.userRole)
+        assertEquals(expectedUserDto.userId, result.userId)
+        assertEquals(expectedUserDto.username, result.username)
+        assertEquals(expectedUserDto.userRole, result.userRole)
+        coVerify { authDataSource.insertUser(request) }
     }
 
+    @Test
+    fun `loginUser with valid credentials returns user info`() = runTest {
+        val loginRequest = LoginRequest(username = username, password = passwordHash)
+        coEvery { authDataSource.loginUser(loginRequest) } returns userDto
+
+        val result = authRepository.loginUser(loginRequest)
+
+        assertEquals(user.userId, result.userId)
+        assertEquals(user.username, result.username)
+        assertEquals(user.userRole, result.userRole)
+        coVerify { authDataSource.loginUser(loginRequest) }
+    }
 
     @Test
-    fun `should throw exception when insertUser with username already exists`() = runTest {
-        // Given
-        val username = "amr"
-        val userRole = UserRole.ADMIN
-        val request = CreateUserRequest(
-            username = username,
-            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
-            userRole = userRole
-        )
-        coEvery { authDataSource.getAllUsers() } returns emptyList()
-        coEvery { authDataSource.insertUser(request) } throws UserNameAlreadyExistsException()
+    fun `loginUser with incorrect password throws UserNotFoundException`() = runTest {
+        val loginRequest = LoginRequest(username = username, password = "wrongHash")
+        coEvery { authDataSource.loginUser(loginRequest) } throws UserNotFoundException()
 
-        // When/Then
-        val exception = assertThrows<UserNameAlreadyExistsException> {
-            authRepository.insertUser(request)
+        assertThrows<UserNotFoundException> {
+            authRepository.loginUser(loginRequest)
         }
-        Assertions.assertEquals("Username already exists", exception.message)
+        coVerify { authDataSource.loginUser(loginRequest) }
     }
 
-
     @Test
-    fun `should return user info when insertUser with username containing special characters`() =
-        runTest {
-            // Given
-            val username = "amr@123"
-            val userRole = UserRole.ADMIN
-            val request = CreateUserRequest(
-                username = username,
-                password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
-                userRole = userRole
-            )
-            val expectedUser = request.toUser()
-            coEvery { authDataSource.insertUser(request) } returns expectedUser
+    fun `loginUser with non-existent username throws UserNotFoundException`() = runTest {
+        val loginRequest = LoginRequest(username = "nonexistent", password = passwordHash)
+        coEvery { authDataSource.loginUser(loginRequest) } throws UserNotFoundException()
 
-            // When
-            val result = authRepository.insertUser(request)
-
-            // Then
-            Assertions.assertEquals(expectedUser.userId, result.userId)
-            Assertions.assertEquals(expectedUser.username, result.username)
-            Assertions.assertEquals(expectedUser.userRole, result.userRole)
+        assertThrows<UserNotFoundException> {
+            authRepository.loginUser(loginRequest)
         }
-    // endregion
-
-    // region loginUser
-    @Test
-    fun `should return user info when login with valid user`() = runTest {
-        // Given
-        val username = "amr"
-        val userRole = UserRole.ADMIN
-
-        val existingUser = CreateUserRequest(
-            username = username,
-            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
-            userRole = userRole
-        )
-        val resultUser = existingUser.toUser()
-        coEvery { authDataSource.insertUser(existingUser) } returns resultUser
-        // Given
-        val request = LoginRequest(
-            username = username,
-            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
-        )
-        coEvery { authDataSource.loginUser(request) } returns resultUser
-
-        // When
-        val result = authRepository.loginUser(request)
-
-        // Then
-        Assertions.assertEquals(resultUser, result)
+        coVerify { authDataSource.loginUser(loginRequest) }
     }
 
     @Test
-    fun `should throw exception when login with incorrect password`() = runTest {
-        // Given
-        val username = "amr"
-        val userRole = UserRole.ADMIN
-
-        val existingUser = CreateUserRequest(
-            username = username,
-            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
-            userRole = userRole
-        )
-        val resultUser = existingUser.toUser()
-        coEvery { authDataSource.insertUser(existingUser) } returns resultUser
-        // Given
-        val request = LoginRequest(
-            username = username,
-            password = "5f4dcc3b5aa765d61d8327deb882cf98",
-        )
-        coEvery { authDataSource.loginUser(request) } throws UserNotFoundException()
-
-        // When
-        assertThrows<UserNotFoundException> { authRepository.loginUser(request) }
-
-        // Then
-    }
-
-
-    @Test
-    fun `should throw exception when loginUser with username does not exist`() = runTest {
-// Given
-        val username = "amr"
-        val userRole = UserRole.ADMIN
-
-        val existingUser = CreateUserRequest(
-            username = username,
-            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
-            userRole = userRole
-        )
-        val resultUser = existingUser.toUser()
-        coEvery { authDataSource.insertUser(existingUser) } returns resultUser
-        // Given
-        val request = LoginRequest(
-            username = "mohamed",
-            password = "5f4dcc3b5aa765d61d8327deb882cf98",
-        )
-        coEvery { authDataSource.loginUser(request) } throws UserNotFoundException()
-
-        // When
-        assertThrows<UserNotFoundException> { authRepository.loginUser(request) }
-
-    }
-    // endregion
-
-    // region getAllUsers
-    @Test
-    fun `should return list when call getAllUsers of users`() = runTest {
-        // Given
+    fun `getAllUsers returns list of users`() = runTest {
         val users = listOf(
-            User(
-                userId = UUID.randomUUID(),
-                username = "amr",
-                password = "5f4dcc3b5aa765d61d8327deb882cf99",
-                userRole = UserRole.MATE
-            ),
-            User(
-                userId = UUID.randomUUID(),
-                username = "nasser",
-                password = "e99a18c428cb38d5f260853678922e03",
-                userRole = UserRole.ADMIN
-            )
+            userDto,
+            userDto.copy(userId = UUID.randomUUID(), username = "nasser", userRole = UserRole.MATE)
         )
         coEvery { authDataSource.getAllUsers() } returns users
 
-        // When
         val result = authRepository.getAllUsers()
 
-        // Then
-        Assertions.assertEquals(users, result)
+        assertEquals(users.map { it.toUser() }, result)
+        coVerify { authDataSource.getAllUsers() }
     }
-    // endregion
 
-    // region deleteUser
     @Test
-    fun `should return true when deleteUser with existing username`() = runTest {
-        // Given
-        val username = "amr"
-        val userRole = UserRole.ADMIN
-        val request = CreateUserRequest(
-            username = username,
-            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
-            userRole = userRole
-        )
-        val expectedUser = request.toUser()
+    fun `deleteUser with existing username returns true`() = runTest {
         coEvery { authDataSource.deleteUser(username) } returns true
 
-        // When
         val result = authRepository.deleteUser(username)
 
-        // Then
-        Assertions.assertTrue(result)
+        assertTrue(result)
+        coVerify { authDataSource.deleteUser(username) }
     }
 
     @Test
-    fun `should throw exception when deleteUser with non-existing username`() = runTest {
-        // Given
+    fun `deleteUser with non-existing username throws UserNotFoundException`() = runTest {
+        val nonExistentUsername = "nonexistent"
+        coEvery { authDataSource.deleteUser(nonExistentUsername) } throws UserNotFoundException()
 
-        coEvery { authDataSource.deleteUser("alaa") } throws UserNotFoundException()
-
-        // When/Then
         assertThrows<UserNotFoundException> {
-            authRepository.deleteUser("alaa")
+            authRepository.deleteUser(nonExistentUsername)
         }
-    }
-    // endregion
-
-    // region editUser
-    @Test
-    fun `should update user when editUser with existing user`() = runTest {
-        // Given
-        val username = "amr"
-        val userRole = UserRole.ADMIN
-        val request = CreateUserRequest(
-            username = username,
-            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
-            userRole = userRole
-        )
-        val expectedUser = request.toUser()
-        coEvery { authDataSource.insertUser(request) } returns expectedUser
-
-        // When
-        val result = authRepository.editUser(expectedUser.copy(userRole = UserRole.MATE))
-
-        // Then
-        coVerify { authDataSource.editUser(any()) }
+        coVerify { authDataSource.deleteUser(nonExistentUsername) }
     }
 
-
-    // region getUserByUserName
     @Test
-    fun `should return user when getUserByUserName with existing username`() = runTest {
-        // Given
-        val username = "amr"
-        val userRole = UserRole.ADMIN
-        val request = CreateUserRequest(
+    fun `editUser with existing user updates user info`() = runTest {
+        val editRequest = EditUserRequest(
             username = username,
-            password = "5f4dcc3b5aa765d61d8327deb882cf99", // MD5 hash of "password123"
-            userRole = userRole
+            password = "newHash",
+            userRole = UserRole.MATE
         )
-        val expectedUser = request.toUser()
-        coEvery { authDataSource.getUserByUserName(username) } returns expectedUser
+        coEvery { authDataSource.editUser(editRequest) } returns Unit
 
-        // When
+        authRepository.editUser(editRequest)
+
+        coVerify { authDataSource.editUser(editRequest) }
+    }
+
+    @Test
+    fun `getUserByUserName with existing username returns user`() = runTest {
+        coEvery { authDataSource.getUserByUserName(username) } returns userDto
+
         val result = authRepository.getUserByUserName(username)
 
-        // Then
-        Assertions.assertEquals(expectedUser, result)
+        assertEquals(user.userId, result?.userId)
+        assertEquals(user.username, result?.username)
+        assertEquals(user.userRole, result?.userRole)
+        coVerify { authDataSource.getUserByUserName(username) }
     }
 
     @Test
-    fun `should return null when getUserByUserName with non-existing username`() = runTest {
-        // Given
-        val username = "amr"
+    fun `getUserByUserName with non-existing username returns null`() = runTest {
+        val nonExistentUsername = "nonexistent"
+        coEvery { authDataSource.getUserByUserName(nonExistentUsername) } returns null
 
-        coEvery { authDataSource.getUserByUserName(username) } returns null
+        val result = authRepository.getUserByUserName(nonExistentUsername)
 
-        // When
-        val result = authRepository.getUserByUserName(username)
-
-        // Then
-        Assertions.assertNull(result)
+        assertNull(result)
+        coVerify { authDataSource.getUserByUserName(nonExistentUsername) }
     }
-    // endregion
 
+    @Test
+    fun `getUserById with existing ID returns user`() = runTest {
+        coEvery { authDataSource.getUserById(userId) } returns userDto
 
+        val result = authRepository.getUserById(userId)
+
+        assertEquals(user.userId, result?.userId)
+        assertEquals(user.username, result?.username)
+        assertEquals(user.userRole, result?.userRole)
+        coVerify { authDataSource.getUserById(userId) }
+    }
+
+    @Test
+    fun `getUserById with non-existing ID returns null`() = runTest {
+        val nonExistentId = UUID.randomUUID()
+        coEvery { authDataSource.getUserById(nonExistentId) } returns null
+
+        val result = authRepository.getUserById(nonExistentId)
+
+        assertNull(result)
+        coVerify { authDataSource.getUserById(nonExistentId) }
+    }
+
+    @Test
+    fun `getCurrentUser when user exists returns user`() = runTest {
+        coEvery { authDataSource.getCurrentUser() } returns userDto
+
+        val result = authRepository.getCurrentUser()
+
+        assertEquals(user.userId, result?.userId)
+        assertEquals(user.username, result?.username)
+        assertEquals(user.userRole, result?.userRole)
+        coVerify { authDataSource.getCurrentUser() }
+    }
+
+    @Test
+    fun `getCurrentUser when no user is logged in returns null`() = runTest {
+        coEvery { authDataSource.getCurrentUser() } returns null
+
+        val result = authRepository.getCurrentUser()
+
+        assertNull(result)
+        coVerify { authDataSource.getCurrentUser() }
+    }
 }

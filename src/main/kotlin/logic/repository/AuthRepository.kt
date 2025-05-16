@@ -1,8 +1,10 @@
 package org.example.logic.repository
 
-import logic.request.auth.CreateUserRequest
+import data.datasource.authentication.dto.UserDto
+import org.example.logic.request.CreateUserRequest
 import org.example.logic.entity.auth.User
-import org.example.logic.request.auth.LoginRequest
+import org.example.logic.request.EditUserRequest
+import org.example.logic.request.LoginRequest
 import java.util.*
 
 interface AuthRepository {
@@ -11,7 +13,7 @@ interface AuthRepository {
     suspend fun loginUser(request: LoginRequest): User
     suspend fun getAllUsers(): List<User>
     suspend fun deleteUser(username: String): Boolean
-    suspend fun editUser(user: User)
+    suspend fun editUser(request : EditUserRequest)
     suspend fun getUserByUserName(username: String): User?
     suspend fun getUserById(id: UUID): User?
     suspend fun getCurrentUser(): User?

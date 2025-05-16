@@ -5,7 +5,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.example.data.datasource.changelog.MongoChangeHistoryDataSource
 import org.example.data.repository.ChangeHistoryRepositoryImpl
-import org.example.logic.entity.ModificationLog
+import org.example.logic.entity.ChangeHistory
 import org.example.logic.repository.ChangeHistoryRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -13,10 +13,9 @@ import java.util.*
 import kotlin.test.assertEquals
 
 class ChangeHistoryRepositoryImplTest {
-
     private lateinit var changeHistoryDataSource: MongoChangeHistoryDataSource
     private lateinit var changeHistoryRepository: ChangeHistoryRepository
-    private val fakeChangeHistoryData = getFakeChangeHistoryData()
+    private val dummyChangeHistoryData = getDummyChangHistoryData()
 
     @BeforeEach
     fun setup() {
@@ -26,34 +25,31 @@ class ChangeHistoryRepositoryImplTest {
 
     @Test
     fun `should return change history for a valid project ID`() = runBlocking {
-
-        //given
         val projectID = UUID.fromString("11111111-1111-1111-1111-111111111111")
-        val expected = fakeChangeHistoryData.filter { it.projectID == projectID }
+        val expected = dummyChangeHistoryData.filter { it.projectID == projectID }
         coEvery { changeHistoryDataSource.getByProjectId(projectID) } returns expected
 
-        //when
         val result = changeHistoryRepository.getHistoryByProjectID(projectID)
-        //then
+
         assertEquals(expected, result)
     }
 
     @Test
     fun `should return empty list when project ID is invalid`() = runBlocking {
-        //then
         val projectId = UUID.fromString("33333333-3333-3333-3333-333333333333")
-        val expected = emptyList<ModificationLog>()
+        val expected = emptyList<ChangeHistory>()
+
         coEvery { changeHistoryDataSource.getByProjectId(projectId) } returns expected
-        //when
+
         val result = changeHistoryRepository.getHistoryByProjectID(projectId)
-        //then
+
         assertEquals(expected, result)
     }
 
     @Test
     fun `should return change history for existing task ID`() = runBlocking {
         val taskId = UUID.fromString("22222222-2222-2222-2222-222222222222")
-        val expected = fakeChangeHistoryData.filter { it.taskID == taskId }
+        val expected = dummyChangeHistoryData.filter { it.taskID == taskId }
         coEvery { changeHistoryDataSource.getByTaskId(taskId) } returns expected
 
         val result = changeHistoryRepository.getHistoryByTaskID(taskId)
@@ -63,16 +59,13 @@ class ChangeHistoryRepositoryImplTest {
 
     @Test
     fun `should return empty list for invalid task ID`() = runBlocking {
-        //given
         val taskId = UUID.fromString("33333333-3333-3333-3333-333333333333")
-        val expected = emptyList<ModificationLog>()
+        val expected = emptyList<ChangeHistory>()
 
         coEvery { changeHistoryDataSource.getByTaskId(taskId) } returns expected
 
-        //when
         val result = changeHistoryRepository.getHistoryByTaskID(taskId)
 
-        //then
         assertEquals(expected, result)
     }
 
@@ -88,14 +81,6 @@ class ChangeHistoryRepositoryImplTest {
 
     @Test
     fun `should throw exception if data source fails to add change history`() = runBlocking {
-        val badChange = ModificationLog(
-            projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
-            taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
-            authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
-            changeDate = Date(),
-            changeDescription = ""
-        )
-
         coEvery { changeHistoryDataSource.addChangeHistory(badChange) } throws RuntimeException("Database error")
 
         try {
@@ -106,18 +91,18 @@ class ChangeHistoryRepositoryImplTest {
         }
     }
 
-    //helper
-    private fun getFakeChangeHistoryData(): List<ModificationLog> {
+    private fun getDummyChangHistoryData(): List<ChangeHistory> {
+
         val fakeDate = Date(1234)
         return listOf(
-            ModificationLog(
+            ChangeHistory(
                 projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
                 taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
                 authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
                 changeDate = fakeDate,
                 changeDescription = "Changed status"
             ),
-            ModificationLog(
+            ChangeHistory(
                 projectID = UUID.fromString("44444444-4444-4444-4444-444444444444"),
                 taskID = UUID.fromString("55555555-5555-5555-5555-555555555555"),
                 authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
@@ -126,4 +111,11 @@ class ChangeHistoryRepositoryImplTest {
             )
         )
     }
+    val badChange = ChangeHistory(
+        projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
+        taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
+        authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
+        changeDate = Date(),
+        changeDescription = ""
+    )
 }

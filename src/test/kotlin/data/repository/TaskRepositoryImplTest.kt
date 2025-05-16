@@ -6,6 +6,8 @@ import org.example.data.datasource.task.TaskDataSource
 import org.example.data.repository.TaskRepositoryImpl
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
+import org.example.logic.request.TaskDeletionRequest
+import org.example.logic.request.TaskEditRequest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -13,7 +15,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.assertTrue
 
 class TaskRepositoryImplTest {
-
     private lateinit var taskDataSource: TaskDataSource
     private lateinit var taskRepository: TaskRepositoryImpl
 
@@ -49,20 +50,20 @@ class TaskRepositoryImplTest {
 
     @Test
     fun `should edit task successfully when calling editTask`() = runTest {
-        coEvery { taskDataSource.editTask(taskId, "new title", "new description", 20L) } just Runs
+        coEvery { taskDataSource.editTask(TaskEditRequest(taskId, "new title", "new description", 20L)) } just Runs
 
-        taskRepository.editTask(taskId, "new title", "new description", 20L)
+        taskRepository.editTask(TaskEditRequest(taskId, "new title", "new description", 20L))
 
-        coVerify { taskDataSource.editTask(taskId, "new title", "new description", 20L) }
+        coVerify { taskDataSource.editTask(TaskEditRequest(taskId, "new title", "new description", 20L)) }
     }
 
     @Test
     fun `should delete task successfully when calling deleteTask`() = runTest {
-        coEvery { taskDataSource.deleteTask(projectId, taskId) } just Runs
+        coEvery { taskDataSource.deleteTask(TaskDeletionRequest(projectId, taskId)) } just Runs
 
-        taskRepository.deleteTask(projectId, taskId)
+        taskRepository.deleteTask(TaskDeletionRequest(projectId, taskId))
 
-        coVerify { taskDataSource.deleteTask(projectId, taskId) }
+        coVerify { taskDataSource.deleteTask(TaskDeletionRequest(projectId, taskId)) }
     }
 
     @Test

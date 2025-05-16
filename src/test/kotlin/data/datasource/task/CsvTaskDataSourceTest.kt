@@ -9,6 +9,8 @@ import org.example.data.utils.CsvFileWriter
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.Task
 import org.example.logic.exception.TaskNotFoundException
+import org.example.logic.request.TaskDeletionRequest
+import org.example.logic.request.TaskEditRequest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import java.io.File
@@ -17,7 +19,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class CsvTaskDataSourceTest {
-
     private lateinit var csvTaskDataSource: CsvTaskDataSource
     private lateinit var csvFileReader: CsvFileReader
     private lateinit var csvFileWriter: CsvFileWriter
@@ -54,7 +55,7 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
         coEvery { csvFileWriter.writeCsv(tasksFile, any()) } just Runs
 
-        csvTaskDataSource.editTask(firstTaskId, "new title", "new description", 19)
+        csvTaskDataSource.editTask(TaskEditRequest(firstTaskId, "new title", "new description", 19))
 
         coVerify { csvFileReader.readCsv(tasksFile) }
         coVerify { csvFileWriter.writeCsv(tasksFile, any()) }
@@ -66,7 +67,7 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
 
         assertThrows<TaskNotFoundException> {
-            csvTaskDataSource.editTask(thirdTaskId, "title", "description", 19)
+            csvTaskDataSource.editTask(TaskEditRequest(thirdTaskId, "title", "description", 19))
         }
         coVerify { csvFileReader.readCsv(tasksFile) }
     }
@@ -135,7 +136,7 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
 
         assertThrows<TaskNotFoundException> {
-            csvTaskDataSource.deleteTask(notFoundProjectId, thirdTaskId)
+            csvTaskDataSource.deleteTask(TaskDeletionRequest(notFoundProjectId, thirdTaskId))
         }
         coVerify { csvFileReader.readCsv(tasksFile) }
     }
@@ -147,7 +148,7 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
         coEvery { csvFileWriter.writeCsv(tasksFile, any()) } just Runs
 
-        csvTaskDataSource.deleteTask(firstProjectId, firstTaskId)
+        csvTaskDataSource.deleteTask(TaskDeletionRequest(firstProjectId, firstTaskId))
 
         val remainTasks = tasksData.filterNot { it.projectId == firstProjectId && it.taskId == firstTaskId }
         remainTasks.forEach {
@@ -161,7 +162,7 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
 
         assertThrows<TaskNotFoundException> {
-            csvTaskDataSource.deleteTask(firstProjectId, thirdTaskId)
+            csvTaskDataSource.deleteTask(TaskDeletionRequest(firstProjectId, thirdTaskId))
         }
         coVerify { csvFileReader.readCsv(tasksFile) }
     }
@@ -173,7 +174,7 @@ class CsvTaskDataSourceTest {
         coEvery { csvFileReader.readCsv(tasksFile) } returns csvData
 
         assertThrows<TaskNotFoundException> {
-            csvTaskDataSource.deleteTask(notFoundProjectId, firstTaskId)
+            csvTaskDataSource.deleteTask(TaskDeletionRequest(notFoundProjectId, firstTaskId))
         }
         coVerify { csvFileReader.readCsv(tasksFile) }
     }

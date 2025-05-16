@@ -10,7 +10,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class FileValidatorTest {
-
     private lateinit var validator: FileValidator
 
     @TempDir

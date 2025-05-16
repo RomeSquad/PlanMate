@@ -42,5 +42,4 @@ class GetAllProjectStatesUseCaseTest {
 
         assertEquals("todo", result[0].stateName)
     }
-
 }
