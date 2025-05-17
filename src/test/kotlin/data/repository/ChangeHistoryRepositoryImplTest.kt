@@ -5,7 +5,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.example.data.datasource.changelog.MongoChangeHistoryDataSource
 import org.example.data.repository.ChangeHistoryRepositoryImpl
-import org.example.logic.entity.ChangeHistory
+import org.example.logic.entity.ModificationLog
 import org.example.logic.repository.ChangeHistoryRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -37,7 +37,7 @@ class ChangeHistoryRepositoryImplTest {
     @Test
     fun `should return empty list when project ID is invalid`() = runBlocking {
         val projectId = UUID.fromString("33333333-3333-3333-3333-333333333333")
-        val expected = emptyList<ChangeHistory>()
+        val expected = emptyList<ModificationLog>()
 
         coEvery { changeHistoryDataSource.getByProjectId(projectId) } returns expected
 
@@ -60,7 +60,7 @@ class ChangeHistoryRepositoryImplTest {
     @Test
     fun `should return empty list for invalid task ID`() = runBlocking {
         val taskId = UUID.fromString("33333333-3333-3333-3333-333333333333")
-        val expected = emptyList<ChangeHistory>()
+        val expected = emptyList<ModificationLog>()
 
         coEvery { changeHistoryDataSource.getByTaskId(taskId) } returns expected
 
@@ -91,18 +91,18 @@ class ChangeHistoryRepositoryImplTest {
         }
     }
 
-    private fun getDummyChangHistoryData(): List<ChangeHistory> {
+    private fun getDummyChangHistoryData(): List<ModificationLog> {
 
         val fakeDate = Date(1234)
         return listOf(
-            ChangeHistory(
+            ModificationLog(
                 projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
                 taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
                 authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
                 changeDate = fakeDate,
                 changeDescription = "Changed status"
             ),
-            ChangeHistory(
+            ModificationLog(
                 projectID = UUID.fromString("44444444-4444-4444-4444-444444444444"),
                 taskID = UUID.fromString("55555555-5555-5555-5555-555555555555"),
                 authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),
@@ -111,7 +111,7 @@ class ChangeHistoryRepositoryImplTest {
             )
         )
     }
-    val badChange = ChangeHistory(
+    val badChange = ModificationLog(
         projectID = UUID.fromString("11111111-1111-1111-1111-111111111111"),
         taskID = UUID.fromString("22222222-2222-2222-2222-222222222222"),
         authorID = UUID.fromString("33333333-3333-3333-3333-333333333333"),

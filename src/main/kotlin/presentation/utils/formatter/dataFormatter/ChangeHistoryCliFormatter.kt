@@ -1,8 +1,8 @@
 package org.example.presentation.utils.formatter.dataFormatter
 
-import org.example.logic.entity.ChangeHistory
+import org.example.logic.entity.ModificationLog
 
-fun ChangeHistory.format(): String {
+fun ModificationLog.format(): String {
     return String.format(
         "%-12s %-10s %-10s %-20s %-30s",
         "Change: $changeDescription",

@@ -3,24 +3,24 @@ package org.example.data.datasource.changelog
 import com.mongodb.client.model.Filters
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.coroutines.flow.toList
-import org.example.logic.entity.ChangeHistory
+import org.example.logic.entity.ModificationLog
 import java.util.*
 
 class MongoChangeHistoryDataSource(
-    private val mongo: MongoCollection<ChangeHistory>
+    private val mongo: MongoCollection<ModificationLog>
 ) : ChangeHistoryDataSource {
 
-    override suspend fun addChangeHistory(changeHistory: ChangeHistory): ChangeHistory {
+    override suspend fun addChangeHistory(changeHistory: ModificationLog): ModificationLog {
         return mongo.insertOne(changeHistory).let { changeHistory }
     }
 
-    override suspend fun getByProjectId(projectId: UUID): List<ChangeHistory> {
-        val filter = Filters.eq(ChangeHistory::projectID.name, projectId)
+    override suspend fun getByProjectId(projectId: UUID): List<ModificationLog> {
+        val filter = Filters.eq(ModificationLog::projectID.name, projectId)
         return mongo.find(filter).toList()
     }
 
-    override suspend fun getByTaskId(taskId: UUID): List<ChangeHistory> {
-        val filter = Filters.eq(ChangeHistory::taskID.name, taskId)
+    override suspend fun getByTaskId(taskId: UUID): List<ModificationLog> {
+        val filter = Filters.eq(ModificationLog::taskID.name, taskId)
         return mongo.find(filter).toList()
     }
 }
