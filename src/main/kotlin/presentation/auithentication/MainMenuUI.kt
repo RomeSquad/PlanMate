@@ -30,7 +30,7 @@ class MainMenuUI(
                 return
             }
 
-            showHeader(ui, currentUser.username, currentUser.userRole)
+            showHeader(ui)
             val options = getMenuOptions(currentUser.userRole)
             showMenu(ui, options)
 
@@ -43,10 +43,8 @@ class MainMenuUI(
         }
     }
 
-    private fun showHeader(ui: UiDisplayer, username: String, role: UserRole) {
+    private fun showHeader(ui: UiDisplayer) {
         ui.displayMessage(description)
-        ui.displayMessage("🔹 Welcome, ${username}!")
-        ui.displayMessage("🔹 Your role: ${role}")
     }
 
     private fun getMenuOptions(role: UserRole): List<String> {

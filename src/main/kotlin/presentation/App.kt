@@ -13,17 +13,38 @@ class App(
     private val cliMenu: CLIMenu
 ) {
     suspend fun start() {
-        menu.setActions(listOf(cliMenu))
+        initializeMenu()
         try {
-            cliMenu.execute(uiDisplayer, inputReader)
-        } catch (e: IllegalArgumentException) {
-            uiDisplayer.displayMessage("❌ Invalid input provided ${e.message}")
-            uiDisplayer.displayMessage("🔄 Press Enter to continue...")
-            inputReader.readString("")
-        } catch (e: Exception) {
-            uiDisplayer.displayMessage("❌ Error: ${e.message ?: "Unexpected error"}")
-            uiDisplayer.displayMessage("🔄 Press Enter to continue...")
-            inputReader.readString("")
+            runMainLoop()
+        } catch (e: ExitApplicationException) {
+            uiDisplayer.displayMessage("✅ Application closed ${e.message}.")
         }
     }
+
+    private fun initializeMenu() {
+        menu.setActions(listOf(cliMenu))
+    }
+
+    private suspend fun runMainLoop() {
+        while (true) {
+            try {
+                cliMenu.execute(uiDisplayer, inputReader)
+                break // Exit loop if execution is successful
+            } catch (e: ExitApplicationException) {
+                throw e // Propagate to start()
+            } catch (e: Exception) {
+                handleError(e)
+            }
+        }
+    }
+
+    private fun handleError(e: Exception) {
+        val message = when (e) {
+            is IllegalArgumentException -> "❌ Invalid input: ${e.message ?: "Invalid data provided"}"
+            else -> "❌ Error: ${e.message ?: "Unexpected error occurred"}"
+        }
+        uiDisplayer.displayMessage(message)
+    }
+
+    private class ExitApplicationException : Exception("User requested application exit")
 }
