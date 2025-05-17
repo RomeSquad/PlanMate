@@ -5,6 +5,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
+import org.example.logic.exception.InvalidCredentialsException
 import org.example.logic.exception.PasswordLengthException
 import org.example.logic.exception.UserNameOrPasswordEmptyException
 import org.example.logic.repository.AuthRepository
@@ -83,4 +84,19 @@ class LoginUseCaseTest {
             authRepository.loginUser(request)
         }
     }
+    @Test
+    fun `should throw InvalidCredentialsException when repository throws generic exception`() = runTest {
+        val username = "amr"
+        val password = "password"
+        val request = LoginRequest(
+            username = username,
+            password = password
+        )
+        coEvery { authRepository.loginUser(request) } throws Exception("generic")
+
+        assertThrows<InvalidCredentialsException> {
+            loginUseCase.login(username, password)
+        }
+    }
+
 }
