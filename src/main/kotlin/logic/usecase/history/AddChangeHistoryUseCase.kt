@@ -1,6 +1,6 @@
 package org.example.logic.usecase.history
 
-import org.example.logic.entity.ChangeHistory
+import org.example.logic.entity.ModificationLog
 import org.example.logic.repository.ChangeHistoryRepository
 import java.util.*
 
@@ -12,9 +12,9 @@ class AddChangeHistoryUseCase(private val repository: ChangeHistoryRepository) {
         authorId: UUID,
         changeDate: Date,
         changeDescription: String
-    ): ChangeHistory {
+    ): ModificationLog {
         try {
-            val changeHistory = ChangeHistory(
+            val changeHistory = ModificationLog(
                 projectID = projectId,
                 taskID = taskId,
                 authorID = authorId,
