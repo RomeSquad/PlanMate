@@ -11,4 +11,10 @@ class UserCredentialsValidatorImpl : UserCredentialsValidator {
     override fun validatePasswordStrength(password: String) {
         if (password.length <= 6) throw PasswordLengthException()
     }
+
+    override fun validateAll(username: String, password: String) {
+        validateCredentialsNotEmpty(username, password)
+        validatePasswordStrength(password)
+    }
+
 }

@@ -1,6 +1,6 @@
 package org.example.presentation.utils.formatter.dataFormatter
 
-import org.example.logic.entity.ChangeHistory
+import org.example.logic.entity.ModificationLog
 import org.example.logic.entity.Project
 import org.example.presentation.utils.formatter.CliFormatter
 
@@ -15,7 +15,7 @@ fun Project.format(): String {
     )
 }
 
-fun changeHistoryFormat(project: Project, changeHistory: List<ChangeHistory>): String {
+fun changeHistoryFormat(project: Project, changeHistory: List<ModificationLog>): String {
     val cliFormatter = CliFormatter()
     return String.format(
         "%-10s | %-20s | %-20s \n%-30s \n",

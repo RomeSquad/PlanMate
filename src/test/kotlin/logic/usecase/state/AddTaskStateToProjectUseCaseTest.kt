@@ -4,7 +4,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.example.logic.entity.ChangeHistory
+import org.example.logic.entity.ModificationLog
 import org.example.logic.entity.ProjectState
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
@@ -56,7 +56,7 @@ class AddTaskStateToProjectUseCaseTest {
             authRepository
         )
         coEvery { projectStatesRepository.addProjectState(any()) } returns Unit
-        coEvery { changeHistoryRepository.addChangeHistory(any()) } returns ChangeHistory(
+        coEvery { changeHistoryRepository.addChangeHistory(any()) } returns ModificationLog(
             projectID = projectId,
             taskID = projectId,
             authorID = userId,
@@ -131,7 +131,7 @@ class AddTaskStateToProjectUseCaseTest {
             .getDeclaredMethod("createAudit", ProjectState::class.java, User::class.java)
         createAuditMethod.isAccessible = true
 
-        val audit = createAuditMethod.invoke(useCase, validState, adminUser) as ChangeHistory
+        val audit = createAuditMethod.invoke(useCase, validState, adminUser) as ModificationLog
 
         assertEquals(projectId, audit.projectID)
         assertEquals(projectId, audit.taskID)

@@ -24,6 +24,7 @@ val presentationModule = module {
     single<InputReader> { ConsoleInputReader() }
     single<Menu> { Menu() }
 
+
     single {
         LoginManagementUI(
             get(),
@@ -46,10 +47,12 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get()
         )
     }
     single {
         MateManagementUI(
+            get(),
             get()
         )
     }
@@ -85,6 +88,7 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get()
         )
     }
     single {
@@ -124,6 +128,7 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get()
         )
     }
     single {
@@ -167,6 +172,7 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get()
         )
     }
     single {
@@ -237,5 +243,28 @@ val presentationModule = module {
             get(),
             get(),
         )
+    }
+    single { AddStateToProjectUI(
+        get(),
+        get(),
+        get()
+    )
+    }
+    single { AddTaskStateToProjectUI(get(),
+        get()
+    )
+    }
+    single { EditProjectStateUI(get()
+        , get()
+    )
+    }
+    single { DeleteStateToProjectUI(get(),
+        get(),
+        get()
+    )
+    }
+    single { GetAllStatesPerProjectUI(get(),
+        get()
+    )
     }
 }
