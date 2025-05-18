@@ -28,8 +28,7 @@ val presentationModule = module {
         LoginManagementUI(
             get(),
             get(),
-            get(),
-        )
+            )
     }
     single {
         MainMenuUI(
