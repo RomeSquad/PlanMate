@@ -40,7 +40,7 @@ class MateManagementUI(
             try {
                 ui.displayMessage(description)
                 displayMenuOptions(ui, options)
-                val choice = readUserChoice(ui, inputReader, options)
+                val choice = readUserChoice(inputReader, options)
                 if (isExitOption(choice)) return
                 executeMenuAction(ui, inputReader, options, choice)
             } catch (e: IllegalArgumentException) {
@@ -57,7 +57,7 @@ class MateManagementUI(
         ui.displayMessage(menuText)
     }
 
-    private fun readUserChoice(ui: UiDisplayer, inputReader: InputReader, options: List<MenuOption>): Int {
+    private fun readUserChoice(inputReader: InputReader, options: List<MenuOption>): Int {
         val choice = inputReader.readString("Choice: ").trim().toIntOrNull()
         if (choice == null || choice !in options.map { it.id }) {
             throw IllegalArgumentException("Please select a number between 1 and ${options.size}")
