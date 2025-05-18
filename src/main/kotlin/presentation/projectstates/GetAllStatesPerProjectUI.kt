@@ -1,5 +1,6 @@
 package org.example.presentation.projectstates
 
+import org.example.logic.entity.Project
 import org.example.logic.usecase.project.GetAllProjectsUseCase
 import org.example.logic.usecase.state.GetAllProjectStatesUseCase
 import org.example.presentation.utils.io.InputReader
@@ -9,48 +10,74 @@ import org.example.presentation.utils.menus.MenuAction
 
 class GetAllStatesPerProjectUI(
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
-    private val getAllProjectStatesUseCase: GetAllProjectStatesUseCase,
+    private val getAllProjectStatesUseCase: GetAllProjectStatesUseCase
 ) : MenuAction {
-    override val description: String = """
+
+    override val description: String = buildStatesPerProjectDescription()
+
+    override val menu: Menu = Menu()
+
+    override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
+        runCatching {
+            ui.displayMessage(description)
+            val projects = fetchProjects()
+            val selectedProject = selectProject(ui, inputReader, projects)
+            displayProjectStates(ui, selectedProject)
+
+            ui.displayMessage("🔄 Press Enter to continue...")
+            inputReader.readString("")
+        }.onFailure { exception ->
+            handleError(ui, exception)
+        }
+    }
+
+    private fun buildStatesPerProjectDescription(): String = """
         ╔══════════════════════════╗
         ║ States per Project Menu  ║
         ╚══════════════════════════╝
-        """.trimIndent()
-    override val menu: Menu = Menu()
-    override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
-        try {
-            ui.displayMessage(description)
-            ui.displayMessage("🔹 Available Projects:")
-            val projects = getAllProjectsUseCase.getAllProjects()
-            if (projects.isEmpty()) {
-                ui.displayMessage("❌ No projects available!")
-                return
-            }
-            projects.forEachIndexed { index, project ->
-                ui.displayMessage("📂 ${index + 1}. ${project.name} | 🆔 ID: ${project.projectId}")
-            }
-            val projectIndex = inputReader.readIntOrNull(
-                "🔹 Choose a project to view its states:", 1..projects.size
-            )?.minus(1)
-                ?: throw IllegalArgumentException("Invalid project selection.")
-            val selectedProject = projects[projectIndex]
-            val states = getAllProjectStatesUseCase.execute(
-                state = selectedProject.state
-            )
-            if (states.isEmpty()) {
-                ui.displayMessage("⚠️ No states found for project '${selectedProject.name}'.")
-            } else {
-                ui.displayMessage("📌 States in Project: ${selectedProject.name}")
-                states.forEach { state ->
-                    ui.displayMessage("✅ ${state.stateName} | 🏷️ ID: ${state.projectId}")
-                }
-            }
-            ui.displayMessage("🔄 Press Enter to continue...")
-            inputReader.readString("")
-        } catch (e: IllegalArgumentException) {
-            ui.displayMessage("❌ Error: ${e.message}")
-        } catch (e: Exception) {
-            ui.displayMessage("❌ An unexpected error occurred: ${e.message}")
+    """.trimIndent()
+
+    private suspend fun fetchProjects(): List<Project> {
+        val projects = getAllProjectsUseCase.getAllProjects()
+        if (projects.isEmpty()) {
+            throw IllegalStateException("No projects available to view states!")
         }
+        return projects
+    }
+
+    private fun selectProject(ui: UiDisplayer, inputReader: InputReader, projects: List<Project>): Project {
+        ui.displayMessage("👥 Available Projects:")
+        projects.forEachIndexed { index, project ->
+            ui.displayMessage("📌 ${index + 1}. ${project.name} (ID: ${project.projectId})")
+        }
+
+        ui.displayMessage("🔹 Select a project to view its states (1-${projects.size}):")
+        val selectedIndex = inputReader.readString("Choice: ").trim().toIntOrNull()
+        if (selectedIndex == null || selectedIndex < 1 || selectedIndex > projects.size) {
+            throw IllegalArgumentException("Invalid selection. Please select a valid project number.")
+        }
+        return projects[selectedIndex - 1]
+    }
+
+    private suspend fun displayProjectStates(ui: UiDisplayer, project: Project) {
+        ui.displayMessage("🔹 Fetching states for project '${project.name}'...")
+        val states = getAllProjectStatesUseCase.execute(project.state)
+        if (states.isEmpty()) {
+            ui.displayMessage("⚠️ No states found for project '${project.name}'.")
+        } else {
+            ui.displayMessage("📌 States in Project: ${project.name}")
+            states.forEachIndexed { index, state ->
+                ui.displayMessage("✅ ${index + 1}. ${state.stateName} (ID: ${state.projectId})")
+            }
+        }
+    }
+
+    private fun handleError(ui: UiDisplayer, exception: Throwable) {
+        val message = when (exception) {
+            is IllegalArgumentException -> "❌ Error: ${exception.message}"
+            is IllegalStateException -> "❌ Error: ${exception.message}"
+            else -> "❌ An unexpected error occurred: ${exception.message ?: "Failed to retrieve project states"}"
+        }
+        ui.displayMessage(message)
     }
 }

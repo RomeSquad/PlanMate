@@ -136,7 +136,8 @@ val presentationModule = module {
     single {
         AddTaskStateToProjectUI(
             get(),
-            get()
+            get(),
+            get(),
         )
     }
     single {
