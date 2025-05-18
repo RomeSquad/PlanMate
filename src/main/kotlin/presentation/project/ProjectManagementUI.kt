@@ -24,7 +24,6 @@ class ProjectManagementUI(
         ╚══════════════════════════╝
         """.trimIndent()
     override val menu: Menu = Menu()
-
     private val options = listOf(
         "➕ 1. Create New Project",
         "🗑️ 2. Delete Project",
@@ -39,8 +38,7 @@ class ProjectManagementUI(
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
         while (true) {
             displayMenu(ui)
-            val choice = collectUserChoice(inputReader)
-
+            val choice = collectUserChoice(ui, inputReader)
             if (!handleChoice(ui, inputReader, choice)) {
                 return
             }
@@ -50,11 +48,15 @@ class ProjectManagementUI(
     private fun displayMenu(ui: UiDisplayer) {
         ui.displayMessage(description)
         ui.displayMessage(options.joinToString("\n"))
-        ui.displayMessage("🔹 Choose an option (1-7):")
+        ui.displayMessage("🔹 Choose an option (1-8):")
     }
 
-    private fun collectUserChoice(inputReader: InputReader): Int? {
-        return inputReader.readString("Choice: ").trim().toIntOrNull()
+    private fun collectUserChoice(ui: UiDisplayer, inputReader: InputReader): Int? {
+        return runCatching {
+            inputReader.readString("Choice: ").trim().toInt()
+        }.onFailure {
+            ui.displayMessage("❌ Invalid input. Please enter a number between 1 and 8.")
+        }.getOrNull()
     }
 
     private suspend fun handleChoice(ui: UiDisplayer, inputReader: InputReader, choice: Int?): Boolean {
@@ -67,18 +69,9 @@ class ProjectManagementUI(
             6 -> taskManagementUi.execute(ui, inputReader)
             7 -> projectStateManagementUI.execute(ui, inputReader)
             8 -> {
-                try {
-                    ui.displayMessage("🔙 Returning to Main Menu...")
-                    return false
-                } catch (
-                    e: Exception
-                ) {
-                    ui.displayMessage("❌ An unexpected error occurred: ${e.message ?: "Failed to return to main menu"}")
-                }
-
-
+                ui.displayMessage("🔙 Returning to Main Menu...")
+                return false
             }
-
             else -> ui.displayMessage("❌ Invalid choice. Please select a number between 1 and 8.")
         }
         return true
