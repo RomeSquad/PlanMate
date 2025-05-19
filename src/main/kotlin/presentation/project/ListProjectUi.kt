@@ -20,36 +20,46 @@ class ListProjectUi(
     override val menu: Menu = Menu()
 
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
-        try {
+        runCatching {
             ui.displayMessage(description)
-            ui.displayMessage("🔄 Fetching all projects...")
-            val projects = listProjectsUseCase.getAllProjects()
+            val projects = fetchProjects(ui)
             displayProjects(ui, projects)
-        } catch (e: Exception) {
-            ui.displayMessage("❌ An unexpected error occurred: ${e.message ?: "Failed to retrieve projects"}")
-        } finally {
+            // Prompt to continue only on success
             ui.displayMessage("🔄 Press Enter to continue...")
             inputReader.readString("")
+        }.onFailure { exception ->
+            handleError(ui, exception)
         }
+    }
+
+    private suspend fun fetchProjects(ui: UiDisplayer): List<Project> {
+        ui.displayMessage("🔄 Fetching all projects...")
+        return listProjectsUseCase.getAllProjects()
     }
 
     private fun displayProjects(ui: UiDisplayer, projects: List<Project>) {
         if (projects.isEmpty()) {
             ui.displayMessage("❌ No projects found.")
-        } else {
-            ui.displayMessage("✅ Projects:")
-            val formatter = CliFormatter()
-            projects.forEach { project ->
-                ui.displayMessage(
-                    formatter.rectangleLayout(
-                        " Project Name: ${project.name}\n" +
-                                "Project Description: ${project.description}\n" +
-                                "Project State: ${project.state.stateName}",
-                        width = 50,
-                        height = 3
-                    )
-                )
-            }
+            return
         }
+        ui.displayMessage("✅ Projects:")
+        val formatter = CliFormatter()
+        projects.forEach { project ->
+            ui.displayMessage(
+                formatter.rectangleLayout(
+                    """
+                    Project Name: ${project.name}
+                    Project Description: ${project.description}
+                    Project State: ${project.state.stateName}
+                    """.trimIndent(),
+                    width = 50,
+                    height = 3
+                )
+            )
+        }
+    }
+
+    private fun handleError(ui: UiDisplayer, exception: Throwable) {
+        ui.displayMessage("❌ An unexpected error occurred: ${exception.message ?: "Failed to retrieve projects"}")
     }
 }

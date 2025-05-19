@@ -24,59 +24,93 @@ class MainMenuUI(
 
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
         while (true) {
-            ui.displayMessage(description)
             val currentUser = getCurrentUser.getCurrentUser()
             if (currentUser == null) {
                 ui.displayMessage("❌ User not logged in.")
                 return
             }
-            ui.displayMessage("🔹 Welcome, ${currentUser.username}!")
-            ui.displayMessage("🔹 Your role: ${currentUser.userRole}")
-            val options = if (
-                currentUser.userRole == UserRole.ADMIN
-            ) mutableListOf(
-                "👑 1. Admin Management",
-                "📋 2. Mate Management",
-                "🚪 3. Logout"
-            ) else mutableListOf(
-                "📋 1. Mate Management",
-                "🚪 2. Logout"
-            )
-            ui.displayMessage("🔹 Please choose an option:")
-            ui.displayMessage(options.joinToString("\n"))
-            ui.displayMessage("🔹 Choose an option (1-${options.size}):")
-            ui.displayMessage("🔹 Enter your choice:")
-            val choice = inputReader.readString("Choice: ").trim().toIntOrNull()
 
-            when (choice) {
+            showHeader(ui)
+            val options = getMenuOptions(currentUser.userRole)
+            showMenu(ui, options)
 
-                1 -> if (
-                    currentUser.userRole == UserRole.ADMIN
-                ) {
+            val choice = readUserChoice(inputReader)
+            if (!handleChoice(choice, currentUser.userRole, ui, inputReader)) {
+                return // Exit when logout is selected
+            }
+
+            pause(ui, inputReader)
+        }
+    }
+
+    private fun showHeader(ui: UiDisplayer) {
+        ui.displayMessage(description)
+    }
+
+    private fun getMenuOptions(role: UserRole): List<String> {
+        return if (role == UserRole.ADMIN) {
+            listOf("👑 1. Admin Management", "📋 2. Mate Management", "🚪 3. Logout")
+        } else {
+            listOf("📋 1. Mate Management", "🚪 2. Logout")
+        }
+    }
+
+    private fun showMenu(ui: UiDisplayer, options: List<String>) {
+        ui.displayMessage("🔹 Please choose an option:")
+        ui.displayMessage(options.joinToString("\n"))
+        ui.displayMessage("🔹 Choose an option (1-${options.size}):")
+    }
+
+    private fun readUserChoice(inputReader: InputReader): Int? {
+        return inputReader.readString("Choice: ").trim().toIntOrNull()
+    }
+
+    private suspend fun handleChoice(
+        choice: Int?,
+        role: UserRole,
+        ui: UiDisplayer,
+        inputReader: InputReader
+    ): Boolean {
+        return when (choice) {
+            1 -> {
+                if (role == UserRole.ADMIN) {
                     adminManagementUI.execute(ui, inputReader)
                 } else {
                     mateManagementUI.execute(ui, inputReader)
                 }
+                true
+            }
 
-                2 -> if (currentUser.userRole == UserRole.ADMIN) {
+            2 -> {
+                if (role == UserRole.ADMIN) {
                     mateManagementUI.execute(ui, inputReader)
+                    true
                 } else {
                     ui.displayMessage("🔙 Logging out...")
-                    return
+                    false
                 }
+            }
 
-
-                3 -> if (currentUser.userRole == UserRole.ADMIN) {
+            3 -> {
+                if (role == UserRole.ADMIN) {
                     ui.displayMessage("🔙 Logging out...")
-                    return
+                    false
                 } else {
                     ui.displayMessage("❌ Invalid option.")
+                    true
                 }
-
-                else -> ui.displayMessage("❌ Invalid option.")
             }
-            ui.displayMessage("🔄 Press Enter to continue...")
-            inputReader.readString("")
+
+            else -> {
+                ui.displayMessage("❌ Invalid option.")
+                true
+            }
         }
     }
+
+    private fun pause(ui: UiDisplayer, inputReader: InputReader) {
+        ui.displayMessage("🔄 Press Enter to continue...")
+        inputReader.readString("")
+    }
+
 }

@@ -1,5 +1,7 @@
 package org.example.presentation.projectstates
 
+import org.example.logic.entity.Project
+import org.example.logic.entity.ProjectState
 import org.example.logic.usecase.project.GetAllProjectsUseCase
 import org.example.logic.usecase.state.DeleteProjectStatesUseCase
 import org.example.logic.usecase.state.GetAllProjectStatesUseCase
@@ -11,86 +13,109 @@ import org.example.presentation.utils.menus.MenuAction
 class DeleteStateToProjectUI(
     private val deleteProjectStatesUseCase: DeleteProjectStatesUseCase,
     private val getAllProjectsUseCase: GetAllProjectsUseCase,
-    private val getAllProjectStatesUseCase: GetAllProjectStatesUseCase,
+    private val getAllProjectStatesUseCase: GetAllProjectStatesUseCase
 ) : MenuAction {
-    override val description: String = """
+
+    override val description: String = buildDeleteStateDescription()
+
+    override val menu: Menu = Menu()
+
+    override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
+        runCatching {
+            ui.displayMessage(description)
+            val projects = fetchProjects()
+            val selectedProject = selectProject(ui, inputReader, projects)
+            val states = fetchProjectStates(selectedProject)
+            val selectedState = selectState(ui, inputReader, states)
+            if (confirmStateDeletion(ui, inputReader, selectedState, selectedProject)) {
+                deleteState(ui, selectedState)
+                ui.displayMessage("✅ State '${selectedState.stateName}' deleted successfully from project '${selectedProject.name}'! 🎉")
+            } else {
+                ui.displayMessage("🛑 State deletion canceled.")
+            }
+
+            ui.displayMessage("🔄 Press Enter to continue...")
+            inputReader.readString("")
+        }.onFailure { exception ->
+            handleError(ui, exception)
+        }
+    }
+
+    private fun buildDeleteStateDescription(): String = """
         ╔══════════════════════════╗
         ║ Delete State from Project║
         ╚══════════════════════════╝
-        """.trimIndent()
-    override val menu: Menu = Menu()
-    override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
-        try {
-            ui.displayMessage(description)
-            ui.displayMessage("🔹 Available Projects:")
-            val projects = getAllProjectsUseCase.getAllProjects()
-            if (projects.isEmpty()) {
-                ui.displayMessage("❌ No projects available to delete states from!")
-                ui.displayMessage("🔄 Press Enter to continue...")
-                inputReader.readString("")
-                return
-            }
-            projects.forEachIndexed { index, project ->
-                ui.displayMessage("📌 ${index + 1}. ${project.name} (ID: ${project.projectId})")
-            }
-            ui.displayMessage("🔹 Select a project to delete states from (1-${projects.size}):")
-            val selectedIndex = inputReader.readString("Choice: ").trim().toIntOrNull()
-            if (selectedIndex == null || selectedIndex < 1 || selectedIndex > projects.size) {
-                ui.displayMessage("❌ Invalid selection. Please select a valid project number.")
-                ui.displayMessage("🔄 Press Enter to continue...")
-                inputReader.readString("")
-                return
-            }
-            val selectedProject = projects[selectedIndex - 1]
-            ui.displayMessage("🔹 You selected: ${selectedProject.name} (ID: ${selectedProject.projectId})")
-            ui.displayMessage("🔹 Fetching all states for project '${selectedProject.name}'...")
-            val states = getAllProjectStatesUseCase.execute(selectedProject.state)
-            if (states.isEmpty()) {
-                ui.displayMessage("❌ No states available to delete for project '${selectedProject.name}'!")
-                ui.displayMessage("🔄 Press Enter to continue...")
-                inputReader.readString("")
-                return
-            }
-            ui.displayMessage("🔹 Available States:")
-            states.forEachIndexed { index, state ->
-                ui.displayMessage("📌 ${index + 1}. ${state.stateName} (ID: ${state.projectId})")
-            }
-            ui.displayMessage("🔹 Select a state to delete (1-${states.size}):")
-            val selectedStateIndex = inputReader.readString("Choice: ").trim().toIntOrNull()
-            if (selectedStateIndex == null || selectedStateIndex < 1 || selectedStateIndex > states.size) {
-                ui.displayMessage("❌ Invalid selection. Please select a valid state number.")
-                ui.displayMessage("🔄 Press Enter to continue...")
-                inputReader.readString("")
-                return
-            }
-            val selectedState = states[selectedStateIndex - 1]
-            ui.displayMessage("🔹 You selected: ${selectedState.stateName} (ID: ${selectedState.projectId})")
-            ui.displayMessage("🔹 Are you sure you want to delete this state? This action cannot be undone.")
-            ui.displayMessage("⚠️ Type 'YES' to confirm deletion:")
-            val confirmation = inputReader.readString("Confirm: ").trim()
-            if (confirmation != "YES") {
-                ui.displayMessage("🛑 State deletion canceled.")
-                ui.displayMessage("🔄 Press Enter to continue...")
-                inputReader.readString("")
-                return
-            }
-            ui.displayMessage("🔹 Deleting state '${selectedState.stateName}'...")
-            val deleted = deleteProjectStatesUseCase.execute(selectedState.projectId)
-            if (deleted) {
-                ui.displayMessage("✅ State '${selectedState.stateName}' deleted successfully!")
-            } else {
-                ui.displayMessage("❌ Failed to delete state '${selectedState.stateName}'.")
-            }
-            ui.displayMessage("🔄 Press Enter to continue...")
-            inputReader.readString("")
+    """.trimIndent()
 
-        } catch (e: IllegalArgumentException) {
-            ui.displayMessage("❌ Error: ${e.message}")
-        } catch (e: Exception) {
-            ui.displayMessage("❌ An unexpected error occurred: ${e.message ?: "Failed to delete state"}")
-        } finally {
-            ui.displayMessage("🔄 Press Enter to continue...")
-            inputReader.readString("")
+    private suspend fun fetchProjects(): List<Project> {
+        val projects = getAllProjectsUseCase.getAllProjects()
+        if (projects.isEmpty()) {
+            throw IllegalStateException("No projects available to delete states from!")
         }
+        return projects
+    }
+
+    private fun selectProject(ui: UiDisplayer, inputReader: InputReader, projects: List<Project>): Project {
+        ui.displayMessage("👥 Available Projects:")
+        projects.forEachIndexed { index, project ->
+            ui.displayMessage("📌 ${index + 1}. ${project.name} (ID: ${project.projectId})")
+        }
+
+        ui.displayMessage("🔹 Select a project to delete a state from (1-${projects.size}):")
+        val selectedIndex = inputReader.readString("Choice: ").trim().toIntOrNull()
+        if (selectedIndex == null || selectedIndex < 1 || selectedIndex > projects.size) {
+            throw IllegalArgumentException("Invalid selection. Please select a valid project number.")
+        }
+        return projects[selectedIndex - 1]
+    }
+
+    private suspend fun fetchProjectStates(project: Project): List<ProjectState> {
+        val states = getAllProjectStatesUseCase.execute(project.state)
+        if (states.isEmpty()) {
+            throw IllegalStateException("No states available to delete for project '${project.name}'!")
+        }
+        return states
+    }
+
+    private fun selectState(ui: UiDisplayer, inputReader: InputReader, states: List<ProjectState>): ProjectState {
+        ui.displayMessage("🔹 Available States:")
+        states.forEachIndexed { index, state ->
+            ui.displayMessage("📌 ${index + 1}. ${state.stateName} (ID: ${state.projectId})")
+        }
+
+        ui.displayMessage("🔹 Select a state to delete (1-${states.size}):")
+        val selectedIndex = inputReader.readString("Choice: ").trim().toIntOrNull()
+        if (selectedIndex == null || selectedIndex < 1 || selectedIndex > states.size) {
+            throw IllegalArgumentException("Invalid selection. Please select a valid state number.")
+        }
+        return states[selectedIndex - 1]
+    }
+
+    private fun confirmStateDeletion(
+        ui: UiDisplayer,
+        inputReader: InputReader,
+        state: ProjectState,
+        project: Project
+    ): Boolean {
+        ui.displayMessage("⚠️ Delete state '${state.stateName}' from project '${project.name}' (ID: ${project.projectId})? [y/n]: ")
+        val confirmation = inputReader.readString("Confirm: ").trim().lowercase()
+        return confirmation == "y" || confirmation == "yes"
+    }
+
+    private suspend fun deleteState(ui: UiDisplayer, state: ProjectState) {
+        ui.displayMessage("🔹 Deleting state '${state.stateName}'...")
+        val deleted = deleteProjectStatesUseCase.execute(state.projectId)
+        if (!deleted) {
+            throw IllegalStateException("Failed to delete state '${state.stateName}'.")
+        }
+    }
+
+    private fun handleError(ui: UiDisplayer, exception: Throwable) {
+        val message = when (exception) {
+            is IllegalArgumentException -> "❌ Error: ${exception.message}"
+            is IllegalStateException -> "❌ Error: ${exception.message}"
+            else -> "❌ An unexpected error occurred: ${exception.message ?: "Failed to delete state"}"
+        }
+        ui.displayMessage(message)
     }
 }

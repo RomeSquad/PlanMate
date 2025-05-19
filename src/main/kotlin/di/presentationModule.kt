@@ -29,8 +29,7 @@ val presentationModule = module {
         LoginManagementUI(
             get(),
             get(),
-            get(),
-        )
+            )
     }
     single {
         MainMenuUI(
@@ -48,13 +47,11 @@ val presentationModule = module {
             get(),
             get(),
             get(),
-            get()
         )
     }
     single {
         MateManagementUI(
             get(),
-            get()
         )
     }
     single {
@@ -89,7 +86,6 @@ val presentationModule = module {
             get(),
             get(),
             get(),
-            get()
         )
     }
     single {
@@ -129,7 +125,6 @@ val presentationModule = module {
             get(),
             get(),
             get(),
-            get()
         )
     }
     single {
@@ -142,7 +137,8 @@ val presentationModule = module {
     single {
         AddTaskStateToProjectUI(
             get(),
-            get()
+            get(),
+            get(),
         )
     }
     single {
@@ -172,7 +168,6 @@ val presentationModule = module {
             get(),
             get(),
             get(),
-            get()
         )
     }
     single {
@@ -250,7 +245,10 @@ val presentationModule = module {
         get()
     )
     }
-    single { AddTaskStateToProjectUI(get(),
+    single {
+        AddTaskStateToProjectUI(
+            get(),
+            get(),
         get()
     )
     }
