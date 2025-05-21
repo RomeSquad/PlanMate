@@ -1,6 +1,5 @@
 package org.example.presentation.task
 
-import org.example.logic.entity.Project
 import org.example.logic.entity.Task
 import org.example.logic.entity.auth.User
 import org.example.logic.usecase.auth.GetCurrentUserUseCase
@@ -11,8 +10,7 @@ import org.example.logic.usecase.task.EditTaskUseCase
 import org.example.logic.usecase.task.GetTasksByProjectIdUseCase
 import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
-import org.example.presentation.utils.menus.Menu
-import org.example.presentation.utils.menus.MenuAction
+import org.example.presentation.utils.menus.BaseMenuAction
 import java.util.*
 
 class EditTaskUI(
@@ -22,118 +20,82 @@ class EditTaskUI(
     private val editProjectStateUseCase: EditProjectStateUseCase,
     private val addChangeHistory: AddChangeHistoryUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase
-) : MenuAction {
+) : BaseMenuAction() {
 
-    override val description: String = """
-        ╔══════════════════════════╗
-        ║    Task Edit Menu        ║
-        ╚══════════════════════════╝
-    """.trimIndent()
-
-    override val menu: Menu = Menu()
+    override val title: String = "Task Edit Menu"
 
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
-        runCatching {
-            ui.displayMessage(description)
-            val projects = fetchProjects(ui)
-            if (projects.isEmpty()) {
+        executeWithErrorHandling(ui, inputReader) {
+            val currentUser = getCurrentUser(getCurrentUserUseCase)
+            if (currentUser == null) {
+                ui.displayMessage("❌ User not logged in.")
+                return@executeWithErrorHandling
+            }
+            val projects = fetchEntities(ui, { getAllProjectsUseCase.getAllProjects() }, "projects")
+            val selectedProject = selectEntity(
+                ui, inputReader, projects, "Projects",
+                format = { project, index -> "📌 $index. ${project.name} | ID: ${project.projectId}" }
+            ) ?: run {
                 ui.displayMessage("❌ No projects available. Please create a project first.")
-                return@runCatching
+                return@executeWithErrorHandling
             }
-            val selectedProject =
-                selectProject(ui, inputReader, projects) ?: throw IllegalArgumentException("Invalid project selection.")
-            val tasks = fetchTasks(ui, selectedProject)
-            if (tasks.isEmpty()) {
+            val tasks =
+                fetchTasksForProject(ui, selectedProject, { id -> getTasksByProjectIdUseCase.getTasksByProjectId(id) })
+            val selectedTask = selectEntity(
+                ui, inputReader, tasks, "Tasks",
+                prompt = "🔹 Select a task to edit (1-${tasks.size}): ",
+                format = { task, index -> "📋 $index. ${task.title} | Status: ${task.state.stateName} | ID: ${task.taskId}" }
+            ) ?: run {
                 ui.displayMessage("❌ No tasks available for project '${selectedProject.name}'.")
-                return@runCatching
+                return@executeWithErrorHandling
             }
-            val selectedTask =
-                selectTask(ui, inputReader, tasks) ?: throw IllegalArgumentException("Invalid task selection.")
             val taskUpdates = collectTaskUpdates(ui, inputReader, selectedTask)
-            editTask(selectedTask.taskId, taskUpdates)
-            updateProjectState(selectedProject.projectId, taskUpdates.state)
-            logTaskUpdate(selectedProject.projectId, selectedTask.taskId, getCurrentUser())
-            ui.displayMessage("✅ Task '${taskUpdates.title}' updated successfully!")
-            // Prompt to continue only on success
-            ui.displayMessage("🔄 Press Enter to continue...")
-            inputReader.readString("")
-        }.onFailure { exception ->
-            handleError(ui, exception)
+            if (taskUpdates.title == selectedTask.title && taskUpdates.description == selectedTask.description && taskUpdates.state == selectedTask.state.stateName) {
+                ui.displayMessage("🛑 No changes made to task.")
+                return@executeWithErrorHandling
+            }
+            if (!confirmAction(
+                    ui, inputReader,
+                    "⚠️ Update task '${selectedTask.title}' in project '${selectedProject.name}'? [y/n]: "
+                )
+            ) {
+                ui.displayMessage("🛑 Task update canceled.")
+                return@executeWithErrorHandling
+            }
+            editTaskUseCase.editTask(
+                taskId = selectedTask.taskId,
+                title = taskUpdates.title,
+                description = taskUpdates.description,
+                updatedAt = System.currentTimeMillis()
+            )
+            if (taskUpdates.state != selectedTask.state.stateName) {
+                editProjectStateUseCase.execute(selectedProject.projectId, taskUpdates.state)
+            }
+            logTaskUpdate(selectedProject.projectId, selectedTask.taskId, currentUser)
+            ui.displayMessage("✅ Task '${taskUpdates.title}' updated successfully! 🎉")
         }
-    }
-
-    private suspend fun fetchProjects(ui: UiDisplayer): List<Project> {
-        ui.displayMessage("🔹 Fetching all projects...")
-        return getAllProjectsUseCase.getAllProjects()
-    }
-
-    private fun selectProject(ui: UiDisplayer, inputReader: InputReader, projects: List<Project>): Project? {
-        ui.displayMessage("📂 Available Projects:")
-        projects.forEachIndexed { index, project ->
-            ui.displayMessage("📌 ${index + 1}. ${project.name} (ID: ${project.projectId})")
-        }
-        ui.displayMessage("🔹 Please enter a number to choose a project.")
-        ui.displayMessage("🔹 Select a project (1-${projects.size}): ")
-        val projectIndex = inputReader.readIntOrNull(
-            string = "",
-            ints = 1..projects.size
-        )?.minus(1)
-        return if (projectIndex != null && projectIndex in projects.indices) projects[projectIndex] else null
-    }
-
-    private suspend fun fetchTasks(ui: UiDisplayer, project: Project): List<Task> {
-        ui.displayMessage("🔹 Fetching tasks for project '${project.name}'...")
-        return getTasksByProjectIdUseCase.getTasksByProjectId(project.projectId)
-    }
-
-    private fun selectTask(ui: UiDisplayer, inputReader: InputReader, tasks: List<Task>): Task? {
-        ui.displayMessage("✅ Available Tasks:")
-        tasks.forEachIndexed { index, task ->
-            ui.displayMessage("📋 ${index + 1}. ${task.title} (ID: ${task.taskId})")
-        }
-        ui.displayMessage("🔹 Please enter a number to choose a task.")
-        ui.displayMessage("🔹 Select a task to edit (1-${tasks.size}): ")
-        val taskIndex = inputReader.readIntOrNull(
-            string = "",
-            ints = 1..tasks.size
-        )?.minus(1)
-        return if (taskIndex != null && taskIndex in tasks.indices) tasks[taskIndex] else null
     }
 
     private data class TaskUpdates(val title: String, val description: String, val state: String)
 
     private fun collectTaskUpdates(ui: UiDisplayer, inputReader: InputReader, task: Task): TaskUpdates {
-        ui.displayMessage("🔹 Enter New Task Title (leave empty to keep current):")
-        val newTitle = inputReader.readString("New Title: ").trim()
-        val title = newTitle.ifEmpty { task.title }
-
-        ui.displayMessage("🔹 Enter New Task Description (leave empty to keep current):")
-        val newDescription = inputReader.readString("New Description: ").trim()
-        val description = newDescription.ifEmpty { task.description }
-
-        ui.displayMessage("🔹 Enter New Task State (leave empty to keep current):")
-        val newState = inputReader.readString("New State: ").trim()
-        val state = newState.ifEmpty { task.state.stateName }
-
-        return TaskUpdates(title, description, state)
-    }
-
-    private suspend fun editTask(taskId: UUID, updates: TaskUpdates) {
-        editTaskUseCase.editTask(
-            taskId = taskId,
-            title = updates.title,
-            description = updates.description,
-            updatedAt = System.currentTimeMillis()
+        return TaskUpdates(
+            title = readValidatedInput(
+                ui, inputReader, "🔹 Enter New Task Title:", "New Title",
+                "Invalid title", { it.takeIf { it.isNotBlank() } ?: task.title },
+                hint = "leave empty to keep '${task.title}'"
+            ),
+            description = readValidatedInput(
+                ui, inputReader, "🔹 Enter New Task Description:", "New Description",
+                "Invalid description", { it.takeIf { it.isNotBlank() } ?: task.description },
+                hint = "leave empty to keep current"
+            ),
+            state = readValidatedInput(
+                ui, inputReader, "🔹 Enter New Task State:", "New State",
+                "Invalid state", { it.takeIf { it.isNotBlank() } ?: task.state.stateName },
+                hint = "leave empty to keep '${task.state.stateName}'"
+            )
         )
-    }
-
-    private suspend fun updateProjectState(projectId: UUID, state: String) {
-        editProjectStateUseCase.execute(projectId, state)
-    }
-
-    private suspend fun getCurrentUser(): User {
-        return getCurrentUserUseCase.getCurrentUser()
-            ?: throw IllegalStateException("No authenticated user found. Please log in.")
     }
 
     private suspend fun logTaskUpdate(projectId: UUID, taskId: UUID, user: User) {
@@ -144,13 +106,5 @@ class EditTaskUI(
             changeDate = Date(),
             changeDescription = "Task Updated"
         )
-    }
-
-    private fun handleError(ui: UiDisplayer, exception: Throwable) {
-        val message = when (exception) {
-            is IllegalArgumentException -> "❌ Error: ${exception.message}"
-            else -> "❌ An unexpected error occurred: ${exception.message ?: "Failed to edit task"}"
-        }
-        ui.displayMessage(message)
     }
 }

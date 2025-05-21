@@ -12,8 +12,7 @@ import org.example.logic.usecase.state.AddProjectStatesUseCase
 import org.example.logic.usecase.task.CreateTaskUseCase
 import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
-import org.example.presentation.utils.menus.Menu
-import org.example.presentation.utils.menus.MenuAction
+import org.example.presentation.utils.menus.BaseMenuAction
 import java.util.*
 
 
@@ -24,79 +23,64 @@ class CreateTaskUI(
     private val addProjectStatesUseCase: AddProjectStatesUseCase,
     private val addChangeHistory: AddChangeHistoryUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase
-) : MenuAction {
+) : BaseMenuAction() {
 
-    override val description: String = """
-        ╔══════════════════════════╗
-        ║    Create a New Task     ║
-        ╚══════════════════════════╝
-    """.trimIndent()
-
-    override val menu: Menu = Menu()
+    override val title: String = "Create a New Task"
 
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
-        runCatching {
-            ui.displayMessage(description)
-            val taskInfo = collectTaskInfo(ui, inputReader)
-            val projects = fetchProjects(ui)
-            if (projects.isEmpty()) {
-                ui.displayMessage("❌ No projects available. Please create a project first.")
-                return@runCatching
+        executeWithErrorHandling(ui, inputReader) {
+            val currentUser = getCurrentUser(getCurrentUserUseCase)
+            if (currentUser == null) {
+                ui.displayMessage("❌ User not logged in.")
+                return@executeWithErrorHandling
             }
-            val selectedProject =
-                selectProject(ui, inputReader, projects) ?: throw IllegalArgumentException("Invalid project selection.")
-            val taskState = createTaskState(selectedProject.projectId)
+            val projects = fetchEntities(ui, { getAllProjectsUseCase.getAllProjects() }, "projects")
+            val selectedProject = selectEntity(
+                ui, inputReader, projects, "Projects",
+                format = { project, index -> "📌 $index. ${project.name} | ID: ${project.projectId}" }
+            ) ?: run {
+                ui.displayMessage("❌ No projects available. Please create a project first.")
+                return@executeWithErrorHandling
+            }
+            val taskInfo = collectTaskInfo(ui, inputReader)
+            val taskState = createTaskState(ui, inputReader, selectedProject.projectId)
             val task = createTask(taskInfo, selectedProject.projectId, taskState)
-            if (!confirmTaskCreation(ui, inputReader, task.title, selectedProject.name)) {
+            if (!confirmAction(
+                    ui, inputReader,
+                    "⚠️ Create task '${task.title}' for project '${selectedProject.name}'? [y/n]: "
+                )
+            ) {
                 ui.displayMessage("🛑 Task creation canceled.")
-                return@runCatching
+                return@executeWithErrorHandling
             }
             saveTask(task)
             updateProjectState(selectedProject, taskState)
-            logTaskCreation(task, selectedProject.projectId, getCurrentUser())
-            ui.displayMessage("✅ Task '${task.title}' created successfully!")
-            // Prompt to continue only on success
-            ui.displayMessage("🔄 Press Enter to continue...")
-            inputReader.readString("")
-        }.onFailure { exception ->
-            handleError(ui, exception)
+            logTaskCreation(task, selectedProject.projectId, currentUser)
+            ui.displayMessage("✅ Task '${task.title}' created successfully! 🎉")
         }
-    }
-
-    private fun collectTaskInfo(ui: UiDisplayer, inputReader: InputReader): TaskInfo {
-        val title = readNonBlankInput(ui, inputReader, "🔹 Enter Task Title:", "Title", "Task title must not be blank")
-        val description = readNonBlankInput(
-            ui,
-            inputReader,
-            "🔹 Enter Task Description:",
-            "Description",
-            "Task description must not be blank"
-        )
-        return TaskInfo(title, description)
     }
 
     private data class TaskInfo(val title: String, val description: String)
 
-    private suspend fun fetchProjects(ui: UiDisplayer): List<Project> {
-        ui.displayMessage("🔹 Fetching all projects...")
-        return getAllProjectsUseCase.getAllProjects()
+    private fun collectTaskInfo(ui: UiDisplayer, inputReader: InputReader): TaskInfo {
+        return TaskInfo(
+            title = readValidatedInput(
+                ui, inputReader, "🔹 Enter Task Title:", "Title", "Task title must not be blank",
+                ::nonBlankValidator
+            ),
+            description = readValidatedInput(
+                ui, inputReader, "🔹 Enter Task Description:", "Description", "Task description must not be blank",
+                ::nonBlankValidator
+            )
+        )
     }
 
-    private fun selectProject(ui: UiDisplayer, inputReader: InputReader, projects: List<Project>): Project? {
-        ui.displayMessage("🔹 Select a Project:")
-        projects.forEachIndexed { index, project ->
-            ui.displayMessage("📂 ${index + 1}. ${project.name} (ID: ${project.projectId})")
-        }
-        ui.displayMessage("🔹 Please enter a number to choose a project.")
-        val projectIndex = inputReader.readIntOrNull(
-            string = "",
-            ints = 1..projects.size
-        )?.minus(1)
-        return if (projectIndex != null && projectIndex in projects.indices) projects[projectIndex] else null
-    }
-
-    private fun createTaskState(projectId: UUID): ProjectState {
-        return ProjectState(projectId = projectId, stateName = "TODO")
+    private fun createTaskState(ui: UiDisplayer, inputReader: InputReader, projectId: UUID): ProjectState {
+        val stateName = readValidatedInput(
+            ui, inputReader, "🔹 Enter Task State:", "State Name", "State name must not be blank",
+            { it.takeIf { it.isNotBlank() } ?: "TODO" }, hint = "leave empty for 'TODO'"
+        )
+        return ProjectState(projectId = projectId, stateName = stateName)
     }
 
     private fun createTask(taskInfo: TaskInfo, projectId: UUID, taskState: ProjectState): Task {
@@ -112,17 +96,6 @@ class CreateTaskUI(
         )
     }
 
-    private fun confirmTaskCreation(
-        ui: UiDisplayer,
-        inputReader: InputReader,
-        taskTitle: String,
-        projectName: String
-    ): Boolean {
-        ui.displayMessage("⚠️ Create task '$taskTitle' for project '$projectName'? [y/n]: ")
-        val confirmation = inputReader.readString("").trim().lowercase()
-        return confirmation == "y"
-    }
-
     private suspend fun saveTask(task: Task) {
         createTaskUseCase.createTask(task)
         addProjectStatesUseCase.execute(task.state.stateName, task.state.projectId)
@@ -133,11 +106,6 @@ class CreateTaskUI(
         editProjectUseCase.execute(updatedProject)
     }
 
-    private suspend fun getCurrentUser(): User {
-        return getCurrentUserUseCase.getCurrentUser()
-            ?: throw IllegalStateException("No authenticated user found. Please log in.")
-    }
-
     private suspend fun logTaskCreation(task: Task, projectId: UUID, user: User) {
         addChangeHistory.execute(
             projectId = projectId,
@@ -146,26 +114,5 @@ class CreateTaskUI(
             changeDate = Date(task.createdAt),
             changeDescription = "Task Created"
         )
-    }
-
-    private fun readNonBlankInput(
-        ui: UiDisplayer,
-        inputReader: InputReader,
-        prompt: String,
-        label: String,
-        errorMessage: String
-    ): String {
-        ui.displayMessage(prompt)
-        val input = inputReader.readString("$label: ").trim()
-        if (input.isBlank()) throw IllegalArgumentException(errorMessage)
-        return input
-    }
-
-    private fun handleError(ui: UiDisplayer, exception: Throwable) {
-        val message = when (exception) {
-            is IllegalArgumentException -> "❌ Error: ${exception.message}"
-            else -> "❌ An unexpected error occurred: ${exception.message ?: "Failed to create task"}"
-        }
-        ui.displayMessage(message)
     }
 }

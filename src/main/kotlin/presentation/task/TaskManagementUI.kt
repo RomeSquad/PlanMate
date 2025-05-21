@@ -1,76 +1,38 @@
 package org.example.presentation.task
 
+import org.example.logic.usecase.auth.GetCurrentUserUseCase
 import org.example.presentation.history.ShowHistoryManagementUI
 import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
-import org.example.presentation.utils.menus.Menu
-import org.example.presentation.utils.menus.MenuAction
+import org.example.presentation.utils.menus.BaseMenuAction
 
 class TaskManagementUI(
-    createTaskUi: CreateTaskUI,
-    deleteTaskUi: DeleteTaskUI,
-    editTaskUi: EditTaskUI,
+    createTaskUI: CreateTaskUI,
+    deleteTaskUI: DeleteTaskUI,
+    editTaskUI: EditTaskUI,
+    showHistoryManagementUI: ShowHistoryManagementUI,
     swimlanesView: SwimlanesView,
-    changeHistoryManagementUI: ShowHistoryManagementUI
-) : MenuAction {
+    private val getCurrentUserUseCase: GetCurrentUserUseCase
+) : BaseMenuAction() {
 
-    override val description: String = """
-        ╔══════════════════════════╗
-        ║   Task Management Menu   ║
-        ╚══════════════════════════╝
-    """.trimIndent()
-
-    override val menu: Menu = Menu()
+    override val title: String = "Task Management"
 
     private val menuOptions = listOf(
-        MenuOption(1, "➕ Create Task", createTaskUi),
-        MenuOption(2, "🗑️ Delete Task", deleteTaskUi),
-        MenuOption(3, "✏️ Edit Task", editTaskUi),
-        MenuOption(4, "📜 Show Task History", changeHistoryManagementUI),
-        MenuOption(5, "📜 View Project Tasks", swimlanesView),
-        MenuOption(6, "⬅️ Back to Main Menu", null)
+        MenuOption(1, "Create Task", menuAction = createTaskUI),
+        MenuOption(2, "Delete Task", menuAction = deleteTaskUI),
+        MenuOption(3, "Edit Task", menuAction = editTaskUI),
+        MenuOption(4, "View History", menuAction = showHistoryManagementUI),
+        MenuOption(5, "View Swimlanes", menuAction = swimlanesView),
+        MenuOption(6, "Back")
     )
 
-    private data class MenuOption(val number: Int, val description: String, val action: MenuAction?)
-
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
-        while (true) {
-            runCatching {
-                displayMenu(ui)
-                val choice = selectOption(ui, inputReader)
-                handleOption(choice, ui, inputReader)
-                if (choice == 6) return // Exit loop for "Back to Main Menu"
-            }.onFailure { exception ->
-                handleError(ui, exception)
+        executeWithErrorHandling(ui, inputReader) {
+            if (getCurrentUser(getCurrentUserUseCase) == null) {
+                ui.displayMessage("❌ User not logged in.")
+                return@executeWithErrorHandling
             }
+            runMenuLoop(ui, inputReader, menuOptions) { it.number == 6 }
         }
-    }
-
-    private fun displayMenu(ui: UiDisplayer) {
-        ui.displayMessage(description)
-        menuOptions.forEach { option ->
-            ui.displayMessage("${option.number}. ${option.description}")
-        }
-    }
-
-    private fun selectOption(ui: UiDisplayer, inputReader: InputReader): Int {
-        ui.displayMessage("🔹 Please enter a number to choose an option (1-${menuOptions.size}): ")
-        return inputReader.readIntOrNull(
-            string = "",
-            ints = 1..menuOptions.size
-        ) ?: throw IllegalArgumentException("Invalid option. Please select a number between 1 and ${menuOptions.size}.")
-    }
-
-    private suspend fun handleOption(choice: Int, ui: UiDisplayer, inputReader: InputReader) {
-        val option = menuOptions.find { it.number == choice }
-        option?.action?.execute(ui, inputReader)
-    }
-
-    private fun handleError(ui: UiDisplayer, exception: Throwable) {
-        val message = when (exception) {
-            is IllegalArgumentException -> "❌ Error: ${exception.message}"
-            else -> "❌ An unexpected error occurred: ${exception.message ?: "Failed to process option"}"
-        }
-        ui.displayMessage(message)
     }
 }
