@@ -1,86 +1,58 @@
 package org.example.presentation.user.admin
 
-import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
 import org.example.logic.usecase.auth.InsertUserUseCase
 import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
-import org.example.presentation.utils.menus.Menu
-import org.example.presentation.utils.menus.MenuAction
+import org.example.presentation.utils.menus.BaseMenuAction
 
 class CreateUserUi(
     private val insertUserUseCase: InsertUserUseCase
-) : MenuAction {
-    override val description: String = buildDescription()
-    override val menu: Menu = Menu()
+) : BaseMenuAction() {
+
+    override val title: String = "Create a New User"
 
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
-        try {
-            ui.displayMessage(description)
+        executeWithErrorHandling(ui, inputReader) {
             val userInput = collectUserInput(ui, inputReader)
-            if (!confirmUserCreation(ui, inputReader, userInput)) {
+            if (!confirmAction(
+                    ui, inputReader,
+                    "⚠️ Create user '${userInput.username}' with role '${userInput.userRole}'? [y/n]: "
+                )
+            ) {
                 ui.displayMessage("🛑 User creation canceled.")
-                return
+                return@executeWithErrorHandling
             }
-            val user = createUser(userInput)
-            ui.displayMessage("✅ User '${userInput.username}' created successfully with ID '${user.userId}'!")
-        } catch (e: IllegalArgumentException) {
-            ui.displayMessage("❌ Invalid input: ${e.message ?: "Invalid data provided"}")
-        } catch (e: Exception) {
-            ui.displayMessage("❌ Error: ${e.message ?: "Failed to create user"}")
+            val user = insertUserUseCase.insertUser(userInput.username, userInput.password, userInput.userRole)
+            ui.displayMessage("✅ User '${user.username}' created successfully with ID '${user.userId}'!")
         }
     }
 
-    private fun buildDescription(): String = """
-        ╔══════════════════════════╗
-        ║    Create a New User     ║
-        ╚══════════════════════════╝
-        """.trimIndent()
+    private data class UserInput(val username: String, val password: String, val userRole: UserRole)
 
     private fun collectUserInput(ui: UiDisplayer, inputReader: InputReader): UserInput {
-        val username = readValidatedInput(ui, inputReader, "Username", "Username must not be blank") { it.isNotBlank() }
-        val password = readValidatedInput(ui, inputReader, "Password", "Password must not be blank") { it.isNotBlank() }
+        val username = readValidatedInput(
+            ui, inputReader, "🔹 Enter Username:", "Username", "Username must not be blank",
+            ::nonBlankValidator
+        )
+        val password = readValidatedInput(
+            ui, inputReader, "🔹 Enter Password:", "Password", "Password must not be blank",
+            ::nonBlankValidator
+        )
         val userRole = selectUserRole(ui, inputReader)
         return UserInput(username, password, userRole)
     }
 
-    private fun readValidatedInput(
+    override fun selectUserRole(
         ui: UiDisplayer,
         inputReader: InputReader,
-        field: String,
-        errorMessage: String,
-        validator: (String) -> Boolean
-    ): String {
-        ui.displayMessage("🔹 Enter $field:")
-        val input = inputReader.readString("$field: ").trim()
-        if (!validator(input)) throw IllegalArgumentException(errorMessage)
-        return input
+        currentRole: UserRole?,
+        prompt: String
+    ): UserRole {
+        val roleOptions = UserRole.entries.joinToString(", ") { it.name }
+        return readValidatedInput(
+            ui, inputReader, "🔹 Enter User Role ($roleOptions):", "User Role", "Invalid role. Choose from $roleOptions",
+            { UserRole.entries.find { role -> role.name.equals(it, ignoreCase = true) } }
+        )
     }
-
-    private fun selectUserRole(ui: UiDisplayer, inputReader: InputReader): UserRole {
-        ui.displayMessage("🔹 Select User Role:")
-        ui.displayMessage("1. ADMIN\n2. MATE")
-        val choice = inputReader.readString("Role (1-2): ").trim().toIntOrNull()
-        return when (choice) {
-            1 -> UserRole.ADMIN
-            2 -> UserRole.MATE
-            else -> throw IllegalArgumentException("Invalid role selection. Choose 1 or 2.")
-        }
-    }
-
-    private fun confirmUserCreation(ui: UiDisplayer, inputReader: InputReader, input: UserInput): Boolean {
-        ui.displayMessage("⚠️ Create user '${input.username}' with role '${input.userRole}'? [y/n]")
-        val confirmation = inputReader.readString("Confirm: ").trim().lowercase()
-        return confirmation == "y"
-    }
-
-    private suspend fun createUser(input: UserInput): User {
-        return insertUserUseCase.insertUser(input.username, input.password, input.userRole)
-    }
-
-    private data class UserInput(
-        val username: String,
-        val password: String,
-        val userRole: UserRole
-    )
 }

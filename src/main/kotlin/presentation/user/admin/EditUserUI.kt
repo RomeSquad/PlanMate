@@ -3,146 +3,80 @@ package org.example.presentation.user.admin
 
 import org.example.logic.entity.auth.User
 import org.example.logic.entity.auth.UserRole
-import org.example.logic.exception.EmptyPasswordException
-import org.example.logic.exception.EntityNotChangedException
 import org.example.logic.request.EditUserRequest
 import org.example.logic.usecase.auth.EditUserUseCase
 import org.example.logic.usecase.auth.GetAllUsersUseCase
 import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
-import org.example.presentation.utils.menus.Menu
-import org.example.presentation.utils.menus.MenuAction
+import org.example.presentation.utils.menus.BaseMenuAction
 
 class EditUserUI(
     private val editUserUseCase: EditUserUseCase,
     private val getAllUsersUseCase: GetAllUsersUseCase
-) : MenuAction {
-    override val description: String = buildDescription()
-    override val menu: Menu = Menu()
+) : BaseMenuAction() {
+
+    override val title: String = "Edit a User"
 
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
-        try {
-            ui.displayMessage(description)
-            val users = fetchUsers(ui)
-            if (users.isEmpty()) {
+        executeWithErrorHandling(ui, inputReader) {
+            val users = fetchEntities(ui, { getAllUsersUseCase.getAllUsers() }, "users")
+            val selectedUser = selectEntity(
+                ui, inputReader, users, "Users",
+                prompt = "🔹 Select a user to edit (1-${users.size}): ",
+                format = { user, index -> "👤 $index. ${user.username} | Role: ${user.userRole} | ID: ${user.userId}" }
+            ) ?: run {
                 ui.displayMessage("❌ No users available to edit!")
-                return
+                return@executeWithErrorHandling
             }
-            val selectedUser = selectUser(ui, inputReader, users)
-            if (!confirmUserSelection(ui, inputReader, selectedUser)) {
-                ui.displayMessage("🛑 User edit canceled.")
-                return
-            }
+            ui.displayMessage("🔹 Editing user '${selectedUser.username}'...")
             val userInput = collectUserInput(ui, inputReader, selectedUser)
-            if (!confirmUserUpdate(ui, inputReader, selectedUser, userInput)) {
-                ui.displayMessage("🛑 User edit canceled.")
-                return
+            if (userInput.password.isEmpty() && userInput.userRole == selectedUser.userRole) {
+                ui.displayMessage("🛑 No changes made to user.")
+                return@executeWithErrorHandling
             }
-            updateUser(ui, selectedUser.username, userInput)
+            if (!confirmAction(
+                    ui, inputReader,
+                    "⚠️ Update user '${selectedUser.username}' with role '${userInput.userRole}'? [y/n]: "
+                )
+            ) {
+                ui.displayMessage("🛑 User edit canceled.")
+                return@executeWithErrorHandling
+            }
+            ui.displayMessage("🔹 Updating user '${selectedUser.username}'...")
+            editUserUseCase.editUser(
+                request = EditUserRequest(
+                    username = selectedUser.username,
+                    password = userInput.password,
+                    userRole = userInput.userRole
+                )
+            )
             ui.displayMessage("✅ User '${selectedUser.username}' updated successfully!")
-        } catch (e: IllegalArgumentException) {
-            ui.displayMessage("❌ Invalid input: ${e.message ?: "Invalid data provided"}")
-        } catch (e: EntityNotChangedException) {
-            ui.displayMessage("❌ No changes made to the user: ${e.message ?: "No updates provided"}")
-        } catch (e: EmptyPasswordException) {
-            ui.displayMessage("❌ New password cannot be empty: ${e.message ?: "Invalid password"}")
-        } catch (e: Exception) {
-            ui.displayMessage("❌ Error: ${e.message ?: "Failed to update user"}")
         }
     }
 
-    private fun buildDescription(): String = """
-        ╔══════════════════════════╗
-        ║      Edit a User         ║
-        ╚══════════════════════════╝
-        """.trimIndent()
-
-    private suspend fun fetchUsers(ui: UiDisplayer): List<User> {
-        ui.displayMessage("🔹 Fetching all users...")
-        return getAllUsersUseCase.getAllUsers()
-    }
-
-    private fun selectUser(ui: UiDisplayer, inputReader: InputReader, users: List<User>): User {
-        displayUsers(ui, users)
-        val choice = readValidatedChoice(ui, inputReader, users.size)
-        return users[choice - 1]
-    }
-
-    private fun displayUsers(ui: UiDisplayer, users: List<User>) {
-            ui.displayMessage("👥 Available Users:")
-            users.forEachIndexed { index, user ->
-                ui.displayMessage("📌 ${index + 1}. ${user.username} (ID: ${user.userId})")
-            }
-    }
-
-    private fun readValidatedChoice(ui: UiDisplayer, inputReader: InputReader, max: Int): Int {
-        ui.displayMessage("🔹 Select a user to edit (1-$max):")
-        val choice = inputReader.readString("Choice: ").trim().toIntOrNull()
-        if (choice == null || choice < 1 || choice > max) {
-            throw IllegalArgumentException("Please select a number between 1 and $max")
-            }
-        return choice
-    }
-
-    private fun confirmUserSelection(ui: UiDisplayer, inputReader: InputReader, user: User): Boolean {
-        ui.displayMessage("⚠️ Edit user '${user.username}' (ID: ${user.userId})? [y/n]")
-        val confirmation = inputReader.readString("Confirm: ").trim().lowercase()
-        return confirmation == "y"
-    }
+    private data class UserInput(val password: String, val userRole: UserRole)
 
     private fun collectUserInput(ui: UiDisplayer, inputReader: InputReader, user: User): UserInput {
-        ui.displayMessage("🔹 Editing user '${user.username}'...")
-        val newPassword = readOptionalInput(ui, inputReader, "New Password", "leave empty to keep current")
+        val newPassword = readValidatedInput(
+            ui, inputReader, "🔹 Enter New Password:", "New Password", "Invalid password",
+            { it.takeIf { it.isNotBlank() } ?: "" }, hint = "leave empty to keep current"
+        )
         val newRole = selectUserRole(ui, inputReader, user.userRole)
         return UserInput(newPassword, newRole)
     }
 
-    private fun readOptionalInput(
+    override fun selectUserRole(
         ui: UiDisplayer,
         inputReader: InputReader,
-        field: String,
-        hint: String
-    ): String {
-        ui.displayMessage("🔹 Enter $field ($hint):")
-        return inputReader.readString("$field: ").trim()
+        currentRole: UserRole?,
+        prompt: String
+    ): UserRole {
+        val roleOptions = UserRole.entries.joinToString(", ") { it.name }
+        return readValidatedInput(
+            ui, inputReader, "🔹 Enter User Role ($roleOptions) [default: ${currentRole ?: "none"}]:", "User Role",
+            "Invalid role. Choose from $roleOptions",
+            { UserRole.entries.find { role -> role.name.equals(it, ignoreCase = true) } ?: currentRole },
+            hint = "leave empty to keep ${currentRole ?: "none"}"
+        )
     }
-
-    private fun selectUserRole(ui: UiDisplayer, inputReader: InputReader, currentRole: UserRole): UserRole {
-        ui.displayMessage("🔹 Select New User Role (current: $currentRole):")
-            ui.displayMessage("1. ADMIN\n2. MATE")
-        val choice = inputReader.readString("Role (1-2, leave empty to keep current): ").trim()
-        return when {
-            choice.isBlank() -> currentRole
-            choice.toIntOrNull() == 1 -> UserRole.ADMIN
-            choice.toIntOrNull() == 2 -> UserRole.MATE
-            else -> throw IllegalArgumentException("Invalid role selection. Choose 1, 2, or leave empty")
-        }
-    }
-
-    private fun confirmUserUpdate(
-        ui: UiDisplayer,
-        inputReader: InputReader,
-        user: User,
-        input: UserInput
-    ): Boolean {
-        ui.displayMessage("⚠️ Update user '${user.username}' with role '${input.userRole}'? [y/n]")
-        val confirmation = inputReader.readString("Confirm: ").trim().lowercase()
-        return confirmation == "y"
-    }
-
-    private suspend fun updateUser(ui: UiDisplayer, username: String, input: UserInput) {
-        ui.displayMessage("🔹 Updating user '$username'...")
-            editUserUseCase.editUser(
-                request = EditUserRequest(
-                    username = username,
-                    password = input.password,
-                    userRole = input.userRole
-                )
-            )
-    }
-
-    private data class UserInput(
-        val password: String,
-        val userRole: UserRole
-    )
 }
