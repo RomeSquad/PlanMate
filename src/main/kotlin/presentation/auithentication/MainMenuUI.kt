@@ -24,7 +24,12 @@ class MainMenuUI(
                 when (it.number) {
                     1 -> it.copy(menuAction = if (currentUser.userRole == UserRole.ADMIN) adminManagementUI else mateManagementUI)
                     2 -> if (currentUser.userRole == UserRole.ADMIN) it.copy(menuAction = mateManagementUI) else it
-                    3 -> it // Logout action is already set in getRoleBasedMenuOptions
+                    3 -> it.copy(
+                        action = { _, _ ->
+                            handleLogout(ui, inputReader)
+                        },
+                        icon = "🚪"
+                    )
                     else -> it
                 }
             }

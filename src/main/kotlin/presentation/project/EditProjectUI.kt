@@ -77,7 +77,7 @@ class EditProjectUI(
     private suspend fun logProjectEdit(projectId: UUID, user: User) {
         addChangeHistory.execute(
             projectId = projectId,
-            taskId = null,
+            taskId = UUID.randomUUID(),
             authorId = user.userId,
             changeDate = Date(),
             changeDescription = "Project edited"

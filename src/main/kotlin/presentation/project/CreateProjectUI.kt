@@ -89,7 +89,7 @@ class CreateProjectUI(
     private suspend fun logProjectCreation(projectId: UUID, userId: UUID) {
         addChangeHistory.execute(
             projectId = projectId,
-            taskId = null,
+            taskId = UUID.randomUUID(),
             authorId = userId,
             changeDate = Date(),
             changeDescription = "Project created"
