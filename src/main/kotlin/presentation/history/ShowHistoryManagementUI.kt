@@ -1,47 +1,32 @@
 package org.example.presentation.history
 
+import org.example.logic.usecase.auth.GetCurrentUserUseCase
 import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
-import org.example.presentation.utils.menus.Menu
-import org.example.presentation.utils.menus.MenuAction
+import org.example.presentation.utils.menus.BaseMenuAction
 
 class ShowHistoryManagementUI(
     private val showProjectHistoryUI: ShowProjectHistoryUI,
     private val showTaskHistoryUI: ShowTaskHistoryUI,
-) : MenuAction {
-    override val description: String = """
-        ╔════════════════════════════════════╗
-        ║      History Management Menu      ║
-        ╚════════════════════════════════════╝
-        """.trimIndent()
-    override val menu: Menu = Menu()
+    private val getCurrentUserUseCase: GetCurrentUserUseCase
+) : BaseMenuAction() {
 
-    private val options = listOf(
-        "📜 1. Show Project History",
-        "📝 2. Show Task History",
-        "⬅️ 3. Back to Main Menu"
+    override val title: String = "History Management"
+
+    private val menuOptions = listOf(
+        MenuOption(1, "Show Project History", menuAction = showProjectHistoryUI),
+        MenuOption(2, "Show Task History", menuAction = showTaskHistoryUI),
+        MenuOption(3, "Back")
     )
 
-    override suspend fun execute(
-        ui: UiDisplayer,
-        inputReader: InputReader
-    ) {
-        while (true) {
-            ui.displayMessage(description)
-            ui.displayMessage(options.joinToString("\n"))
-            ui.displayMessage("🔹 Choose an option (1-3):")
-            val choice = inputReader.readString("Choice: ").trim().toIntOrNull()
-
-            when (choice) {
-                1 -> showProjectHistoryUI.execute(ui, inputReader)
-                2 -> showTaskHistoryUI.execute(ui, inputReader)
-                3 -> {
-                    ui.displayMessage("✅ Exiting history management menu. Have a great day! 👋")
-                    return
-                }
-
-                else -> ui.displayMessage("❌ Invalid choice. Please try again.")
+    override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
+        executeWithErrorHandling(ui, inputReader) {
+            val currentUser = getCurrentUser(getCurrentUserUseCase)
+            if (currentUser == null) {
+                ui.displayMessage("❌ User not logged in.")
+                return@executeWithErrorHandling
             }
+            runMenuLoop(ui, inputReader, menuOptions) { it.number == 3 }
         }
     }
 }
