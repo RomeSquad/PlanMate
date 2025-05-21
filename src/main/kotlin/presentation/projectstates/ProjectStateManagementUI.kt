@@ -1,84 +1,43 @@
 package org.example.presentation.projectstates
 
+import org.example.logic.entity.auth.UserRole
+import org.example.logic.usecase.auth.GetCurrentUserUseCase
 import org.example.presentation.utils.io.InputReader
 import org.example.presentation.utils.io.UiDisplayer
-import org.example.presentation.utils.menus.Menu
-import org.example.presentation.utils.menus.MenuAction
+import org.example.presentation.utils.menus.BaseMenuAction
 
 class ProjectStateManagementUI(
-    addStateToProjectUI: AddStateToProjectUI,
     addTaskStateToProjectUI: AddTaskStateToProjectUI,
+    addStateToProjectUI: AddStateToProjectUI,
     editProjectStateUI: EditProjectStateUI,
     deleteStateToProjectUI: DeleteStateToProjectUI,
-    getAllStatesPerProjectUI: GetAllStatesPerProjectUI
-) : MenuAction {
+    getAllStatesPerProjectUI: GetAllStatesPerProjectUI,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase
+) : BaseMenuAction() {
 
-    override val description: String = buildMenuDescription()
-
-    override val menu: Menu = Menu()
+    override val title: String = "Project State Management"
 
     private val menuOptions = listOf(
-        MenuOption(1, "Add Task State to Project", addTaskStateToProjectUI),
-        MenuOption(2, "Add State to Project", addStateToProjectUI),
-        MenuOption(3, "Edit Project State", editProjectStateUI),
-        MenuOption(4, "Delete Project State", deleteStateToProjectUI),
-        MenuOption(5, "List All States for Project", getAllStatesPerProjectUI),
-        MenuOption(6, "Back to Project Management", null)
+        MenuOption(1, "Add Task State", menuAction = addTaskStateToProjectUI),
+        MenuOption(2, "Add State", menuAction = addStateToProjectUI),
+        MenuOption(3, "Edit State", menuAction = editProjectStateUI),
+        MenuOption(4, "Delete State", menuAction = deleteStateToProjectUI),
+        MenuOption(5, "View All States", menuAction = getAllStatesPerProjectUI),
+        MenuOption(6, "Back")
     )
 
     override suspend fun execute(ui: UiDisplayer, inputReader: InputReader) {
-        while (true) {
-            runCatching {
-                displayMenu(ui)
-                val choice = selectMenuOption(inputReader)
-                handleMenuChoice(ui, inputReader, choice)
-                if (choice == 6) return
-            }.onFailure { exception ->
-                handleError(ui, exception, inputReader)
+        executeWithErrorHandling(ui, inputReader) {
+            val currentUser = getCurrentUser(getCurrentUserUseCase)
+            if (currentUser == null) {
+                ui.displayMessage("❌ User not logged in.")
+                return@executeWithErrorHandling
             }
+            if (currentUser.userRole != UserRole.ADMIN) {
+                ui.displayMessage("❌ Admin access required.")
+                return@executeWithErrorHandling
+            }
+            runMenuLoop(ui, inputReader, menuOptions) { it.number == 6 }
         }
     }
-
-    private fun buildMenuDescription(): String = """
-        ╔══════════════════════════╗
-        ║ Project State Management ║
-        ╚══════════════════════════╝
-    """.trimIndent()
-
-    private fun displayMenu(ui: UiDisplayer) {
-        ui.displayMessage(description)
-        menuOptions.forEach { option ->
-            ui.displayMessage("➡️ ${option.number}. ${option.description}")
-        }
-        ui.displayMessage("🔹 Choose an option (1-${menuOptions.size}):")
-    }
-
-    private fun selectMenuOption(inputReader: InputReader): Int {
-        val choice = inputReader.readString("Choice: ").trim().toIntOrNull()
-        if (choice == null || choice < 1 || choice > menuOptions.size) {
-            throw IllegalArgumentException("Invalid selection. Please select a number between 1 and ${menuOptions.size}.")
-        }
-        return choice
-    }
-
-    private suspend fun handleMenuChoice(ui: UiDisplayer, inputReader: InputReader, choice: Int) {
-        val selectedOption = menuOptions.find { it.number == choice }
-        selectedOption?.action?.execute(ui, inputReader)
-    }
-
-    private fun handleError(ui: UiDisplayer, exception: Throwable, inputReader: InputReader) {
-        val message = when (exception) {
-            is IllegalArgumentException -> "❌ Error: ${exception.message}"
-            else -> "❌ An unexpected error occurred: ${exception.message ?: "Failed to process menu selection"}"
-        }
-        ui.displayMessage(message)
-        ui.displayMessage("🔄 Press Enter to continue...")
-        inputReader.readString("")
-    }
-
-    private data class MenuOption(
-        val number: Int,
-        val description: String,
-        val action: MenuAction?
-    )
 }
