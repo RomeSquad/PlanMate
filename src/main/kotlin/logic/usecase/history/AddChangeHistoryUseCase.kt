@@ -8,7 +8,7 @@ class AddChangeHistoryUseCase(private val repository: ChangeHistoryRepository) {
 
     suspend fun execute(
         projectId: UUID,
-        taskId: UUID,
+        taskId: UUID?,
         authorId: UUID,
         changeDate: Date,
         changeDescription: String
