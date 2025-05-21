@@ -47,10 +47,12 @@ val presentationModule = module {
             get(),
             get(),
             get(),
+            get(),
         )
     }
     single {
         MateManagementUI(
+            get(),
             get(),
         )
     }
@@ -86,26 +88,13 @@ val presentationModule = module {
             get(),
             get(),
             get(),
-        )
-    }
-    single {
-        CreateProjectUi(
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
             get(),
         )
     }
     single {
-        DeleteProjectUi(
+        CreateProjectUI(
             get(),
             get(),
-        )
-    }
-    single {
-        EditProjectUi(
             get(),
             get(),
             get(),
@@ -113,13 +102,28 @@ val presentationModule = module {
         )
     }
     single {
-        ListProjectUi(
+        DeleteProjectUI(
+            get(),
+            get(),
+        )
+    }
+    single {
+        EditProjectUI(
+            get(),
+            get(),
+            get(),
+            get(),
+        )
+    }
+    single {
+        ListProjectUI(
             get()
         )
     }
 
     single {
         ProjectStateManagementUI(
+            get(),
             get(),
             get(),
             get(),
@@ -163,6 +167,7 @@ val presentationModule = module {
 
     single {
         TaskManagementUI(
+            get(),
             get(),
             get(),
             get(),
@@ -220,6 +225,7 @@ val presentationModule = module {
     }
     single {
         ShowHistoryManagementUI(
+            get(),
             get(),
             get(),
         )
